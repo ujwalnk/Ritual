@@ -8,6 +8,8 @@ import 'package:ritual/model/ritual.dart';
 
 // Screens
 import 'package:ritual/screens/splash.dart';
+import 'package:ritual/screens/home.dart';
+import 'package:ritual/screens/settings.dart';
 
 // Services
 
@@ -20,10 +22,18 @@ void main() async {
 
   runApp(MaterialApp(
 
-    initialRoute: "/splash",
+    initialRoute: "/home",
 
     routes:{
       "/splash": (context) => const Splash(),
-    }
+      "/home": (context) => const Home(),
+      "/settings": (context) => const Settings(),
+    },
+
+    theme: ThemeData(
+      useMaterial3: true,
+      primarySwatch: Colors.blue
+    ),
+
   ));
 }
