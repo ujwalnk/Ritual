@@ -18,6 +18,7 @@ class _SettingsState extends State<Settings> {
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue[800],
+        elevation: 1,
       ),
       body: Padding(
   padding: const EdgeInsets.all(18.0),

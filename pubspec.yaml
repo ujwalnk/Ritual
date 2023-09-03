@@ -1,5 +1,5 @@
-name: ritual
-description: A new Flutter project.
+name: Ritual
+description: Rituals, Highlights & Sprints.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -73,6 +73,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/fonts/
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -95,6 +96,9 @@ flutter:
     - family: NotoSans-SemiBold
       fonts:
         - asset: assets/fonts/NotoSans-SemiBold.ttf
+    - family: Ritual
+      fonts:
+        - asset: assets/fonts/Ritual.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

@@ -1,3 +1,3 @@
-class Register{
-  static String hiveName = "";
+class Registry{
+  static String hiveFileName = "ritual";
 }
