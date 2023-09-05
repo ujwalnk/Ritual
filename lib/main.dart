@@ -10,11 +10,13 @@ import 'package:Ritual/model/ritual.dart';
 import 'package:Ritual/screens/splash.dart';
 import 'package:Ritual/screens/home.dart';
 import 'package:Ritual/screens/settings.dart';
+import 'package:Ritual/screens/ritual.dart';
 
 // Commit Screens
 import 'package:Ritual/screens/commit/ritual.dart';
 import 'package:Ritual/screens/commit/highlight.dart';
 import 'package:Ritual/screens/commit/sprint.dart';
+import 'package:Ritual/screens/commit/habit.dart';
 
 // Services
 import 'package:Ritual/services/registry.dart';
@@ -37,11 +39,13 @@ void main() async {
       "/splash": (context) => const Splash(),
       "/home": (context) => const Home(),
       "/settings": (context) => const Settings(),
+      "/rituals": (context) => Rituals(),
 
       // Commit Screen
       "/commit/ritual": (context) => const commit2Ritual(),
       "/commit/highlight": (context) => const commit2Highlight(),
       "/commit/sprint": (context) => const commit2Sprint(),
+      "/commit/habit": (context) => const commit2Habit(),
     },
 
     theme: ThemeData(

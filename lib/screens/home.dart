@@ -142,57 +142,66 @@ class _HomeState extends State<Home> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final ritual in rituals) buildRituals(context, ritual),
+          for (final ritual in rituals) buildCard(context, ritual),
         ],
       );
     }
   }
 
-  Widget buildRituals(
+  Widget buildCard(
     BuildContext context,
     Ritual ritual,
   ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(70.0, 0, 0, 0),
-      child: SizedBox(
-        height: 100, // Set a fixed height for the Card.
-        child: Card(
-          color: Colors.transparent, // Make the Card background transparent
-          elevation: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-                5.0), 
-            child: Stack(
-              // Use a Stack to overlay the image and text.
-              children: [
-                // Background 
-                Image.asset(
-                  ritual
-                      .background!, 
-                  fit: BoxFit.cover, 
-                  width: double
-                      .infinity, // Make the image fill the Card horizontally.
-                  height: 200, // Fixed height for the image.
-                ),
-    
-                // Text on top of the image.
-                Positioned(
-                  left: 24,
-                  top: 8,
-                  right: 24,
-                  bottom: 8,
-                  child: Text(
-                    ritual.url.replaceAll("/", ""),
-                    maxLines: 2,
-                    style: TextStyle(
-                      // fontWeight: FontWeight.bold,
-                      fontSize: 23,
-                      color: Colors.white, 
-                      fontFamily: "NotoSans-Light"
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: (){
+          Navigator.pushNamed(context, "/rituals", arguments: {
+            "background":ritual.background!,
+            "ritual":ritual.url,
+          });
+        },
+        child: SizedBox(
+          height: 100, // Set a fixed height for the Card.
+          child: Card(
+            color: Colors.transparent, // Make the Card background transparent
+            elevation: 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                  5.0), 
+              child: Stack(
+                // Use a Stack to overlay the image and text.
+                children: [
+                  // Background 
+                  Image.asset(
+                    ritual
+                        .background!, 
+                    fit: BoxFit.cover, 
+                    width: double
+                        .infinity, // Make the image fill the Card horizontally.
+                    height: 200, // Fixed height for the image.
+                  ),
+          
+                  // Text on top of the image.
+                  Positioned(
+                    left: 24,
+                    top: 8,
+                    right: 24,
+                    bottom: 8,
+                    child: Text(
+                      ritual.url.replaceAll("/", ""),
+                      maxLines: 2,
+                      style: TextStyle(
+                        // fontWeight: FontWeight.bold,
+                        fontSize: 23,
+                        color: Colors.white, 
+                        fontFamily: "NotoSans-Light"
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
