@@ -81,8 +81,8 @@ class _RitualsState extends State<Rituals> {
               for (var ritual in contents) {
                 if (ritual.type == "habit" &&
                     ritual.url.contains(data['ritual'])) {
-                  ritual.url =
-                      ritual.url.toString().replaceAll(data['ritual'], "");
+                  // ritual.url =
+                      // ritual.url.toString().replaceAll(data['ritual'], "");
                   rituals.add(ritual);
                 }
                 debugPrint("Ritual: ${ritual.url}");
@@ -98,10 +98,10 @@ class _RitualsState extends State<Rituals> {
 
   Widget buildContent(List<Ritual> content) {
     if (content.isEmpty) {
-      // Return a message or an empty state widget when there are no rituals.
+      // Return a message
       return Center(
         child: Text(
-          'No Habits available',
+          'Tap the + icon to add a new habit',
           style: TextStyle(fontSize: 18),
         ),
       );
@@ -119,24 +119,55 @@ class _RitualsState extends State<Rituals> {
     BuildContext context,
     Ritual ritual,
   ) {
+    debugPrint("@ritual: Building card for: ${ritual.url}");
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
-        // Make the habit done
+        // Mark the habit done
+        if (ritual.complete == 0) {
+          setState(() {
+            ritual.complete = 1;
+            ritual.save();
+          });
+        } else{
+          // Don't uncheck habits
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Trying to uncheck?'),
+                  content: Text('Commitments fullfilled; Why unmark accomplishments?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        // Close the dialog
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Makes Sense'),
+                    ),
+                  ],
+                );
+              },
+            );
+        }
       },
       child: SizedBox(
-        height: 100, // Set a fixed height for the Card.
+        height: 100,
         child: Card(
-          color: Colors.white, // Set the Card background color to white.
+          color: Colors.white,
           elevation: 1,
           child: Center(
             child: Text(
-              ritual.url.replaceAll("/", ""),
+              ritual.url.split("/").last,
               maxLines: 2,
               style: TextStyle(
                 fontSize: 23,
-                color: Colors.black, // Text color
+                color: Colors.black,
                 fontFamily: "NotoSans-Light",
+                // TODO: Strikethrough based on completion status
+                decoration: ritual.complete == 1
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
               ),
             ),
           ),

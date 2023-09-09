@@ -70,13 +70,13 @@ class _HomeState extends State<Home> {
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
-                for(var ritual in contents){
-                  if(ritual.type == "highlight"){
+                for (var ritual in contents) {
+                  if (ritual.type == "highlight") {
                     rituals.add(ritual);
                   }
                 }
                 debugPrint("Rituals: ${rituals.length}");
-                return buildContent(rituals);
+                return buildContent(rituals, type: "Highlight");
               },
             ),
             Padding(
@@ -86,18 +86,18 @@ class _HomeState extends State<Home> {
                 style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
               ),
             ),
-                        ValueListenableBuilder<Box<Ritual>>(
+            ValueListenableBuilder<Box<Ritual>>(
               valueListenable: Boxes.getRituals().listenable(),
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
-                for(var ritual in contents){
-                  if(ritual.type == "sprint"){
+                for (var ritual in contents) {
+                  if (ritual.type == "sprint") {
                     rituals.add(ritual);
                   }
                 }
                 debugPrint("Rituals: ${rituals.length}");
-                return buildContent(rituals);
+                return buildContent(rituals, type: "Sprint");
               },
             ),
             Padding(
@@ -112,8 +112,8 @@ class _HomeState extends State<Home> {
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
-                for(var ritual in contents){
-                  if(ritual.type == "ritual"){
+                for (var ritual in contents) {
+                  if (ritual.type == "ritual") {
                     rituals.add(ritual);
                   }
                 }
@@ -129,12 +129,12 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildContent(List<Ritual> rituals) {
+  Widget buildContent(List<Ritual> rituals, {String type = "ritual"}) {
     if (rituals.isEmpty) {
       // Return a message or an empty state widget when there are no rituals.
       return Center(
         child: Text(
-          'No rituals available',
+          'Tap the + icon to create your first $type',
           style: TextStyle(fontSize: 18),
         ),
       );
@@ -142,47 +142,45 @@ class _HomeState extends State<Home> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final ritual in rituals) buildCard(context, ritual),
+          for (final ritual in rituals) buildCard(context, ritual, isRitual: type == "ritual" ? true : false),
         ],
       );
     }
   }
 
-  Widget buildCard(
-    BuildContext context,
-    Ritual ritual,
-  ) {
+  Widget buildCard(BuildContext context, Ritual ritual,
+      {bool isRitual = true}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(70.0, 0, 0, 0),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: (){
-          Navigator.pushNamed(context, "/rituals", arguments: {
-            "background":ritual.background!,
-            "ritual":ritual.url,
-          });
+        onTap: () {
+          if (isRitual) {
+            Navigator.pushNamed(context, "/rituals", arguments: {
+              "background": ritual.background!,
+              "ritual": ritual.url,
+            });
+          }
         },
         child: SizedBox(
-          height: 100, // Set a fixed height for the Card.
+          height: 100,
           child: Card(
-            color: Colors.transparent, // Make the Card background transparent
+            color: Colors.transparent,
             elevation: 0,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                  5.0), 
+              borderRadius: BorderRadius.circular(5.0),
               child: Stack(
                 // Use a Stack to overlay the image and text.
                 children: [
-                  // Background 
+                  // Background
                   Image.asset(
-                    ritual
-                        .background!, 
-                    fit: BoxFit.cover, 
+                    ritual.background!,
+                    fit: BoxFit.cover,
                     width: double
                         .infinity, // Make the image fill the Card horizontally.
-                    height: 200, // Fixed height for the image.
+                    height: 200,
                   ),
-          
+
                   // Text on top of the image.
                   Positioned(
                     left: 24,
@@ -193,11 +191,9 @@ class _HomeState extends State<Home> {
                       ritual.url.replaceAll("/", ""),
                       maxLines: 2,
                       style: TextStyle(
-                        // fontWeight: FontWeight.bold,
-                        fontSize: 23,
-                        color: Colors.white, 
-                        fontFamily: "NotoSans-Light"
-                      ),
+                          fontSize: 23,
+                          color: Colors.white,
+                          fontFamily: "NotoSans-Light"),
                     ),
                   ),
                 ],
