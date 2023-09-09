@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
 // Hive database packages
 import 'package:Ritual/model/ritual.dart';
 
 // Services
-import 'package:Ritual/services/registry.dart';
 import 'package:Ritual/services/boxes.dart';
 
-class commit2Habit extends StatefulWidget {
-  const commit2Habit({super.key});
+class Commit2Habit extends StatefulWidget {
+  const Commit2Habit({super.key});
 
   @override
-  State<commit2Habit> createState() => _commit2HabitState();
+  State<Commit2Habit> createState() => _Commit2HabitState();
 }
 
-class _commit2HabitState extends State<commit2Habit> {
-  TextEditingController _textFieldController = TextEditingController();
+class _Commit2HabitState extends State<Commit2Habit> {
+  final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
   @override
   void dispose(){
     // Close all boxes
-    Hive.close();
+    // Hive.close();
     super.dispose();
   }
 
@@ -33,7 +31,7 @@ class _commit2HabitState extends State<commit2Habit> {
 
     return Scaffold(
         appBar: AppBar(
-            title: Text(
+            title: const Text(
           "Commit",
           style: TextStyle(fontFamily: "NotoSans-Light"),
         )),
@@ -41,12 +39,12 @@ class _commit2HabitState extends State<commit2Habit> {
           padding: const EdgeInsets.all(32.0),
           child: Column(
             children: <Widget>[
-              Text(
+              const Text(
                 "Commit to",
                 style:
                     TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               TextField(
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
@@ -55,7 +53,7 @@ class _commit2HabitState extends State<commit2Habit> {
                     hintText: data['mode'] == "new" ? "What's new in ${data['uri'].toString().replaceFirst("/", "")}" : "Rename to"
                   ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -73,7 +71,7 @@ class _commit2HabitState extends State<commit2Habit> {
                         // Pop the screen
                         Navigator.pop(context);
                       },
-                      child: Text("Commit",
+                      child: const Text("Commit",
                           style: TextStyle(
                               fontFamily: "NotoSans-Light", fontSize: 20)),
                     ),

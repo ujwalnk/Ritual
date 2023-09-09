@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
@@ -13,7 +12,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Settings",
           style: TextStyle(color: Colors.white),
         ),
@@ -31,7 +30,7 @@ class _SettingsState extends State<Settings> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text("Show Highlights"),
+            const Text("Show Highlights"),
             Checkbox(
               value: false,
               onChanged: (value) => {},
@@ -47,7 +46,7 @@ class _SettingsState extends State<Settings> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text("Show Sprints"),
+            const Text("Show Sprints"),
             Checkbox(
               value: false,
               onChanged: (value) => {},

@@ -6,7 +6,7 @@ part 'ritual.g.dart';
 class Ritual extends HiveObject{
   @HiveField(0)
   // Percentage of habit complete
-  int complete = 0;
+  double complete = 0;
 
   @HiveField(1)
   // Path to the habit
@@ -24,4 +24,8 @@ class Ritual extends HiveObject{
   @HiveField(4)
   // Type of Habit
   String? type;
+
+  @HiveField(5)
+  // Expiry for Sprints and Highlights
+  DateTime? expiry;
 }

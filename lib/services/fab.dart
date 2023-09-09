@@ -5,6 +5,8 @@ import 'package:Ritual/services/ritual_icons.dart';
 
 // Exapandable FAB
 class ExpandableFab extends StatefulWidget {
+  const ExpandableFab({super.key});
+
   @override
   _ExpandableFabState createState() => _ExpandableFabState();
 }
@@ -27,10 +29,10 @@ class _ExpandableFabState extends State<ExpandableFab> {
                 },
                 heroTag: null,
                 tooltip: 'Set Highlight',
-                child: Icon(Ritual.lightbulb_outline),
+                child: const Icon(Ritual.lightbulb_outline),
               ),
             if (_isExpanded)
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             if (_isExpanded)
               FloatingActionButton(
                 onPressed: () {
@@ -38,10 +40,10 @@ class _ExpandableFabState extends State<ExpandableFab> {
                 },
                 heroTag: null,
                 tooltip: 'Set Sprint',
-                child: Icon(Ritual.directions_run),
+                child: const Icon(Ritual.directions_run),
               ),
             if (_isExpanded)
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             if (_isExpanded)
               FloatingActionButton(
                 onPressed: () {
@@ -49,9 +51,9 @@ class _ExpandableFabState extends State<ExpandableFab> {
                 },
                 heroTag: null,
                 tooltip: 'New Ritual',
-                child: Icon(Ritual.fire),
+                child: const Icon(Ritual.fire),
               ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             FloatingActionButton(
               onPressed: () {
                 setState(() {

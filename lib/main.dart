@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 // Database
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:Ritual/model/ritual.dart';
@@ -39,13 +38,13 @@ void main() async {
       "/splash": (context) => const Splash(),
       "/home": (context) => const Home(),
       "/settings": (context) => const Settings(),
-      "/rituals": (context) => Rituals(),
+      "/rituals": (context) => const Rituals(),
 
       // Commit Screen
-      "/commit/ritual": (context) => const commit2Ritual(),
-      "/commit/highlight": (context) => const commit2Highlight(),
-      "/commit/sprint": (context) => const commit2Sprint(),
-      "/commit/habit": (context) => const commit2Habit(),
+      "/commit/ritual": (context) => const Commit2Ritual(),
+      "/commit/highlight": (context) => const Commit2Highlight(),
+      "/commit/sprint": (context) => const Commit2Sprint(),
+      "/commit/habit": (context) => const Commit2Habit(),
     },
 
     theme: ThemeData(

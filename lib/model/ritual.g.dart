@@ -17,17 +17,18 @@ class RitualAdapter extends TypeAdapter<Ritual> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Ritual()
-      ..complete = fields[0] as int
+      ..complete = fields[0] as double
       ..url = fields[1] as String
       ..background = fields[2] as String?
       ..time = fields[3] as String?
-      ..type = fields[4] as String?;
+      ..type = fields[4] as String?
+      ..expiry = fields[5] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, Ritual obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.complete)
       ..writeByte(1)
@@ -37,7 +38,9 @@ class RitualAdapter extends TypeAdapter<Ritual> {
       ..writeByte(3)
       ..write(obj.time)
       ..writeByte(4)
-      ..write(obj.type);
+      ..write(obj.type)
+      ..writeByte(5)
+      ..write(obj.expiry);
   }
 
   @override

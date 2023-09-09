@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:Ritual/services/boxes.dart';
 import 'package:Ritual/model/ritual.dart';
-import 'package:Ritual/services/registry.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Rituals extends StatefulWidget {
@@ -72,7 +70,7 @@ class _RitualsState extends State<Rituals> {
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ValueListenableBuilder<Box<Ritual>>(
             valueListenable: Boxes.getRituals().listenable(),
             builder: (context, box, _) {
@@ -99,7 +97,7 @@ class _RitualsState extends State<Rituals> {
   Widget buildContent(List<Ritual> content) {
     if (content.isEmpty) {
       // Return a message
-      return Center(
+      return const Center(
         child: Text(
           'Tap the + icon to add a new habit',
           style: TextStyle(fontSize: 18),
@@ -135,15 +133,15 @@ class _RitualsState extends State<Rituals> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Trying to uncheck?'),
-                  content: Text('Commitments fullfilled; Why unmark accomplishments?'),
+                  title: const Text('Trying to uncheck?'),
+                  content: const Text('Commitments fullfilled; Why unmark accomplishments?'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         // Close the dialog
                         Navigator.of(context).pop();
                       },
-                      child: Text('Makes Sense'),
+                      child: const Text('Makes Sense'),
                     ),
                   ],
                 );

@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
 // Hive database packages
 import 'package:Ritual/model/ritual.dart';
 
 // Services
-import 'package:Ritual/services/registry.dart';
 import 'package:Ritual/services/boxes.dart';
 
-class commit2Highlight extends StatefulWidget {
-  const commit2Highlight({super.key});
+class Commit2Highlight extends StatefulWidget {
+  const Commit2Highlight({super.key});
 
   @override
-  State<commit2Highlight> createState() => _commit2HighlightState();
+  State<Commit2Highlight> createState() => _Commit2HighlightState();
 }
 
-class _commit2HighlightState extends State<commit2Highlight> {
-  TextEditingController _textFieldController = TextEditingController();
+class _Commit2HighlightState extends State<Commit2Highlight> {
+  final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
   @override
   void dispose(){
     // Close all boxes
-    Hive.close();
+    // Hive.close();
     super.dispose();
   }
 
@@ -30,7 +28,7 @@ class _commit2HighlightState extends State<commit2Highlight> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text(
+            title: const Text(
           "Commit",
           style: TextStyle(fontFamily: "NotoSans-Light"),
         )),
@@ -38,30 +36,33 @@ class _commit2HighlightState extends State<commit2Highlight> {
           padding: const EdgeInsets.all(32.0),
           child: Column(
             children: <Widget>[
-              Text(
+              const Text(
                 "Commit to",
                 style:
                     TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               TextField(
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(), hintText: "What's your highlight"),
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), hintText: "What's your highlight"),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
                     child: FilledButton.tonal(
                       onPressed: () {
+                        DateTime now = DateTime.now();
                         final ritual = Ritual()
                         ..complete = 0
                         ..url = "/${_textFieldController.text}"
                         ..background = "assets/images/highlightBackground.jpg"
-                        ..type = "highlight";
+                        ..type = "highlight"
+                        // Highlight expires the next day
+                        ..expiry = DateTime(now.year, now.month, now.day + 1, 0, 0, 0, 0);
 
                         final box = Boxes.getRituals();
                         box.add(ritual);
@@ -69,7 +70,7 @@ class _commit2HighlightState extends State<commit2Highlight> {
                         // Pop the screen
                         Navigator.pop(context);
                       },
-                      child: Text("Commit",
+                      child: const Text("Commit",
                           style: TextStyle(
                               fontFamily: "NotoSans-Light", fontSize: 20)),
                     ),
