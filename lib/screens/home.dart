@@ -19,13 +19,6 @@ class _HomeState extends State<Home> {
   ExpandableFab fab = const ExpandableFab();
 
   @override
-  void dispose() {
-    // Close all open Boxes
-    // Hive.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
