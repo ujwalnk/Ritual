@@ -144,7 +144,7 @@ class _HomeState extends State<Home> {
   Widget buildCard(BuildContext context, Ritual ritual,
       {bool isRitual = true}) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(70.0, 0, 0, 0),
+      padding: const EdgeInsets.fromLTRB(60.0, 0, 5, 0),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
