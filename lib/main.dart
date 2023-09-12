@@ -20,19 +20,6 @@ import 'package:Ritual/services/registry.dart';
 import 'package:Ritual/model/ritual.dart';
 
 void main() async {
-  // TODO: Move all below code to splash screen
-  // WidgetsFlutterBinding.ensureInitialized();
-
-  // await Hive.initFlutter();
-  // Hive.registerAdapter(RitualAdapter());
-
-  // // open the hive database
-  // await Hive.openBox<Ritual>(Registry.hiveFileName);
-
-  // TODO: Remove expired highlights and sprints 
-  
-
-  // TODO: Uncheck expired habits
 
   runApp(MaterialApp(
 

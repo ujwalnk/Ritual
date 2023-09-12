@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:Ritual/model/ritual.dart';
 
 // Services
-import 'package:Ritual/services/fab.dart';
+import 'package:Ritual/services/widgets/fab.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Home extends StatefulWidget {

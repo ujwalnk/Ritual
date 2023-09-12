@@ -2,6 +2,12 @@
 
 A new Flutter project.
 
+# Development
+
+## Illustrations Naming
+- Use adler32 for illustration naming
+    `python -c "import zlib; print(zlib.adler32(\"./<file_name>.<file_extension>\".encode()))"`
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

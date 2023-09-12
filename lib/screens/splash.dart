@@ -6,6 +6,8 @@ import 'package:Ritual/model/ritual.dart';
 
 import 'package:Ritual/screens/home.dart';
 
+import 'package:Ritual/services/boxes.dart';
+
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
 
@@ -36,9 +38,22 @@ class _SplashState extends State<Splash> {
     // Open hive database
     await Hive.openBox<Ritual>(Registry.hiveFileName);
 
+    final boxes = Boxes.getRituals();
+    for (var key in boxes.keys) {
+      debugPrint("@splash: Iterating through: $key > ${boxes.get(key)?.expiry} =? ${DateTime.now()}");
+      if (DateTime.now().isAfter(boxes.get(key)?.expiry ?? DateTime.now())) {
+        debugPrint("@splash: Expired: ${boxes.get(key)?.url} ${boxes.get(key)?.type} ${boxes.get(key)?.expiry}");
+        if(boxes.get(key)?.type == "habit"){
+          // Uncheck Expired Habits
+          boxes.get(key)?.complete = 0;
+        } else if(boxes.get(key)?.type == "sprint" || boxes.get(key)?.type == "highlight"){
+          // Delete Expired Sprint & Highlight
+          boxes.delete(key);
+        }
+      }
+    }
+
     // Navigate to the home page
-    // Navigator.pushReplacement(context, "/home");
-        // Navigate to the home page
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => const Home(), // Replace with your home page widget
     ));
@@ -55,30 +70,3 @@ class _SplashState extends State<Splash> {
     );
   }
 }
-
-/*
-class Splash extends StatelessWidget {
-  const Splash({super.key});
-
-  // Application Setup
-  Future initApp(BuildContext context) async{
-    WidgetsFlutterBinding.ensureInitialized();
-
-    await Hive.initFlutter();
-    Hive.registerAdapter(RitualAdapter());
-
-    // Open hive database
-    await Hive.openBox<Ritual>(Registry.hiveFileName);
-
-    // Navigate to the home page
-    Navigator.pushReplacement(context, "/home");
-  }
-
-  @override
-  Widget build(BuildContext context){
-    initApp(context);
-    return Scaffold(
-      body: SafeArea(child: Center(child: Image.asset("assets/icons/icon.png"))),
-    );
-  }
-}*/
