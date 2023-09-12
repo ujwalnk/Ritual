@@ -41,6 +41,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
               TextField(
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
+                onChanged: (text) {setState(() {});},
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(), hintText: "What's your latest Sprint"),
               ),
@@ -60,7 +61,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: (selectedDate != null) && (_textFieldController.text.isNotEmpty),
+                    visible: (selectedDate != null) && (_textFieldController.text.isNotEmpty) && !(_textFieldController.text.contains("/")),
                     child: FilledButton.tonal(
                       onPressed: () {
                         final ritual = Ritual()

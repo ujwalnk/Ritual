@@ -18,13 +18,6 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final FocusNode _textFieldFocusNode = FocusNode();
 
   @override
-  void dispose(){
-    // Close all boxes
-    // Hive.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -38,31 +31,34 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
             children: <Widget>[
               const Text(
                 "Commit to",
-                style:
-                    TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                style: TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
               ),
               const SizedBox(height: 30),
               TextField(
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
+                onChanged: (text) {setState(() {});},
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(), hintText: "What's your highlight"),
+                    border: OutlineInputBorder(),
+                    hintText: "What's your highlight"),
               ),
               const SizedBox(height: 30),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
+                    visible: _textFieldController.text.isNotEmpty && !(_textFieldController.text.contains("/")),
                     child: FilledButton.tonal(
                       onPressed: () {
                         DateTime now = DateTime.now();
                         final ritual = Ritual()
-                        ..complete = 0
-                        ..url = "/${_textFieldController.text}"
-                        ..background = "assets/images/highlightBackground.jpg"
-                        ..type = "highlight"
-                        // Highlight expires the next day
-                        ..expiry = DateTime(now.year, now.month, now.day + 1, 0, 0, 0, 0);
+                          ..complete = 0
+                          ..url = "/${_textFieldController.text}"
+                          ..background = "assets/images/highlightBackground.jpg"
+                          ..type = "highlight"
+                          // Highlight expires the next day
+                          ..expiry = DateTime(
+                              now.year, now.month, now.day + 1, 0, 0, 0, 0);
 
                         final box = Boxes.getRituals();
                         box.add(ritual);
