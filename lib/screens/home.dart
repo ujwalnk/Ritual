@@ -18,6 +18,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   ExpandableFab fab = const ExpandableFab();
 
+  static const String TYPE_RITUAL = "ritual";
+  static const String TYPE_SPRINT = "sprint";
+  static const String TYPE_HLIGHT = "highlight";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +70,9 @@ class _HomeState extends State<Home> {
                     rituals.add(ritual);
                   }
                 }
+                // Sort alphabetically
+                rituals.sort((a, b) => a.url.compareTo(b.url));
+
                 debugPrint("Rituals: ${rituals.length}");
                 return buildContent(rituals, type: "Highlight");
               },
@@ -87,6 +94,9 @@ class _HomeState extends State<Home> {
                     rituals.add(ritual);
                   }
                 }
+                // Sort by expiry
+                rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
+
                 debugPrint("Rituals: ${rituals.length}");
                 return buildContent(rituals, type: "Sprint");
               },
@@ -108,6 +118,9 @@ class _HomeState extends State<Home> {
                     rituals.add(ritual);
                   }
                 }
+                // Sort by time
+                rituals.sort((a, b) => a.time!.compareTo(b.time!));
+
                 debugPrint("Rituals: ${rituals.length}");
                 return buildContent(rituals);
               },
@@ -120,7 +133,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildContent(List<Ritual> rituals, {String type = "ritual"}) {
+  Widget buildContent(List<Ritual> rituals, {String type = TYPE_RITUAL}) {
     if (rituals.isEmpty) {
       // Return a message or an empty state widget when there are no rituals.
       return Center(
@@ -134,21 +147,20 @@ class _HomeState extends State<Home> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final ritual in rituals)
-            buildCard(context, ritual,
-                isRitual: type == "ritual" ? true : false),
+            buildCard(context, ritual, type: type),
         ],
       );
     }
   }
 
   Widget buildCard(BuildContext context, Ritual ritual,
-      {bool isRitual = true}) {
+      {String type = TYPE_RITUAL}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(60.0, 0, 5, 0),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          if (isRitual) {
+          if (type == TYPE_RITUAL) {
             Navigator.pushNamed(context, "/rituals", arguments: {
               "background": ritual.background!,
               "ritual": ritual.url,
@@ -183,6 +195,9 @@ class _HomeState extends State<Home> {
               );
             }
           }
+        },
+        onLongPress: () {
+          Navigator.push(context, "/commit/$type" as Route<Object?>);
         },
         child: SizedBox(
           height: 100,

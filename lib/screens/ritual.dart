@@ -15,7 +15,6 @@ class _RitualsState extends State<Rituals> {
   @override
   Widget build(BuildContext context) {
     // Data from caller page
-    // TODO: Send data from the previous page
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     return Scaffold(
@@ -47,6 +46,13 @@ class _RitualsState extends State<Rituals> {
                       Navigator.pop(context);
                     },
                   ),
+                  // TODO: Messy fix for aligning heading
+                  IconButton(
+                    icon: const Icon(Icons.back_hand),
+                    onPressed: () {},
+                    color: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                  ),
                   Expanded(
                     child: Center(
                       child: Text(
@@ -58,6 +64,14 @@ class _RitualsState extends State<Rituals> {
                         ),
                       ),
                     ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      // TODO: Delete the ritual & habits
+                      deleteRitual(data['ritual']);
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.delete, color: Colors.red),
                   ),
                   IconButton(
                     onPressed: () {
@@ -80,7 +94,7 @@ class _RitualsState extends State<Rituals> {
                 if (ritual.type == "habit" &&
                     ritual.url.contains(data['ritual'])) {
                   // ritual.url =
-                      // ritual.url.toString().replaceAll(data['ritual'], "");
+                  // ritual.url.toString().replaceAll(data['ritual'], "");
                   rituals.add(ritual);
                 }
                 debugPrint("Ritual: ${ritual.url}");
@@ -94,6 +108,7 @@ class _RitualsState extends State<Rituals> {
     );
   }
 
+  /// Build the list of cards
   Widget buildContent(List<Ritual> content) {
     if (content.isEmpty) {
       // Return a message
@@ -113,6 +128,7 @@ class _RitualsState extends State<Rituals> {
     }
   }
 
+  /// Build card for each habit
   Widget buildCard(
     BuildContext context,
     Ritual ritual,
@@ -127,26 +143,27 @@ class _RitualsState extends State<Rituals> {
             ritual.complete = 1;
             ritual.save();
           });
-        } else{
+        } else {
           // Don't uncheck habits
           showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Trying to uncheck?'),
-                  content: const Text('Commitments fullfilled; Why unmark accomplishments?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        // Close the dialog
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Makes Sense'),
-                    ),
-                  ],
-                );
-              },
-            );
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Trying to uncheck?'),
+                content: const Text(
+                    'Commitments fullfilled; Why unmark accomplishments?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      // Close the dialog
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Makes Sense'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       },
       child: SizedBox(
@@ -162,7 +179,6 @@ class _RitualsState extends State<Rituals> {
                 fontSize: 23,
                 color: Colors.black,
                 fontFamily: "NotoSans-Light",
-                // TODO: Strikethrough based on completion status
                 decoration: ritual.complete == 1
                     ? TextDecoration.lineThrough
                     : TextDecoration.none,
@@ -172,5 +188,23 @@ class _RitualsState extends State<Rituals> {
         ),
       ),
     );
+  }
+
+  /// Delete the current ritual & habits
+  void deleteRitual(String currentRitualURL) {
+    final box = Boxes.getRituals();
+
+    final contents = box.values.toList().cast<Ritual>();
+    var rituals = <Ritual>[];
+
+    for (var ritual in contents) {
+
+      if ((ritual.type == "habit" || ritual.type == "ritual") && ritual.url.contains(currentRitualURL)) {
+        debugPrint("@Ritual: Deleting ${ritual.url}");
+        // TODO: Delete Ritual here
+        // rituals.(ritual);
+      }
+      
+    }
   }
 }

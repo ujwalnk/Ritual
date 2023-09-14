@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Database
-import 'package:hive_flutter/hive_flutter.dart';
-
 // Screens
 import 'package:Ritual/screens/home.dart';
 import 'package:Ritual/screens/ritual.dart';
@@ -14,10 +11,6 @@ import 'package:Ritual/screens/commit/habit.dart';
 import 'package:Ritual/screens/commit/highlight.dart';
 import 'package:Ritual/screens/commit/ritual.dart';
 import 'package:Ritual/screens/commit/sprint.dart';
-
-// Services
-import 'package:Ritual/services/registry.dart';
-import 'package:Ritual/model/ritual.dart';
 
 void main() async {
 
