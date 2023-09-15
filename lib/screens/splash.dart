@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:Ritual/services/registry.dart';
-import 'package:Ritual/model/ritual.dart';
+import 'package:ritual/services/registry.dart';
+import 'package:ritual/model/ritual.dart';
 
-import 'package:Ritual/screens/home.dart';
+import 'package:ritual/screens/home.dart';
 
-import 'package:Ritual/services/boxes.dart';
+import 'package:ritual/services/boxes.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _SplashState extends State<Splash> {
     // Open hive database
     await Hive.openBox<Ritual>(Registry.hiveFileName);
 
-    final boxes = Boxes.getRituals();
+    final boxes = Boxes.getBox();
     for (var key in boxes.keys) {
       debugPrint("@splash: Iterating through: $key > ${boxes.get(key)?.expiry} =? ${DateTime.now()}");
       if (DateTime.now().isAfter(boxes.get(key)?.expiry ?? DateTime.now())) {

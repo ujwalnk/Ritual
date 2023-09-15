@@ -1,11 +1,11 @@
-import 'package:Ritual/services/boxes.dart';
+import 'package:ritual/services/boxes.dart';
 import 'package:flutter/material.dart';
 
 // Hive database packages
-import 'package:Ritual/model/ritual.dart';
+import 'package:ritual/model/ritual.dart';
 
 // Services
-import 'package:Ritual/services/widgets/fab.dart';
+import 'package:ritual/services/widgets/fab.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Home extends StatefulWidget {
@@ -61,12 +61,12 @@ class _HomeState extends State<Home> {
               ),
             ),
             ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getRituals().listenable(),
+              valueListenable: Boxes.getBox().listenable(),
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
                 for (var ritual in contents) {
-                  if (ritual.type == "highlight") {
+                  if (ritual.type == TYPE_HLIGHT) {
                     rituals.add(ritual);
                   }
                 }
@@ -74,7 +74,7 @@ class _HomeState extends State<Home> {
                 rituals.sort((a, b) => a.url.compareTo(b.url));
 
                 debugPrint("Rituals: ${rituals.length}");
-                return buildContent(rituals, type: "Highlight");
+                return buildContent(rituals, type: TYPE_HLIGHT);
               },
             ),
             const Padding(
@@ -85,12 +85,12 @@ class _HomeState extends State<Home> {
               ),
             ),
             ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getRituals().listenable(),
+              valueListenable: Boxes.getBox().listenable(),
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
                 for (var ritual in contents) {
-                  if (ritual.type == "sprint") {
+                  if (ritual.type == TYPE_SPRINT) {
                     rituals.add(ritual);
                   }
                 }
@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
                 rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
 
                 debugPrint("Rituals: ${rituals.length}");
-                return buildContent(rituals, type: "Sprint");
+                return buildContent(rituals, type: TYPE_SPRINT);
               },
             ),
             const Padding(
@@ -109,7 +109,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getRituals().listenable(),
+              valueListenable: Boxes.getBox().listenable(),
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];

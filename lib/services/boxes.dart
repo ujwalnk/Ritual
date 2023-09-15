@@ -1,12 +1,12 @@
 import 'package:hive/hive.dart';
 
-import 'package:Ritual/model/ritual.dart';
+import 'package:ritual/model/ritual.dart';
 
 // Services
-import 'package:Ritual/services/registry.dart';
+import 'package:ritual/services/registry.dart';
 
 class Boxes {
-  static Box<Ritual> getRituals() =>
+  static Box<Ritual> getBox() =>
     Hive.box<Ritual>(Registry.hiveFileName);
 
 }

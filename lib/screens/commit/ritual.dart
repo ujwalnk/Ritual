@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 // Hive database packages
-import 'package:Ritual/model/ritual.dart';
+import 'package:ritual/model/ritual.dart';
 
 // Services
-import 'package:Ritual/services/boxes.dart';
+import 'package:ritual/services/boxes.dart';
 
 class Commit2Ritual extends StatefulWidget {
   const Commit2Ritual({super.key});
@@ -54,7 +54,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         ..background = "assets/images/ritualBackground.jpg"
                         ..type = "ritual";
 
-                        final box = Boxes.getRituals();
+                        final box = Boxes.getBox();
                         box.add(ritual);
 
                         // Pop the screen

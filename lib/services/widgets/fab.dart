@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Services
-import 'package:Ritual/services/ritual_icons.dart';
+import 'package:ritual/services/ritual_icons.dart';
 
 // Exapandable FAB
 class ExpandableFab extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:Ritual/services/boxes.dart';
-import 'package:Ritual/model/ritual.dart';
+import 'package:ritual/services/boxes.dart';
+import 'package:ritual/model/ritual.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Rituals extends StatefulWidget {
@@ -86,7 +86,7 @@ class _RitualsState extends State<Rituals> {
           ),
           const SizedBox(height: 10),
           ValueListenableBuilder<Box<Ritual>>(
-            valueListenable: Boxes.getRituals().listenable(),
+            valueListenable: Boxes.getBox().listenable(),
             builder: (context, box, _) {
               final contents = box.values.toList().cast<Ritual>();
               var rituals = <Ritual>[];
@@ -192,7 +192,7 @@ class _RitualsState extends State<Rituals> {
 
   /// Delete the current ritual & habits
   void deleteRitual(String currentRitualURL) {
-    final box = Boxes.getRituals();
+    final box = Boxes.getBox();
 
     final contents = box.values.toList().cast<Ritual>();
     var rituals = <Ritual>[];

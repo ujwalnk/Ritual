@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 // Screens
-import 'package:Ritual/screens/home.dart';
-import 'package:Ritual/screens/ritual.dart';
-import 'package:Ritual/screens/settings.dart';
-import 'package:Ritual/screens/splash.dart';
+import 'package:ritual/screens/home.dart';
+import 'package:ritual/screens/ritual.dart';
+import 'package:ritual/screens/settings.dart';
+import 'package:ritual/screens/splash.dart';
 
 // Commit Screens
-import 'package:Ritual/screens/commit/habit.dart';
-import 'package:Ritual/screens/commit/highlight.dart';
-import 'package:Ritual/screens/commit/ritual.dart';
-import 'package:Ritual/screens/commit/sprint.dart';
+import 'package:ritual/screens/commit/habit.dart';
+import 'package:ritual/screens/commit/highlight.dart';
+import 'package:ritual/screens/commit/ritual.dart';
+import 'package:ritual/screens/commit/sprint.dart';
 
 void main() async {
 
