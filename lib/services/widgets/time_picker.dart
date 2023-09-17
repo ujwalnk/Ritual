@@ -1,86 +1,51 @@
+
+
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [showTimePicker].
-
-void main() {
-  runApp(const ShowTimePickerApp());
-}
-
-class ShowTimePickerApp extends StatefulWidget {
-  const ShowTimePickerApp({super.key});
+class TimePicker extends StatefulWidget {
+  const TimePicker({super.key, required this.onTimeSelected, required this.selectedTime});
+  final void Function(TimeOfDay) onTimeSelected; // Callback function
+  final TimeOfDay selectedTime;
 
   @override
-  State<ShowTimePickerApp> createState() => _ShowTimePickerAppState();
+  State<TimePicker> createState() => _TimePickerState();
 }
 
-class _ShowTimePickerAppState extends State<ShowTimePickerApp> {
-  ThemeMode themeMode = ThemeMode.dark;
-  bool useMaterial3 = true;
-
-  void setThemeMode(ThemeMode mode) {
-    setState(() {
-      themeMode = mode;
-    });
-  }
-
-  void setUseMaterial3(bool? value) {
-    setState(() {
-      useMaterial3 = value!;
-    });
-  }
+class _TimePickerState extends State<TimePicker> {
+  TimeOfDay _time = TimeOfDay.now();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.light(useMaterial3: useMaterial3),
-      darkTheme: ThemeData.dark(useMaterial3: useMaterial3),
-      themeMode: themeMode,
-      home: TimePickerOptions(
-        themeMode: themeMode,
-        useMaterial3: useMaterial3,
-        setThemeMode: setThemeMode,
-        setUseMaterial3: setUseMaterial3,
+    
+    _time = widget.selectedTime;
+
+    return TextButton.icon(
+      onPressed: () {
+        _selectTime();
+      },
+      icon: const Icon(Icons.timer),
+      label: Text(
+        _time.format(context),
+        style: const TextStyle(
+          fontFamily: "NotoSans-Light",
+        ),
       ),
     );
   }
-}
 
-class TimePickerOptions extends StatefulWidget {
-  const TimePickerOptions({
-    super.key,
-    required this.themeMode,
-    required this.useMaterial3,
-    required this.setThemeMode,
-    required this.setUseMaterial3,
-  });
-
-  final ThemeMode themeMode;
-  final bool useMaterial3;
-  final ValueChanged<ThemeMode> setThemeMode;
-  final ValueChanged<bool?> setUseMaterial3;
-
-  @override
-  State<TimePickerOptions> createState() => _TimePickerOptionsState();
-}
-
-class _TimePickerOptionsState extends State<TimePickerOptions> {
-  TimeOfDay? selectedTime;
-  TimePickerEntryMode entryMode = TimePickerEntryMode.dial;
-  Orientation? orientation;
-  TextDirection textDirection = TextDirection.ltr;
-  MaterialTapTargetSize tapTargetSize = MaterialTapTargetSize.padded;
-  bool use24HourTime = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Column(
-        children: <Widget>[
-          const Text('Open time picker'),
-          if (selectedTime != null)
-            Text('Selected time: ${selectedTime!.format(context)}'),
-        ],
-      ),
+  void _selectTime() async {
+    final TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: _time,
     );
+    if (newTime != null) {
+      setState(() {
+        _time = newTime;
+      });
+
+      // Call the callback function with the selected date
+      widget.onTimeSelected(newTime);
+    }
   }
+
 }

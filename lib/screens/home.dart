@@ -240,6 +240,25 @@ class _HomeState extends State<Home> {
                           fontFamily: "NotoSans-Light"),
                     ),
                   ),
+
+                  // Text to the bottom of the image.
+                  Visibility(
+                    visible: type == TYPE_RITUAL,
+                    child: Positioned(
+                      left: 24,
+                      top: 48,
+                      right: 24,
+                      bottom: 8,
+                      child: Text(
+                        ritual.time ?? "",
+                        maxLines: 2,
+                        style: const TextStyle(
+                            fontSize: 23,
+                            color: Colors.white,
+                            fontFamily: "NotoSans-Light"),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

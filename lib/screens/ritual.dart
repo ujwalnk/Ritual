@@ -67,11 +67,18 @@ class _RitualsState extends State<Rituals> {
                   ),
                   IconButton(
                     onPressed: () {
-                      // TODO: Delete the ritual & habits
-                      deleteRitual(data['ritual']);
-                      Navigator.pop(context);
+                      // TODO: Edit the ritual
+                      Navigator.pushNamed(
+                        context, 
+                        "/commit/ritual",
+                        arguments: {
+                          "uri": data["ritual"], 
+                          "mode": "edit", 
+                          "time":Boxes.getBox().values.toList().where((element) => element.url == data['ritual']).first.time
+                        }
+                      );
                     },
-                    icon: const Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.edit),
                   ),
                   IconButton(
                     onPressed: () {
@@ -190,21 +197,4 @@ class _RitualsState extends State<Rituals> {
     );
   }
 
-  /// Delete the current ritual & habits
-  void deleteRitual(String currentRitualURL) {
-    final box = Boxes.getBox();
-
-    final contents = box.values.toList().cast<Ritual>();
-    var rituals = <Ritual>[];
-
-    for (var ritual in contents) {
-
-      if ((ritual.type == "habit" || ritual.type == "ritual") && ritual.url.contains(currentRitualURL)) {
-        debugPrint("@Ritual: Deleting ${ritual.url}");
-        // TODO: Delete Ritual here
-        // rituals.(ritual);
-      }
-      
-    }
-  }
 }

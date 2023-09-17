@@ -47,7 +47,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
             if (_isExpanded)
               FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, "/commit/ritual");
+                  Navigator.pushNamed(context, "/commit/ritual", arguments: {"mode":"new"});
                 },
                 heroTag: null,
                 tooltip: 'New Ritual',

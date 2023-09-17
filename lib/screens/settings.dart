@@ -89,6 +89,7 @@ class _SettingsState extends State<Settings> {
                         debugPrint("Selected path: $result");
                         backupHiveBox(result);
                         _snackBar("Backup successful", backgroundColor: Colors.lightGreen);
+                        
                       } else {
                         // Show a failure snackbar
                         _snackBar("Backup failed", backgroundColor: Colors.red);
@@ -113,15 +114,11 @@ class _SettingsState extends State<Settings> {
                 child: TextButton(
                   onPressed: () async {
                     debugPrint("Importing");
-                    String? _selectedFilePath;
                     try {
                       final result = await FilePicker.platform.pickFiles();
 
                       if (result != null && result.files.isNotEmpty) {
                         final file = result.files.first;
-                        setState(() {
-                          _selectedFilePath = file.path;
-                        });
                         restoreHiveBox(file.path!);
 
                         // Show a confirmation dialog to restart the app
@@ -169,7 +166,7 @@ class _SettingsState extends State<Settings> {
             TextButton(
               onPressed: () {
                 // Close the dialog and restart the app
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
                 Restart.restartApp();
               },
               child: const Text('Ok!'),

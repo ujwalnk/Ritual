@@ -1,30 +1,32 @@
 import 'dart:io';
-import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 
 // Service
 import 'package:ritual/services/boxes.dart';
-import 'package:ritual/services/registry.dart';
 
+/// Export the hive database file
 Future<void> backupHiveBox<T>(String backupPath) async {
   final box = Boxes.getBox();
   final boxPath = box.path;
 
   try {
-    File(boxPath!).copy("$backupPath/ritual-${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}.bkp");
-  } catch (_){
+    File(boxPath!).copy(
+        "$backupPath/ritual.hive");
+  } catch (_) {
     debugPrint("@data_shuttle: Export Exception Caught: $_");
   }
 }
 
+/// Import the Hive database file
 Future<void> restoreHiveBox<T>(String backupPath) async {
   final box = Boxes.getBox();
   final boxPath = box.path;
+  debugPrint("@data_shuttle: Box path: ${box.path}");
   await box.close();
 
   try {
     File(backupPath).copy(boxPath!);
-  } finally {
-    await Hive.openBox<T>(Registry.hiveFileName);
+  } catch (_) {
+    debugPrint("Restore exception: $_");
   }
 }

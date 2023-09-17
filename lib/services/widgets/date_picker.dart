@@ -73,10 +73,6 @@ class _CustomDatePickerState extends State<CustomDatePicker>
         _selectedDate.value = newSelectedDate;
         final List<String> monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         selectedDate = "${monthNames[newSelectedDate.month]} ${newSelectedDate.day.toString()}, ${newSelectedDate.year.toString()}";
-        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          // content: Text(
-              // 'Selected: ${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'),
-        // ));
       });
 
       // Call the callback function with the selected date

@@ -16,16 +16,12 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  // This flag will be used to track whether initialization is complete
-  bool _isInitialized = false;
-
   @override
   void initState() {
     super.initState();
-    // Call your async initialization method here
     initApp().then((_) {
       setState(() {
-        _isInitialized = true;
+        // TODO: Navigate to home screen here
       });
     });
   }
