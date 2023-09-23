@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/model/ritual.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class Rituals extends StatefulWidget {
   const Rituals({super.key});
@@ -68,15 +70,18 @@ class _RitualsState extends State<Rituals> {
                   IconButton(
                     onPressed: () {
                       // TODO: Edit the ritual
-                      Navigator.pushNamed(
-                        context, 
-                        "/commit/ritual",
-                        arguments: {
-                          "uri": data["ritual"], 
-                          "mode": "edit", 
-                          "time":Boxes.getBox().values.toList().where((element) => element.url == data['ritual']).first.time
-                        }
-                      );
+                      Navigator.pushNamed(context, "/commit/ritual",
+                          arguments: {
+                            "uri": data["ritual"],
+                            "mode": "edit",
+                            "time": Boxes.getBox()
+                                .values
+                                .toList()
+                                .where(
+                                    (element) => element.url == data['ritual'])
+                                .first
+                                .time
+                          });
                     },
                     icon: const Icon(Icons.edit),
                   ),
@@ -126,11 +131,17 @@ class _RitualsState extends State<Rituals> {
         ),
       );
     } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final ritual in content) buildCard(context, ritual),
-        ],
+      return SlidableAutoCloseBehavior(
+        closeWhenOpened: true,
+        child: Expanded(
+          child: ListView.builder(
+            itemCount: content.length,
+            itemBuilder: (BuildContext context, int index) {
+              final ritual = content[index];
+              return buildCard(context, ritual);
+            },
+          ),
+        ),
       );
     }
   }
@@ -176,19 +187,47 @@ class _RitualsState extends State<Rituals> {
       child: SizedBox(
         height: 100,
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
+          ),
           color: Colors.white,
           elevation: 1,
-          child: Center(
-            child: Text(
-              ritual.url.split("/").last,
-              maxLines: 2,
-              style: TextStyle(
-                fontSize: 23,
-                color: Colors.black,
-                fontFamily: "NotoSans-Light",
-                decoration: ritual.complete == 1
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
+          child: Slidable(
+            key: UniqueKey(),
+            startActionPane: ActionPane(
+                motion: const DrawerMotion(),
+                dismissible: DismissiblePane(onDismissed: () {
+                  debugPrint("@ritual: Calling Delete");
+                  deleteHabit(ritual);
+                }),
+                children: [
+                  SlidableAction(
+                    onPressed: ((context) => editHabit()),
+                    backgroundColor: const Color.fromRGBO(229, 115, 115, 1),
+                    icon: Icons.delete_forever,
+                    label: "Delete",
+                  ),
+                  SlidableAction(
+                    onPressed: ((context) => Navigator.pushNamed(
+                        context, "/commit/habit",
+                        arguments: {"mode": "edit", "uri":ritual.url, "ritual": ritual})),
+                    backgroundColor: const Color.fromRGBO(144, 202, 249, 1),
+                    icon: Icons.edit,
+                    label: "Edit",
+                  ),
+                ]),
+            child: Center(
+              child: Text(
+                ritual.url.split("/").last,
+                maxLines: 2,
+                style: TextStyle(
+                  fontSize: 23,
+                  color: Colors.black,
+                  fontFamily: "NotoSans-Light",
+                  decoration: ritual.complete == 1
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
               ),
             ),
           ),
@@ -197,4 +236,12 @@ class _RitualsState extends State<Rituals> {
     );
   }
 
+  /// Delete the current ritual & habits
+  void deleteHabit(Ritual r) {
+    Boxes.getBox().delete(r.key);
+    Boxes.getBox().flush();
+    setState(() => {});
+  }
+
+  void editHabit() {}
 }

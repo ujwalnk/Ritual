@@ -42,8 +42,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                       color: Colors.red,
                     ),
                     onPressed: () {
-                      debugPrint("@Ritual: Deleting habit");
-                      // TODO: Write delete habit functionality
+                      deleteHabit(data['ritual']);
+                      Navigator.pop(context);
                     },
                   )
                 ]
@@ -65,7 +65,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                     border: const OutlineInputBorder(),
                     hintText: data['mode'] == "new"
                         ? "What's new in ${data['uri'].toString().replaceFirst("/", "")}"
-                        : "Rename ${data['uri'].toString().replaceFirst('/', '')}"),
+                        : "Rename ${data['uri'].toString().replaceFirst("/", '').substring(data['uri'].toString().replaceFirst("/", '').indexOf('/')).replaceFirst('/', '')}"),
               ),
               const SizedBox(height: 30),
               Expanded(
@@ -74,14 +74,20 @@ class _Commit2HabitState extends State<Commit2Habit> {
                   child: Visibility(
                     child: FilledButton.tonal(
                       onPressed: () {
-                        final ritual = Ritual()
-                          ..complete = 0
-                          ..url = "${data['uri']}/${_textFieldController.text}"
-                          ..type = "habit";
+                        if (data['mode'] == "new") {
+                          final ritual = Ritual()
+                            ..complete = 0
+                            ..url =
+                                "${data['uri']}/${_textFieldController.text}"
+                            ..type = "habit";
 
-                        final box = Boxes.getBox();
-                        box.add(ritual);
-
+                          final box = Boxes.getBox();
+                          box.add(ritual);
+                        } else{
+                          Ritual r = Boxes.getBox().get(data['ritual'].key)!;
+                          r.url = "${data['uri']}/${_textFieldController.text}";
+                          r.save();
+                        }
                         // Pop the screen
                         Navigator.pop(context);
                       },
@@ -95,5 +101,12 @@ class _Commit2HabitState extends State<Commit2Habit> {
             ],
           ),
         ));
+  }
+
+  /// Delete the current ritual & habits
+  void deleteHabit(Ritual r) {
+    Boxes.getBox().delete(r.key);
+    Boxes.getBox().flush();
+    setState(() => {});
   }
 }

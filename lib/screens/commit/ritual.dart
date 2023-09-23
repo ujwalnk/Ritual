@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Hive database packages
 import 'package:ritual/model/ritual.dart';
@@ -6,6 +10,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/widgets/time_picker.dart';
+import 'package:ritual/services/hash.dart';
 
 class Commit2Ritual extends StatefulWidget {
   const Commit2Ritual({super.key});
@@ -20,12 +25,19 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
   TimeOfDay selectedTime = TimeOfDay.now();
 
+  String cardBackgroundPath = "";
+
   @override
   Widget build(BuildContext context) {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
-    selectedTime = data['time'] == null ? TimeOfDay.now() :   TimeOfDay( hour: int.parse(data['time'].split(":")[0]) % 12 + (data['time'].endsWith("PM") ? 12 : 0), minute: int.parse(data['time'].split(":")[1].split(" ")[0]));
+    selectedTime = data['time'] == null
+        ? TimeOfDay.now()
+        : TimeOfDay(
+            hour: int.parse(data['time'].split(":")[0]) % 12 +
+                (data['time'].endsWith("PM") ? 12 : 0),
+            minute: int.parse(data['time'].split(":")[1].split(" ")[0]));
     debugPrint("@ritual: selectedTime: $selectedTime");
 
     return Scaffold(
@@ -79,15 +91,21 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                   TimePicker(
                       key: const Key("key_timepicker"),
                       onTimeSelected: handleTimeSelected,
-                      selectedTime: selectedTime
-                      ),
+                      selectedTime: selectedTime),
                 ],
               ),
               const SizedBox(height: 30),
+              TextButton.icon(
+                icon: const Icon(Icons.image),
+                label: const Text("Pick an Image"),
+                onPressed: _getImage,
+              ),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
+                    visible: _textFieldController.text.isNotEmpty &&
+                        cardBackgroundPath.isNotEmpty,
                     child: FilledButton.tonal(
                       onPressed: () {
                         // Get boxes
@@ -98,26 +116,34 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                           final ritual = Ritual()
                             ..complete = 0
                             ..url = "/${_textFieldController.text}"
-                            ..background = "assets/images/ritualBackground.jpg"
+                            ..background = cardBackgroundPath
                             ..type = "ritual"
                             ..time =
                                 "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
 
                           box.add(ritual);
-                        } else{
+                        } else {
                           // Editing a pre-existing Ritual
-                          
+
                           // Get all rituals
                           final contents = box.values.toList().cast<Ritual>();
 
-                          for(Ritual ritual in contents){
+                          for (Ritual ritual in contents) {
                             // Edit time and name of ritual
-                            if(ritual.url.contains(data['uri']) && (ritual.type == "habit" || ritual.type == "ritual")){
-                              debugPrint("@ritual: Renaming ritual ${ritual.url} to /${_textFieldController.text}");
-                              if(_textFieldController.text.isNotEmpty){
-                                ritual.url = ritual.url.replaceAll(data['uri'], "/${_textFieldController.text}");
+                            if (ritual.url.contains(data['uri']) &&
+                                (ritual.type == "habit" ||
+                                    ritual.type == "ritual")) {
+                              debugPrint(
+                                  "@ritual: Renaming ritual ${ritual.url} to /${_textFieldController.text}");
+                              if (_textFieldController.text.isNotEmpty) {
+                                ritual.url = ritual.url.replaceAll(data['uri'],
+                                    "/${_textFieldController.text}");
                               }
-                              ritual.time = "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
+                              if (cardBackgroundPath.isNotEmpty) {
+                                ritual.background = cardBackgroundPath;
+                              }
+                              ritual.time =
+                                  "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
                               ritual.save();
                               debugPrint("@ritual: Renamed to: ${ritual.url}");
                             }
@@ -137,6 +163,42 @@ class _Commit2RitualState extends State<Commit2Ritual> {
             ],
           ),
         ));
+  }
+
+  void _getImage() async {
+    // Pick an image from the user gallery
+    ImagePicker imagePicker = ImagePicker();
+    final imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      // Get the application directory
+      final String appDirPath = (await getApplicationDocumentsDirectory()).path;
+
+      setState(() {
+      int fileNameIndex = imageFile.path.lastIndexOf("/");
+      cardBackgroundPath = 
+          "$appDirPath${imageFile.path.substring(fileNameIndex)}";
+      });
+
+      File imageFileTemp = File(imageFile.path);
+      try {
+        // Copy the source file to the destination
+        await imageFileTemp.copy(cardBackgroundPath);
+
+        // Check if the file was successfully copied
+        if (File(cardBackgroundPath).existsSync()) {
+          debugPrint('File copied to: $cardBackgroundPath');
+        } else {
+          debugPrint('Failed to copy the file.');
+        }
+      } catch (e) {
+        // Handle any errors that may occur during the copy operation
+        debugPrint('Error copying the file: $e');
+      }
+
+      // imageFile.saveTo(cardBackgroundPath);
+      debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
+    }
   }
 
   void handleTimeSelected(TimeOfDay time) {

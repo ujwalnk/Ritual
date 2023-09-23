@@ -21,7 +21,7 @@ class _SplashState extends State<Splash> {
     super.initState();
     initApp().then((_) {
       setState(() {
-        // TODO: Navigate to home screen here
+        // Setstate to Navigate to home screen here
       });
     });
   }
