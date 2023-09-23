@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ritual/services/registry.dart';
+
 import 'package:ritual/model/ritual.dart';
 
+// Screens
 import 'package:ritual/screens/home.dart';
 
+
+// Services
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/registry.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -30,6 +35,8 @@ class _SplashState extends State<Splash> {
   Future<void> initApp() async {
     await Hive.initFlutter();
     Hive.registerAdapter(RitualAdapter());
+
+    await SharedPreferencesManager().init();
 
     // Open hive database
     await Hive.openBox<Ritual>(Registry.hiveFileName);

@@ -4,6 +4,7 @@ import 'package:restart_app/restart_app.dart';
 
 // Services
 import 'package:ritual/services/data_shuttle.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -19,7 +20,7 @@ class _SettingsState extends State<Settings> {
         appBar: AppBar(
           title: const Text(
             "Settings",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white, fontFamily: "NotoSans-Light"),
           ),
           backgroundColor: Colors.blue[800],
           elevation: 1,
@@ -31,7 +32,9 @@ class _SettingsState extends State<Settings> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Display",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
               ),
               const SizedBox(height: 15),
               // Check box for Highlight
@@ -41,10 +44,15 @@ class _SettingsState extends State<Settings> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Text("Show Highlights"),
+                    const Text("Show Highlights",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      value: false,
-                      onChanged: (value) => {},
+                      value: SharedPreferencesManager().getShowHighlight(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setShowHighlight(value!);
+                        setState(() {});
+                      },
                     ),
                   ],
                 ),
@@ -57,10 +65,14 @@ class _SettingsState extends State<Settings> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Text("Show Sprints"),
+                    const Text("Show Sprints",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      value: false,
-                      onChanged: (value) => {},
+                      value: SharedPreferencesManager().getShowSprints(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager().setShowSprints(value!);
+                        setState(() {});
+                      },
                     ),
                   ],
                 ),
@@ -71,12 +83,14 @@ class _SettingsState extends State<Settings> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Backups",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
               ),
               const SizedBox(
                 height: 20,
               ),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () async {
@@ -88,8 +102,8 @@ class _SettingsState extends State<Settings> {
                         // Use the selected path (result) to save your file
                         debugPrint("Selected path: $result");
                         backupHiveBox(result);
-                        _snackBar("Backup successful", backgroundColor: Colors.lightGreen);
-                        
+                        _snackBar("Backup successful",
+                            backgroundColor: Colors.lightGreen);
                       } else {
                         // Show a failure snackbar
                         _snackBar("Backup failed", backgroundColor: Colors.red);
@@ -103,13 +117,14 @@ class _SettingsState extends State<Settings> {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Export"),
+                      Text("Export",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
                       Icon(Icons.upload_file_rounded),
                     ],
                   ),
                 ),
               ),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () async {
@@ -125,7 +140,8 @@ class _SettingsState extends State<Settings> {
                         _restartAlert();
                       } else {
                         // No file selected
-                        _snackBar("No file selected", backgroundColor: Colors.red);
+                        _snackBar("No file selected",
+                            backgroundColor: Colors.red);
                       }
                     } catch (e) {
                       debugPrint("Error picking a file: $e");
@@ -142,7 +158,8 @@ class _SettingsState extends State<Settings> {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Import"),
+                      Text("Import",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
                       Icon(Icons.download_rounded),
                     ],
                   ),
@@ -153,7 +170,7 @@ class _SettingsState extends State<Settings> {
         ));
   }
 
-    // Function to show the restart confirmation dialog
+  // Function to show the restart confirmation dialog
   void _restartAlert() {
     showDialog(
       context: context,
@@ -177,13 +194,12 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-void _snackBar(String message, {Color backgroundColor = Colors.blueGrey}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      backgroundColor: backgroundColor,
-    ),
-  );
-}
-
+  void _snackBar(String message, {Color backgroundColor = Colors.blueGrey}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
 }

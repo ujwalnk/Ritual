@@ -1,12 +1,13 @@
-import 'package:ritual/services/boxes.dart';
 import 'package:flutter/material.dart';
 
 // Hive database packages
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ritual/model/ritual.dart';
 
 // Services
+import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -27,9 +28,9 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          "Home",
-          style: TextStyle(
+        title: Text(
+          (SharedPreferencesManager().getShowHighlight() || SharedPreferencesManager().getShowSprints()) ? "Home" : "Rituals",
+          style: const TextStyle(
             color: Colors.white,
             fontFamily: "NotoSans-Light",
           ),
@@ -43,8 +44,10 @@ class _HomeState extends State<Home> {
               Icons.settings,
               color: Colors.white,
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/settings');
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/settings');
+              // SetState for changes to reflect
+              setState(() {});
             },
           )
         ],
@@ -53,60 +56,79 @@ class _HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-              child: Text(
-                "Highlight",
-                style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+            Visibility(
+              visible: SharedPreferencesManager().getShowHighlight(),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
+                child: Text(
+                  "Highlight",
+                  style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+                ),
               ),
             ),
-            ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getBox().listenable(),
-              builder: (context, box, _) {
-                final contents = box.values.toList().cast<Ritual>();
-                var rituals = <Ritual>[];
-                for (var ritual in contents) {
-                  if (ritual.type == TYPE_HLIGHT) {
-                    rituals.add(ritual);
+            Visibility(
+              visible: SharedPreferencesManager().getShowHighlight(),
+              child: ValueListenableBuilder<Box<Ritual>>(
+                valueListenable: Boxes.getBox().listenable(),
+                builder: (context, box, _) {
+                  final contents = box.values.toList().cast<Ritual>();
+                  var rituals = <Ritual>[];
+                  for (var ritual in contents) {
+                    if (ritual.type == TYPE_HLIGHT) {
+                      rituals.add(ritual);
+                    }
                   }
-                }
-                // Sort alphabetically
-                rituals.sort((a, b) => a.url.compareTo(b.url));
+                  // Sort alphabetically
+                  rituals.sort((a, b) => a.url.compareTo(b.url));
 
-                debugPrint("Rituals: ${rituals.length}");
-                return buildContent(rituals, type: TYPE_HLIGHT);
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-              child: Text(
-                "Sprint",
-                style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+                  debugPrint("Rituals: ${rituals.length}");
+                  return buildContent(rituals, type: TYPE_HLIGHT);
+                },
               ),
             ),
-            ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getBox().listenable(),
-              builder: (context, box, _) {
-                final contents = box.values.toList().cast<Ritual>();
-                var rituals = <Ritual>[];
-                for (var ritual in contents) {
-                  if (ritual.type == TYPE_SPRINT) {
-                    rituals.add(ritual);
+            Visibility(
+              visible: SharedPreferencesManager().getShowSprints(),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
+                child: Text(
+                  "Sprint",
+                  style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: SharedPreferencesManager().getShowSprints(),
+              child: ValueListenableBuilder<Box<Ritual>>(
+                valueListenable: Boxes.getBox().listenable(),
+                builder: (context, box, _) {
+                  final contents = box.values.toList().cast<Ritual>();
+                  var rituals = <Ritual>[];
+                  for (var ritual in contents) {
+                    if (ritual.type == TYPE_SPRINT) {
+                      rituals.add(ritual);
+                    }
                   }
-                }
-                // Sort by expiry
-                rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
+                  // Sort by expiry
+                  rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
 
-                debugPrint("Rituals: ${rituals.length}");
-                return buildContent(rituals, type: TYPE_SPRINT);
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-              child: Text(
-                "Ritual",
-                style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+                  debugPrint("Rituals: ${rituals.length}");
+                  return buildContent(rituals, type: TYPE_SPRINT);
+                },
               ),
+            ),
+            Visibility(
+              visible: SharedPreferencesManager().getShowHighlight() ||  SharedPreferencesManager().getShowSprints(),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
+                child: Text(
+                  "Rituals",
+                  style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: ((SharedPreferencesManager().getShowHighlight() == false) &&  (SharedPreferencesManager().getShowSprints() == false)),
+              child: const SizedBox(height: 20),
             ),
             ValueListenableBuilder<Box<Ritual>>(
               valueListenable: Boxes.getBox().listenable(),
@@ -146,8 +168,7 @@ class _HomeState extends State<Home> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final ritual in rituals)
-            buildCard(context, ritual, type: type),
+          for (final ritual in rituals) buildCard(context, ritual, type: type),
         ],
       );
     }
