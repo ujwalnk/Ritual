@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -28,7 +29,7 @@ class _RitualsState extends State<Rituals> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("${data['background']}"),
+                image: FileImage(File(data['background'])),
                 fit: BoxFit.cover,
               ),
             ),

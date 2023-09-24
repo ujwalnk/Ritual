@@ -25,7 +25,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
   TimeOfDay selectedTime = TimeOfDay.now();
 
-  String cardBackgroundPath = "";
+  String cardBackgroundPath = "white";
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +78,11 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     hintText: data['mode'] == "new"
                         ? "What would you like to call your amazing Ritual"
                         : "Rename ${data['uri'].replaceFirst('/', '')}"),
+                onChanged: (value) => setState(() {}),
               ),
               const SizedBox(height: 30),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
                     "Start Ritual at",
@@ -95,17 +96,28 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 ],
               ),
               const SizedBox(height: 30),
-              TextButton.icon(
-                icon: const Icon(Icons.image),
-                label: const Text("Pick an Image"),
-                onPressed: _getImage,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "A Background",
+                    style:
+                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                  ),
+                  TextButton.icon(
+                    icon: const Icon(Icons.image),
+                    label: const Text("Pick an Image",
+                        style: TextStyle(
+                            fontSize: 20, fontFamily: "NotoSans-Light")),
+                    onPressed: _getImage,
+                  ),
+                ],
               ),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: _textFieldController.text.isNotEmpty &&
-                        cardBackgroundPath.isNotEmpty,
+                    visible: _textFieldController.text.isNotEmpty,
                     child: FilledButton.tonal(
                       onPressed: () {
                         // Get boxes
@@ -175,9 +187,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       final String appDirPath = (await getApplicationDocumentsDirectory()).path;
 
       setState(() {
-      int fileNameIndex = imageFile.path.lastIndexOf("/");
-      cardBackgroundPath = 
-          "$appDirPath${imageFile.path.substring(fileNameIndex)}";
+        int fileNameIndex = imageFile.path.lastIndexOf("/");
+        cardBackgroundPath =
+            "$appDirPath${imageFile.path.substring(fileNameIndex)}";
       });
 
       File imageFileTemp = File(imageFile.path);
@@ -186,7 +198,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
         await imageFileTemp.copy(cardBackgroundPath);
 
         // Check if the file was successfully copied
-        if (File(cardBackgroundPath).existsSync()) {
+        if (File("$appDirPath$cardBackgroundPath").existsSync()) {
           debugPrint('File copied to: $cardBackgroundPath');
         } else {
           debugPrint('Failed to copy the file.');
@@ -198,6 +210,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
       // imageFile.saveTo(cardBackgroundPath);
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
+    } else {
+      cardBackgroundPath = "white";
     }
   }
 

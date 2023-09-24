@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 // Hive database packages
 import 'package:hive_flutter/hive_flutter.dart';
@@ -231,19 +232,19 @@ class _HomeState extends State<Home> {
                 // Use a Stack to overlay the image and text.
                 children: [
                   // Background
-                  ColorFiltered(
+                  if (ritual.background != "white") ColorFiltered(
                     colorFilter: ColorFilter.mode(
                       // Set greyscale intensity
                       Colors.grey.withOpacity((1 - ritual.complete)),
                       // Use the saturation blend mode to create greyscale effect
                       BlendMode.saturation,
                     ),
-                    child: Image.asset(
-                      ritual.background!,
+                    child: Image.file(
+                      File(ritual.background!),
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: 200,
-                    ),
+                    )
                   ),
 
                   // Text on top of the image.
