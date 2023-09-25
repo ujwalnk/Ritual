@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 
 // Services
 import 'package:ritual/services/data_shuttle.dart';
 import 'package:ritual/services/shared_prefs.dart';
+
+import 'package:ritual/services/boxes.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -82,7 +87,7 @@ class _SettingsState extends State<Settings> {
               ),
               const Align(
                 alignment: Alignment.centerLeft,
-                child: Text("Backups",
+                child: Text("Data",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontFamily: "NotoSans-Light")),
@@ -165,6 +170,27 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () async {
+                    debugPrint("Deleting Hive Database");
+                    // Show a confirmation dialog to restart the app
+                    _deleteForever();
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Delete",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
+                      Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ));
@@ -201,5 +227,53 @@ class _SettingsState extends State<Settings> {
         backgroundColor: backgroundColor,
       ),
     );
+  }
+
+  // Function to show the restart confirmation dialog
+  void _deleteForever() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissal with the back button
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Permanently'),
+          content: const Text('All your data will be lost. Are you sure?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () async {
+                // Delete Card Backgrounds
+                final appDirPath =
+                    (await getApplicationDocumentsDirectory()).path;
+                Directory("$appDirPath/images").deleteSync(recursive: true);
+
+                // Reset SharedPreferences
+                _deleteSharedPrefs();
+
+                // Close the dialog and restart the app
+                Boxes.getBox().deleteFromDisk();
+                // Restart.restartApp();
+              },
+              child: const Text('Delete Permanently!'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Close the dialog and restart the app
+                Navigator.of(context).pop();
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Reset values in SharedPreferences
+  void _deleteSharedPrefs() {
+    final sharedPrefMan = SharedPreferencesManager();
+
+    sharedPrefMan.setFileSequence(0);
+    sharedPrefMan.setShowHighlight(true);
+    sharedPrefMan.setShowSprints(true);
   }
 }

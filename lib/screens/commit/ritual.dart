@@ -10,7 +10,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/widgets/time_picker.dart';
-import 'package:ritual/services/hash.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 class Commit2Ritual extends StatefulWidget {
   const Commit2Ritual({super.key});
@@ -77,7 +77,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     border: const OutlineInputBorder(),
                     hintText: data['mode'] == "new"
                         ? "What would you like to call your amazing Ritual"
-                        : "Rename ${data['uri'].replaceFirst('/', '')}"),
+                        : "Rename your Ritual ${data['uri'].replaceFirst('/', '')} to"),
                 onChanged: (value) => setState(() {}),
               ),
               const SizedBox(height: 30),
@@ -109,7 +109,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     label: const Text("Pick an Image",
                         style: TextStyle(
                             fontSize: 20, fontFamily: "NotoSans-Light")),
-                    onPressed: _getImage,
+                    onPressed: () => _getImage(data),
                   ),
                 ],
               ),
@@ -117,7 +117,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: _textFieldController.text.isNotEmpty,
+                    visible: _textFieldController.text.isNotEmpty || (data['mode'] == "edit"),
                     child: FilledButton.tonal(
                       onPressed: () {
                         // Get boxes
@@ -177,7 +177,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
         ));
   }
 
-  void _getImage() async {
+  void _getImage(Map data) async {
     // Pick an image from the user gallery
     ImagePicker imagePicker = ImagePicker();
     final imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -187,14 +187,39 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       final String appDirPath = (await getApplicationDocumentsDirectory()).path;
 
       setState(() {
-        int fileNameIndex = imageFile.path.lastIndexOf("/");
-        cardBackgroundPath =
-            "$appDirPath${imageFile.path.substring(fileNameIndex)}";
+        // int fileNameIndex = imageFile.path.lastIndexOf("/");
+        int fileExtensionIndex = imageFile.path.lastIndexOf(".");
+
+        // cardBackgroundPath: <app_folder>/images/<current_file_sequence>.<image_extension>
+        if (data['mode'] == "new") {
+          cardBackgroundPath =
+              "$appDirPath/images/${SharedPreferencesManager().getFileSequence()}${imageFile.path.substring(fileExtensionIndex)}";
+
+          // Increment the file numbering sequence
+          SharedPreferencesManager().setFileSequence(
+              SharedPreferencesManager().getFileSequence() + 1);
+        } else if ((data['mode'] == "edit") &&
+            (data["background"] != "white")) {
+          cardBackgroundPath = data['background'];
+
+          // On image replace, needs a cache refresh
+          imageCache.clearLiveImages();
+        } else {
+          cardBackgroundPath =
+              "$appDirPath/images/${SharedPreferencesManager().getFileSequence()}${imageFile.path.substring(fileExtensionIndex)}";
+
+          // Increment the file numbering sequence
+          SharedPreferencesManager().setFileSequence(
+              SharedPreferencesManager().getFileSequence() + 1);
+        }
       });
 
       File imageFileTemp = File(imageFile.path);
       try {
-        // Copy the source file to the destination
+        // Create directory if not exist
+        Directory("$appDirPath/images").createSync(recursive: true);
+
+        // Copy the source file to internal memory
         await imageFileTemp.copy(cardBackgroundPath);
 
         // Check if the file was successfully copied
@@ -211,10 +236,13 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       // imageFile.saveTo(cardBackgroundPath);
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
     } else {
+      // Set it to default value to show white background
       cardBackgroundPath = "white";
     }
   }
 
+
+  /// Update the selected time
   void handleTimeSelected(TimeOfDay time) {
     setState(() {
       selectedTime = time;
@@ -237,7 +265,6 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     }
 
     // Return to home screen
-    int count = 0;
-    Navigator.of(context).popUntil((_) => count++ >= 2);
+    Navigator.of(context).popUntil(ModalRoute.withName("Home"));
   }
 }

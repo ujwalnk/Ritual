@@ -29,7 +29,7 @@ class _RitualsState extends State<Rituals> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: FileImage(File(data['background'])),
+                image: (data["ritual"].background == "white") ? const AssetImage("assets/illustrations/ritual.jpg") as ImageProvider: FileImage(File(data['background'])),
                 fit: BoxFit.cover,
               ),
             ),
@@ -59,7 +59,7 @@ class _RitualsState extends State<Rituals> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        data['ritual'].toString().replaceFirst('/', ""),
+                        data['ritual'].url.toString().replaceFirst('/', ""),
                         style: const TextStyle(
                           color: Colors.black,
                           fontFamily: "NotoSans-Light",
@@ -73,15 +73,16 @@ class _RitualsState extends State<Rituals> {
                       // TODO: Edit the ritual
                       Navigator.pushNamed(context, "/commit/ritual",
                           arguments: {
-                            "uri": data["ritual"],
+                            "uri": data["ritual"].url,
                             "mode": "edit",
                             "time": Boxes.getBox()
                                 .values
                                 .toList()
                                 .where(
-                                    (element) => element.url == data['ritual'])
+                                    (element) => element.url == data['ritual'].url)
                                 .first
-                                .time
+                                .time,
+                            "background": data['background'],
                           });
                     },
                     icon: const Icon(Icons.edit),
@@ -105,7 +106,7 @@ class _RitualsState extends State<Rituals> {
               var rituals = <Ritual>[];
               for (var ritual in contents) {
                 if (ritual.type == "habit" &&
-                    ritual.url.contains(data['ritual'])) {
+                    ritual.url.contains(data['ritual'].url)) {
                   // ritual.url =
                   // ritual.url.toString().replaceAll(data['ritual'], "");
                   rituals.add(ritual);
@@ -210,8 +211,11 @@ class _RitualsState extends State<Rituals> {
                   ),
                   SlidableAction(
                     onPressed: ((context) => Navigator.pushNamed(
-                        context, "/commit/habit",
-                        arguments: {"mode": "edit", "uri":ritual.url, "ritual": ritual})),
+                            context, "/commit/habit", arguments: {
+                          "mode": "edit",
+                          "uri": ritual.url,
+                          "ritual": ritual
+                        })),
                     backgroundColor: const Color.fromRGBO(144, 202, 249, 1),
                     icon: Icons.edit,
                     label: "Edit",

@@ -4,3 +4,13 @@
 <a href="https://www.freepik.com/free-vector/mountains-cleft-view-from-bottom-night-scenery-landscape-with-high-rocks-full-moon-with-stars-glowing-peaks_13194970.htm#query=night%20illustration&position=1&from_view=keyword&track=ais">Image by upklyak</a> on Freepik
 
 <a href="https://www.freepik.com/free-vector/landscape-with-trees-against-sunset-sky_14915771.htm#query=morning%20illustration&position=3&from_view=search&track=ais">Image by kjpargeter</a> on Freepik
+
+
+
+# Default Images
+
+Sprint: Image by <a href="https://www.freepik.com/free-vector/flat-design-race-starting-line-illustration_28917548.htm#query=sprint%20illustration&position=48&from_view=search&track=ais">Freepik</a>
+
+Highlight: <a href="https://www.freepik.com/free-vector/flying-ideas-background_894459.htm#query=light%20bulb%20illustration&position=28&from_view=search&track=ais">Image by dooder</a> on Freepik
+
+Ritual: <a href="https://www.freepik.com/free-vector/buddha-hand-concept-illustration_22874401.htm#query=ritual%20illustration&position=2&from_view=search&track=ais">Image by storyset</a> on Freepik

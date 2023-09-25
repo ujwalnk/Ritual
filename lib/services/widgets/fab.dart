@@ -5,7 +5,13 @@ import 'package:ritual/services/ritual_icons.dart';
 
 // Exapandable FAB
 class ExpandableFab extends StatefulWidget {
-  const ExpandableFab({super.key});
+  final bool sprint;
+  final bool highlight;
+
+  const ExpandableFab({Key? key, required this.sprint, required this.highlight})
+      : super(key: key);
+
+  // const ExpandableFab({super.key});
 
   @override
   _ExpandableFabState createState() => _ExpandableFabState();
@@ -16,56 +22,67 @@ class _ExpandableFabState extends State<ExpandableFab> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            if (_isExpanded)
-              FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/commit/highlight");
-                },
-                heroTag: null,
-                tooltip: 'Set Highlight',
-                child: const Icon(Ritual.lightbulb_outline),
-              ),
-            if (_isExpanded)
+    if (widget.sprint || widget.highlight) {
+      return Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (_isExpanded && widget.highlight)
+                FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/commit/highlight", arguments: {"mode": "new"});
+                  },
+                  heroTag: null,
+                  tooltip: 'Set Highlight',
+                  child: const Icon(Ritual.lightbulb_outline),
+                ),
+              if (_isExpanded && widget.highlight) const SizedBox(height: 16),
+              if (_isExpanded && widget.sprint)
+                FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/commit/sprint", arguments: {"mode": "new"});
+                  },
+                  heroTag: null,
+                  tooltip: 'Set Sprint',
+                  child: const Icon(Ritual.directions_run),
+                ),
+              if (_isExpanded && widget.sprint) const SizedBox(height: 16),
+              if (_isExpanded)
+                FloatingActionButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/commit/ritual",
+                        arguments: {"mode": "new"});
+                  },
+                  heroTag: null,
+                  tooltip: 'New Ritual',
+                  child: const Icon(Ritual.fire),
+                ),
               const SizedBox(height: 16),
-            if (_isExpanded)
               FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, "/commit/sprint");
+                  setState(() {
+                    _isExpanded = !_isExpanded;
+                  });
                 },
-                heroTag: null,
-                tooltip: 'Set Sprint',
-                child: const Icon(Ritual.directions_run),
+                tooltip: 'Expand',
+                child: Icon(_isExpanded ? Icons.close : Icons.add),
               ),
-            if (_isExpanded)
-              const SizedBox(height: 16),
-            if (_isExpanded)
-              FloatingActionButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/commit/ritual", arguments: {"mode":"new"});
-                },
-                heroTag: null,
-                tooltip: 'New Ritual',
-                child: const Icon(Ritual.fire),
-              ),
-            const SizedBox(height: 16),
-            FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _isExpanded = !_isExpanded;
-                });
-              },
-              tooltip: 'Expand',
-              child: Icon(_isExpanded ? Icons.close : Icons.add),
-            ),
-          ],
-        ),
-      ],
-    );
+            ],
+          ),
+        ],
+      );
+    } else {
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, "/commit/ritual",
+              arguments: {"mode": "new"});
+        },
+        heroTag: null,
+        tooltip: 'New Ritual',
+        child: const Icon(Ritual.fire),
+      );
+    }
   }
 }

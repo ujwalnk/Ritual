@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class CustomDatePicker extends StatefulWidget {
   const CustomDatePicker(
-      {super.key, this.restorationId, this.startDate, this.endDate, required this.onDateSelected});
+      {super.key, this.restorationId, this.startDate, this.endDate, required this.onDateSelected, this.preSelectedDate});
 
   final String? restorationId;
   final DateTime? startDate;
   final DateTime? endDate;
+  final DateTime? preSelectedDate;
 
   final void Function(DateTime) onDateSelected; // Callback function
 
@@ -22,6 +23,8 @@ class _CustomDatePickerState extends State<CustomDatePicker>
   String selectedDate = "Open Date Picker";
 
   final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
+  final List<String> monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
       RestorableRouteFuture<DateTime?>(
     onComplete: _selectDate,
@@ -60,6 +63,18 @@ class _CustomDatePickerState extends State<CustomDatePicker>
     );
   }
 
+    @override
+  void initState() {
+    super.initState();
+
+    // Initialize selectedDate with preSelectedDate if provided.
+    selectedDate = widget.preSelectedDate != null
+        ? "${monthNames[widget.preSelectedDate!.month - 1]} ${widget.preSelectedDate!.day}, ${widget.preSelectedDate!.year}"
+        : "Open Date Picker";
+
+    setState(() {});
+  }
+
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(_selectedDate, 'selected_date');
@@ -71,13 +86,11 @@ class _CustomDatePickerState extends State<CustomDatePicker>
     if (newSelectedDate != null) {
       setState(() {
         _selectedDate.value = newSelectedDate;
-        final List<String> monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        selectedDate = "${monthNames[newSelectedDate.month]} ${newSelectedDate.day.toString()}, ${newSelectedDate.year.toString()}";
+        selectedDate = "${monthNames[newSelectedDate.month - 1]} ${newSelectedDate.day.toString()}, ${newSelectedDate.year.toString()}";
       });
 
       // Call the callback function with the selected date
       widget.onDateSelected(newSelectedDate);
-
     }
   }
 

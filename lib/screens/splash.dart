@@ -59,6 +59,7 @@ class _SplashState extends State<Splash> {
     // Navigate to the home page
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => const Home(), // Replace with your home page widget
+      settings: const RouteSettings(name: "Home"),
     ));
   }
 

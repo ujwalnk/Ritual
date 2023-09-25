@@ -46,4 +46,13 @@ class SharedPreferencesManager {
   Future<void> setTwoDayRule(bool value) async {
     await _prefs.setBool('two_day_rule', value);
   }
+
+  /// File Numbering for stored files
+  int getFileSequence() {
+    return _prefs.getInt('file_sequence') ?? 0;
+  }
+
+  Future<void> setFileSequence(int value) async {
+    await _prefs.setInt('file_sequence', value);
+  }
 }

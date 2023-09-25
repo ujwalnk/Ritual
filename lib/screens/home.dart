@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 
 // Hive database packages
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
+import 'package:ritual/services/colorizer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,19 +20,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  ExpandableFab fab = const ExpandableFab();
-
   static const String TYPE_RITUAL = "ritual";
   static const String TYPE_SPRINT = "sprint";
   static const String TYPE_HLIGHT = "highlight";
 
   @override
   Widget build(BuildContext context) {
+    ExpandableFab fab = ExpandableFab(
+        sprint: SharedPreferencesManager().getShowSprints(),
+        highlight: SharedPreferencesManager().getShowHighlight());
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          (SharedPreferencesManager().getShowHighlight() || SharedPreferencesManager().getShowSprints()) ? "Home" : "Rituals",
+          (SharedPreferencesManager().getShowHighlight() ||
+                  SharedPreferencesManager().getShowSprints())
+              ? "Home"
+              : "Rituals",
           style: const TextStyle(
             color: Colors.white,
             fontFamily: "NotoSans-Light",
@@ -118,7 +125,8 @@ class _HomeState extends State<Home> {
               ),
             ),
             Visibility(
-              visible: SharedPreferencesManager().getShowHighlight() ||  SharedPreferencesManager().getShowSprints(),
+              visible: SharedPreferencesManager().getShowHighlight() ||
+                  SharedPreferencesManager().getShowSprints(),
               child: const Padding(
                 padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
                 child: Text(
@@ -128,7 +136,9 @@ class _HomeState extends State<Home> {
               ),
             ),
             Visibility(
-              visible: ((SharedPreferencesManager().getShowHighlight() == false) &&  (SharedPreferencesManager().getShowSprints() == false)),
+              visible:
+                  ((SharedPreferencesManager().getShowHighlight() == false) &&
+                      (SharedPreferencesManager().getShowSprints() == false)),
               child: const SizedBox(height: 20),
             ),
             ValueListenableBuilder<Box<Ritual>>(
@@ -177,6 +187,39 @@ class _HomeState extends State<Home> {
 
   Widget buildCard(BuildContext context, Ritual ritual,
       {String type = TYPE_RITUAL}) {
+    Color? cardTextColor = Colors.pink;
+
+    Future<void> generateTextColor(Ritual ritual) async {
+      // final palette = await paletteGenerator(File(ritual.background!));
+
+      // Use the dominant color from the generated palette
+      // cardTextColor = palette.dominantColor?.color;
+      // debugPrint("CardTextColor: $cardTextColor");
+
+      /*if (cardTextColor != null) {
+        debugPrint("Inverting Colors");
+        // Invert the color
+        cardTextColor = Color.fromARGB(
+          cardTextColor!.alpha,
+          255 - cardTextColor!.red,
+          255 - cardTextColor!.green,
+          255 - cardTextColor!.blue,
+        );
+      }
+
+      // Ensure the UI is updated with the new color
+      setState(() {});*/
+    }
+
+    if (ritual.background == "white") {
+      cardTextColor = Colors.black;
+    } else {
+      // Load the image and generate the palette
+      debugPrint("Running palette gen");
+      generateTextColor(ritual);
+      debugPrint("Palette Gen Ran");
+    }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(60.0, 0, 5, 0),
       child: GestureDetector(
@@ -185,8 +228,26 @@ class _HomeState extends State<Home> {
           if (type == TYPE_RITUAL) {
             Navigator.pushNamed(context, "/rituals", arguments: {
               "background": ritual.background!,
-              "ritual": ritual.url,
+              "ritual": ritual,
             });
+
+            // Calculate the percentage complete of ritual
+            final rituals = Boxes.getBox().values.toList().cast<Ritual>();
+
+            int habits = 0;
+            int complete = 0;
+
+            for(Ritual r in rituals){
+              if(r.url.contains(ritual.url) && r.type == "habit"){
+                habits ++;
+
+                if (r.complete == 1) {
+                  complete ++;
+                }
+              }
+            }
+
+            ritual.complete = ((complete == 0) || (habits == 0)) ? 1 : complete/habits;
           } else {
             // Mark the habit done
             if (ritual.complete == 0) {
@@ -219,7 +280,15 @@ class _HomeState extends State<Home> {
           }
         },
         onLongPress: () {
-          Navigator.push(context, "/commit/$type" as Route<Object?>);
+          // Display edit and delete options for highlights & sprints
+          Navigator.pushNamed(context, "/commit/${ritual.type}", arguments: {
+            "uri": ritual.url,
+            "background": ritual.background,
+            "mode": "edit",
+            "time": ritual.time,
+            "expiry": ritual.expiry,
+            "ritual": ritual
+          });
         },
         child: SizedBox(
           height: 100,
@@ -232,20 +301,36 @@ class _HomeState extends State<Home> {
                 // Use a Stack to overlay the image and text.
                 children: [
                   // Background
-                  if (ritual.background != "white") ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      // Set greyscale intensity
-                      Colors.grey.withOpacity((1 - ritual.complete)),
-                      // Use the saturation blend mode to create greyscale effect
-                      BlendMode.saturation,
-                    ),
-                    child: Image.file(
-                      File(ritual.background!),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: 200,
+                  if (ritual.background != "white")
+                    ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        // Set greyscale intensity
+                        Colors.grey.withOpacity((1 - ritual.complete)),
+                        // Use the saturation blend mode to create greyscale effect
+                        BlendMode.saturation,
+                      ),
+                      child: Image.file(
+                        File(ritual.background!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 200,
+                      ),
                     )
-                  ),
+                  else
+                    ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        // Set greyscale intensity
+                        Colors.grey.withOpacity((1 - ritual.complete)),
+                        // Use the saturation blend mode to create greyscale effect
+                        BlendMode.saturation,
+                      ),
+                      child: Image.asset(
+                        "assets/illustrations/$type.jpg",
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 200,
+                      ),
+                    ),
 
                   // Text on top of the image.
                   Positioned(
@@ -256,9 +341,11 @@ class _HomeState extends State<Home> {
                     child: Text(
                       ritual.url.replaceAll("/", ""),
                       maxLines: 2,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 23,
-                          color: Colors.white,
+                          // color: Colors.white,
+                          // color: ritual.background == "white" ? Colors.black: paletteGenerator(File(ritual.background!)).then((value) => value.dominantColor),
+                          color: cardTextColor,
                           fontFamily: "NotoSans-Light"),
                     ),
                   ),
@@ -276,7 +363,7 @@ class _HomeState extends State<Home> {
                         maxLines: 2,
                         style: const TextStyle(
                             fontSize: 23,
-                            color: Colors.white,
+                            color: Colors.red,
                             fontFamily: "NotoSans-Light"),
                       ),
                     ),
