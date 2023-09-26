@@ -56,8 +56,14 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                       Icons.delete,
                       color: Colors.red,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       debugPrint("@Ritual: Deleting Ritual");
+
+                      // Delete the image file
+                      if(data['ritual'].background != "default"){
+                        await File(data['ritual'].background).delete();
+                      }
+                      
                       deleteRitual(data['uri']);
                     },
                   )

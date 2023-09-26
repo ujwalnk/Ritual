@@ -82,6 +82,7 @@ class _RitualsState extends State<Rituals> {
                                 .first
                                 .time,
                             "background": data['background'],
+                            "ritual": data['ritual']
                           });
                     },
                     icon: const Icon(Icons.edit),

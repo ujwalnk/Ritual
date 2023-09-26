@@ -29,7 +29,7 @@ class Ritual {
   static const _kFontFam = 'Ritual';
   static const String? _kFontPkg = null;
 
-  static const IconData directions_run = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData directionsRun = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData fire = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData lightbulb_outline = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData lightbulbOutline = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

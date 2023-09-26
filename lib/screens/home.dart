@@ -20,9 +20,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static const String TYPE_RITUAL = "ritual";
-  static const String TYPE_SPRINT = "sprint";
-  static const String TYPE_HLIGHT = "highlight";
+  static const String typeRitual = "ritual";
+  static const String typeSprint = "sprint";
+  static const String typeHLight = "highlight";
 
   bool hideSprints = true;
   bool hideHighlights = true;
@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
                   for (var ritual in contents) {
-                    if (ritual.type == TYPE_HLIGHT) {
+                    if (ritual.type == typeHLight) {
                       rituals.add(ritual);
                     }
                   }
@@ -101,7 +101,7 @@ class _HomeState extends State<Home> {
                   rituals.sort((a, b) => a.url.compareTo(b.url));
 
                   debugPrint("Rituals: ${rituals.length}");
-                  return buildContent(rituals, type: TYPE_HLIGHT);
+                  return buildContent(rituals, type: typeHLight);
                 },
               ),
             ),
@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
                   for (var ritual in contents) {
-                    if (ritual.type == TYPE_SPRINT) {
+                    if (ritual.type == typeSprint) {
                       rituals.add(ritual);
                     }
                   }
@@ -139,7 +139,7 @@ class _HomeState extends State<Home> {
                   rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
 
                   debugPrint("Rituals: ${rituals.length}");
-                  return buildContent(rituals, type: TYPE_SPRINT);
+                  return buildContent(rituals, type: typeSprint);
                 },
               ),
             ),
@@ -185,7 +185,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildContent(List<Ritual> rituals, {String type = TYPE_RITUAL}) {
+  Widget buildContent(List<Ritual> rituals, {String type = typeRitual}) {
     if (rituals.isEmpty) {
       // Return a message or an empty state widget when there are no rituals.
       return Center(
@@ -205,7 +205,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildCard(BuildContext context, Ritual ritual,
-      {String type = TYPE_RITUAL}) {
+      {String type = typeRitual}) {
     Color? cardTextColor = Colors.pink;
 
     Future<void> generateTextColor(Ritual ritual) async {
@@ -240,7 +240,7 @@ class _HomeState extends State<Home> {
     }
 
     // Calculate the percentage complete of ritual
-    if (type == TYPE_RITUAL) {
+    if (type == typeRitual) {
       final rituals = Boxes.getBox().values.toList().cast<Ritual>();
 
       int habits = 0;
@@ -265,7 +265,7 @@ class _HomeState extends State<Home> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          if (type == TYPE_RITUAL) {
+          if (type == typeRitual) {
             Navigator.pushNamed(context, "/rituals", arguments: {
               "background": ritual.background!,
               "ritual": ritual,
@@ -374,7 +374,7 @@ class _HomeState extends State<Home> {
 
                   // Text to the bottom of the image.
                   Visibility(
-                    visible: type == TYPE_RITUAL,
+                    visible: type == typeRitual,
                     child: Positioned(
                       left: 24,
                       top: 48,

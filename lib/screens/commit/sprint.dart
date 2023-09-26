@@ -48,8 +48,14 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                       Icons.delete,
                       color: Colors.red,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       debugPrint("@Ritual: Deleting Ritual");
+
+                      // Delete the user image
+                      if(data['ritual'].background != "default"){
+                        await File(data['ritual'].background).delete();
+                      }
+                      
                       deleteSprint(data['ritual']);
                     },
                   )

@@ -45,8 +45,14 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                       Icons.delete,
                       color: Colors.red,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       debugPrint("@Ritual: Deleting Ritual");
+                      
+                      // Delete the user image
+                      if(data['ritual'].background != "default"){
+                        await File(data['ritual'].background).delete();
+                      }
+
                       deleteHighlight(data['ritual']);
                     },
                   )
