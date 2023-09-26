@@ -29,7 +29,7 @@ class _RitualsState extends State<Rituals> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: (data["ritual"].background == "white") ? const AssetImage("assets/illustrations/ritual.jpg") as ImageProvider: FileImage(File(data['background'])),
+                image: (data["ritual"].background == "default") ? const AssetImage("assets/illustrations/ritual.jpg") as ImageProvider: FileImage(File(data['background'])),
                 fit: BoxFit.cover,
               ),
             ),
@@ -106,8 +106,6 @@ class _RitualsState extends State<Rituals> {
               for (var ritual in contents) {
                 if (ritual.type == "habit" &&
                     ritual.url.contains(data['ritual'].url)) {
-                  // ritual.url =
-                  // ritual.url.toString().replaceAll(data['ritual'], "");
                   rituals.add(ritual);
                 }
                 debugPrint("Ritual: ${ritual.url}");

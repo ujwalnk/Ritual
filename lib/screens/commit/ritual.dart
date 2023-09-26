@@ -25,12 +25,15 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
   TimeOfDay selectedTime = TimeOfDay.now();
 
-  String cardBackgroundPath = "white";
+  String cardBackgroundPath = "default";
 
   @override
   Widget build(BuildContext context) {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
+
+    // Focus the text Field
+    _textFieldFocusNode.requestFocus();
 
     selectedTime = data['time'] == null
         ? TimeOfDay.now()
@@ -117,7 +120,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: _textFieldController.text.isNotEmpty || (data['mode'] == "edit"),
+                    visible: (_textFieldController.text.isNotEmpty || (data['mode'] == "edit")) && !_textFieldController.text.contains("/"),
                     child: FilledButton.tonal(
                       onPressed: () {
                         // Get boxes
@@ -199,7 +202,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
           SharedPreferencesManager().setFileSequence(
               SharedPreferencesManager().getFileSequence() + 1);
         } else if ((data['mode'] == "edit") &&
-            (data["background"] != "white")) {
+            (data["background"] != "default")) {
           cardBackgroundPath = data['background'];
 
           // On image replace, needs a cache refresh
@@ -237,7 +240,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
     } else {
       // Set it to default value to show white background
-      cardBackgroundPath = "white";
+      cardBackgroundPath = "default";
     }
   }
 

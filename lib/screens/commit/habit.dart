@@ -28,6 +28,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
+    _textFieldFocusNode.requestFocus();
+
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -61,6 +63,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
               TextField(
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
+                onChanged: (text) {setState((){});},
                 decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                     hintText: data['mode'] == "new"
@@ -72,6 +75,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
+                    visible: !_textFieldController.text.contains("/") && ((data['mode'] == "edit") || (_textFieldController.text.isNotEmpty)),
                     child: FilledButton.tonal(
                       onPressed: () {
                         if (data['mode'] == "new") {

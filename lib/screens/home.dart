@@ -24,6 +24,9 @@ class _HomeState extends State<Home> {
   static const String TYPE_SPRINT = "sprint";
   static const String TYPE_HLIGHT = "highlight";
 
+  bool hideSprints = true;
+  bool hideHighlights = true;
+
   @override
   Widget build(BuildContext context) {
     ExpandableFab fab = ExpandableFab(
@@ -66,16 +69,24 @@ class _HomeState extends State<Home> {
           children: [
             Visibility(
               visible: SharedPreferencesManager().getShowHighlight(),
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                child: Text(
-                  "Highlight",
-                  style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+              child: GestureDetector(
+                onTap: () {
+                  hideHighlights = !hideHighlights;
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
+                  child: Text(
+                    hideHighlights ? "Highlights" : "(Highlights)",
+                    style: const TextStyle(
+                        fontSize: 22, fontFamily: "NotoSans-Light"),
+                  ),
                 ),
               ),
             ),
             Visibility(
-              visible: SharedPreferencesManager().getShowHighlight(),
+              visible: SharedPreferencesManager().getShowHighlight() &&
+                  hideHighlights,
               child: ValueListenableBuilder<Box<Ritual>>(
                 valueListenable: Boxes.getBox().listenable(),
                 builder: (context, box, _) {
@@ -96,16 +107,24 @@ class _HomeState extends State<Home> {
             ),
             Visibility(
               visible: SharedPreferencesManager().getShowSprints(),
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                child: Text(
-                  "Sprint",
-                  style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+              child: GestureDetector(
+                onTap: () {
+                  hideSprints = !hideSprints;
+                  setState(() {});
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
+                  child: Text(
+                    hideSprints ? "Sprints" : "(Sprints)",
+                    style: const TextStyle(
+                        fontSize: 22, fontFamily: "NotoSans-Light"),
+                  ),
                 ),
               ),
             ),
             Visibility(
-              visible: SharedPreferencesManager().getShowSprints(),
+              visible:
+                  SharedPreferencesManager().getShowSprints() && hideSprints,
               child: ValueListenableBuilder<Box<Ritual>>(
                 valueListenable: Boxes.getBox().listenable(),
                 builder: (context, box, _) {
@@ -211,7 +230,7 @@ class _HomeState extends State<Home> {
       setState(() {});*/
     }
 
-    if (ritual.background == "white") {
+    if (ritual.background == "default") {
       cardTextColor = Colors.black;
     } else {
       // Load the image and generate the palette
@@ -221,23 +240,25 @@ class _HomeState extends State<Home> {
     }
 
     // Calculate the percentage complete of ritual
-    final rituals = Boxes.getBox().values.toList().cast<Ritual>();
+    if (type == TYPE_RITUAL) {
+      final rituals = Boxes.getBox().values.toList().cast<Ritual>();
 
-    int habits = 0;
-    int complete = 0;
+      int habits = 0;
+      int complete = 0;
 
-    for (Ritual r in rituals) {
-      if (r.url.contains(ritual.url) && r.type == "habit") {
-        habits++;
+      for (Ritual r in rituals) {
+        if (r.url.contains(ritual.url) && r.type == "habit") {
+          habits++;
 
-        if (r.complete == 1) {
-          complete++;
+          if (r.complete == 1) {
+            complete++;
+          }
         }
       }
-    }
 
-    ritual.complete = (habits == 0) ? 1 : complete / habits;
-    ritual.save();
+      ritual.complete = (habits == 0) ? 1 : complete / habits;
+      ritual.save();
+    }
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(60.0, 0, 5, 0),
@@ -302,7 +323,7 @@ class _HomeState extends State<Home> {
                 // Use a Stack to overlay the image and text.
                 children: [
                   // Background
-                  if (ritual.background != "white")
+                  if (ritual.background != "default")
                     ColorFiltered(
                       colorFilter: ColorFilter.mode(
                         // Set greyscale intensity
@@ -345,7 +366,7 @@ class _HomeState extends State<Home> {
                       style: TextStyle(
                           fontSize: 23,
                           // color: Colors.white,
-                          // color: ritual.background == "white" ? Colors.black: paletteGenerator(File(ritual.background!)).then((value) => value.dominantColor),
+                          // color: ritual.background == "default" ? Colors.black: paletteGenerator(File(ritual.background!)).then((value) => value.dominantColor),
                           color: cardTextColor,
                           fontFamily: "NotoSans-Light"),
                     ),

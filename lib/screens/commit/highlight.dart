@@ -22,12 +22,15 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
-  String cardBackgroundPath = "white";
+  String cardBackgroundPath = "default";
 
   @override
   Widget build(BuildContext context) {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
+
+    // Focus the textField
+    _textFieldFocusNode.requestFocus();
 
     return Scaffold(
         appBar: AppBar(
@@ -170,7 +173,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
           SharedPreferencesManager().setFileSequence(
               SharedPreferencesManager().getFileSequence() + 1);
         } else if ((data['mode'] == "edit") &&
-            (data["background"] != "white")) {
+            (data["background"] != "default")) {
           cardBackgroundPath = data['background'];
 
           // On image replace, needs a cache refresh
@@ -208,7 +211,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
     } else {
       // Set it to default value to show white background
-      cardBackgroundPath = "white";
+      cardBackgroundPath = "default";
     }
   }
 }

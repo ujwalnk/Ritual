@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 // Services
 import 'package:ritual/services/ritual_icons.dart';
 
-// Exapandable FAB
 class ExpandableFab extends StatefulWidget {
   final bool sprint;
   final bool highlight;
 
   const ExpandableFab({Key? key, required this.sprint, required this.highlight})
       : super(key: key);
-
-  // const ExpandableFab({super.key});
 
   @override
   _ExpandableFabState createState() => _ExpandableFabState();
@@ -22,67 +19,96 @@ class _ExpandableFabState extends State<ExpandableFab> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.sprint || widget.highlight) {
-      return Stack(
-        children: [
-          Column(
+    return Stack(
+      children: [
+        if (_isExpanded) _buildModalBarrier(),
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if (_isExpanded && widget.highlight)
-                FloatingActionButton(
+                _buildExpandableFab(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/commit/highlight", arguments: {"mode": "new"});
+                    Navigator.pushNamed(context, "/commit/highlight",
+                        arguments: {"mode": "new"});
+                    _collapseFAB();
                   },
-                  heroTag: null,
+                  icon: const Icon(Ritual.lightbulb_outline),
                   tooltip: 'Set Highlight',
-                  child: const Icon(Ritual.lightbulb_outline),
                 ),
-              if (_isExpanded && widget.highlight) const SizedBox(height: 16),
+              if (_isExpanded && widget.highlight) const SizedBox(height: 8),
               if (_isExpanded && widget.sprint)
-                FloatingActionButton(
+                _buildExpandableFab(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/commit/sprint", arguments: {"mode": "new"});
+                    Navigator.pushNamed(context, "/commit/sprint",
+                        arguments: {"mode": "new"});
+                    _collapseFAB();
                   },
-                  heroTag: null,
+                  icon: const Icon(Ritual.directions_run),
                   tooltip: 'Set Sprint',
-                  child: const Icon(Ritual.directions_run),
                 ),
-              if (_isExpanded && widget.sprint) const SizedBox(height: 16),
+              if (_isExpanded && widget.sprint) const SizedBox(height: 8),
               if (_isExpanded)
-                FloatingActionButton(
+                _buildExpandableFab(
                   onPressed: () {
                     Navigator.pushNamed(context, "/commit/ritual",
                         arguments: {"mode": "new"});
+                    _collapseFAB();
                   },
-                  heroTag: null,
+                  icon: const Icon(Ritual.fire),
                   tooltip: 'New Ritual',
-                  child: const Icon(Ritual.fire),
                 ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8), // Adjust the height as needed
               FloatingActionButton(
                 onPressed: () {
                   setState(() {
                     _isExpanded = !_isExpanded;
                   });
                 },
-                tooltip: 'Expand',
+                tooltip: _isExpanded ? 'Collapse' : 'Expand',
                 child: Icon(_isExpanded ? Icons.close : Icons.add),
               ),
             ],
           ),
-        ],
-      );
-    } else {
-      return FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, "/commit/ritual",
-              arguments: {"mode": "new"});
-        },
-        heroTag: null,
-        tooltip: 'New Ritual',
-        child: const Icon(Ritual.fire),
-      );
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExpandableFab({
+    required VoidCallback onPressed,
+    required Icon icon,
+    required String tooltip,
+  }) {
+    return Column(
+      children: [
+        FloatingActionButton(
+          onPressed: onPressed,
+          heroTag: null,
+          tooltip: tooltip,
+          child: icon,
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildModalBarrier() {
+    return GestureDetector(
+      onTapDown: (details) => _collapseFAB(),
+      child: Container(
+        color: Colors.transparent,
+      ),
+    );
+  }
+
+  void _collapseFAB() {
+    if (_isExpanded) {
+      setState(() {
+        _isExpanded = false;
+      });
     }
   }
 }
