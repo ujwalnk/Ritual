@@ -70,7 +70,6 @@ class _RitualsState extends State<Rituals> {
                   ),
                   IconButton(
                     onPressed: () {
-                      // TODO: Edit the ritual
                       Navigator.pushNamed(context, "/commit/ritual",
                           arguments: {
                             "uri": data["ritual"].url,
@@ -90,7 +89,7 @@ class _RitualsState extends State<Rituals> {
                   IconButton(
                     onPressed: () {
                       Navigator.pushNamed(context, "/commit/habit",
-                          arguments: {"uri": data["ritual"], "mode": "new"});
+                          arguments: {"uri": data["ritual"].url, "mode": "new"});
                     },
                     icon: const Icon(Icons.add),
                   ),

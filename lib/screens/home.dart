@@ -220,6 +220,25 @@ class _HomeState extends State<Home> {
       debugPrint("Palette Gen Ran");
     }
 
+    // Calculate the percentage complete of ritual
+    final rituals = Boxes.getBox().values.toList().cast<Ritual>();
+
+    int habits = 0;
+    int complete = 0;
+
+    for (Ritual r in rituals) {
+      if (r.url.contains(ritual.url) && r.type == "habit") {
+        habits++;
+
+        if (r.complete == 1) {
+          complete++;
+        }
+      }
+    }
+
+    ritual.complete = (habits == 0) ? 1 : complete / habits;
+    ritual.save();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(60.0, 0, 5, 0),
       child: GestureDetector(
@@ -230,24 +249,6 @@ class _HomeState extends State<Home> {
               "background": ritual.background!,
               "ritual": ritual,
             });
-
-            // Calculate the percentage complete of ritual
-            final rituals = Boxes.getBox().values.toList().cast<Ritual>();
-
-            int habits = 0;
-            int complete = 0;
-
-            for(Ritual r in rituals){
-              if(r.url.contains(ritual.url) && r.type == "habit"){
-                habits ++;
-
-                if (r.complete == 1) {
-                  complete ++;
-                }
-              }
-            }
-
-            ritual.complete = ((complete == 0) || (habits == 0)) ? 1 : complete/habits;
           } else {
             // Mark the habit done
             if (ritual.complete == 0) {
@@ -294,7 +295,7 @@ class _HomeState extends State<Home> {
           height: 100,
           child: Card(
             color: Colors.transparent,
-            elevation: 0,
+            elevation: 3,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
               child: Stack(
