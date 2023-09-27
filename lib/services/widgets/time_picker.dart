@@ -13,9 +13,14 @@ class TimePicker extends StatefulWidget {
 class _TimePickerState extends State<TimePicker> {
   TimeOfDay _time = TimeOfDay.now();
 
+  bool init = false;
+
   @override
   Widget build(BuildContext context) {
-    _time = widget.selectedTime;
+    if (!init) {
+      _time = widget.selectedTime;
+      init = true;
+    }
 
     return TextButton.icon(
       onPressed: () {

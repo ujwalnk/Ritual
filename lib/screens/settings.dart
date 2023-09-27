@@ -251,7 +251,7 @@ class _SettingsState extends State<Settings> {
 
                 // Close the dialog and restart the app
                 Boxes.getBox().deleteFromDisk();
-                // Restart.restartApp();
+                Restart.restartApp();
               },
               child: const Text('Delete Permanently!'),
             ),

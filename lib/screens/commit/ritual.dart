@@ -24,6 +24,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
   final FocusNode _textFieldFocusNode = FocusNode();
 
   TimeOfDay selectedTime = TimeOfDay.now();
+  bool _init = false;
 
   String cardBackgroundPath = "default";
 
@@ -35,13 +36,15 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     // Focus the text Field
     _textFieldFocusNode.requestFocus();
 
-    selectedTime = data['time'] == null
-        ? TimeOfDay.now()
-        : TimeOfDay(
-            hour: int.parse(data['time'].split(":")[0]) % 12 +
-                (data['time'].endsWith("PM") ? 12 : 0),
-            minute: int.parse(data['time'].split(":")[1].split(" ")[0]));
-    debugPrint("@ritual: selectedTime: $selectedTime");
+    if (!_init) {
+      selectedTime = (data['time'] == null)
+          ? TimeOfDay.now()
+          : TimeOfDay(
+              hour: int.parse(data['time'].split(":")[0]) % 12 +
+                  (data['time'].endsWith("PM") ? 12 : 0),
+              minute: int.parse(data['time'].split(":")[1].split(" ")[0]));
+      _init = !_init;
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -60,10 +63,10 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                       debugPrint("@Ritual: Deleting Ritual");
 
                       // Delete the image file
-                      if(data['ritual'].background != "default"){
+                      if (data['ritual'].background != "default") {
                         await File(data['ritual'].background).delete();
                       }
-                      
+
                       deleteRitual(data['uri']);
                     },
                   )
@@ -126,7 +129,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: (_textFieldController.text.isNotEmpty || (data['mode'] == "edit")) && !_textFieldController.text.contains("/"),
+                    visible: (_textFieldController.text.isNotEmpty ||
+                            (data['mode'] == "edit")) &&
+                        !_textFieldController.text.contains("/"),
                     child: FilledButton.tonal(
                       onPressed: () {
                         // Get boxes
@@ -141,6 +146,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..type = "ritual"
                             ..time =
                                 "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
+
+                          debugPrint(
+                              "Setting Ritual time to: ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}: $selectedTime");
 
                           box.add(ritual);
                         } else {
@@ -165,6 +173,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                               }
                               ritual.time =
                                   "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
+
+                              debugPrint(
+                                  "Setting Ritual time to: ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}");
                               ritual.save();
                               debugPrint("@ritual: Renamed to: ${ritual.url}");
                             }
@@ -250,10 +261,10 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     }
   }
 
-
   /// Update the selected time
   void handleTimeSelected(TimeOfDay time) {
     setState(() {
+      debugPrint("Setting time to $time");
       selectedTime = time;
     });
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
@@ -50,6 +52,11 @@ class _SplashState extends State<Splash> {
           // Uncheck Expired Habits
           boxes.get(key)?.complete = 0;
         } else if(boxes.get(key)?.type == "sprint" || boxes.get(key)?.type == "highlight"){
+          // Delete the stored Image file
+          if((boxes.get(key)?.background?.isNotEmpty ?? false) && boxes.get(key)?.background != "default"){
+            File(boxes.get(key)?.background ?? '').delete();
+          }
+          
           // Delete Expired Sprint & Highlight
           boxes.delete(key);
         }
