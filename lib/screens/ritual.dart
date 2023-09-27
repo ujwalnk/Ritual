@@ -29,7 +29,10 @@ class _RitualsState extends State<Rituals> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: (data["ritual"].background == "default") ? const AssetImage("assets/illustrations/ritual.jpg") as ImageProvider: FileImage(File(data['background'])),
+                image: (data["ritual"].background == "default")
+                    ? const AssetImage("assets/illustrations/ritual.jpg")
+                        as ImageProvider
+                    : FileImage(File(data['background'])),
                 fit: BoxFit.cover,
               ),
             ),
@@ -43,18 +46,10 @@ class _RitualsState extends State<Rituals> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.sort),
                     onPressed: () {
-                      // Navigate back when the back arrow is pressed
-                      Navigator.pop(context);
+                      Navigator.pushNamed(context, "/sort/ritual", arguments: {"ritual": data["ritual"]});
                     },
-                  ),
-                  // TODO: Messy fix for aligning heading
-                  IconButton(
-                    icon: const Icon(Icons.back_hand),
-                    onPressed: () {},
-                    color: Colors.transparent,
-                    highlightColor: Colors.transparent,
                   ),
                   Expanded(
                     child: Center(
@@ -70,27 +65,10 @@ class _RitualsState extends State<Rituals> {
                   ),
                   IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, "/commit/ritual",
-                          arguments: {
-                            "uri": data["ritual"].url,
-                            "mode": "edit",
-                            "time": Boxes.getBox()
-                                .values
-                                .toList()
-                                .where(
-                                    (element) => element.url == data['ritual'].url)
-                                .first
-                                .time,
-                            "background": data['background'],
-                            "ritual": data['ritual']
-                          });
-                    },
-                    icon: const Icon(Icons.edit),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/commit/habit",
-                          arguments: {"uri": data["ritual"].url, "mode": "new"});
+                      Navigator.pushNamed(context, "/commit/habit", arguments: {
+                        "uri": data["ritual"].url,
+                        "mode": "new"
+                      });
                     },
                     icon: const Icon(Icons.add),
                   ),
@@ -151,7 +129,6 @@ class _RitualsState extends State<Rituals> {
     BuildContext context,
     Ritual ritual,
   ) {
-    debugPrint("@ritual: Building card for: ${ritual.url}");
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -193,11 +170,10 @@ class _RitualsState extends State<Rituals> {
           color: Colors.white,
           elevation: 1,
           child: Slidable(
-            key: UniqueKey(),
+            key: Key(ritual.key.toString()),
             startActionPane: ActionPane(
                 motion: const DrawerMotion(),
                 dismissible: DismissiblePane(onDismissed: () {
-                  debugPrint("@ritual: Calling Delete");
                   deleteHabit(ritual);
                 }),
                 children: [
@@ -243,7 +219,7 @@ class _RitualsState extends State<Rituals> {
   void deleteHabit(Ritual r) {
     Boxes.getBox().delete(r.key);
     Boxes.getBox().flush();
-    setState(() => {});
+    setState(() => { debugPrint("@ritual: delete setState called")});
   }
 
   void editHabit() {}
