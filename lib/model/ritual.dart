@@ -4,28 +4,36 @@ part 'ritual.g.dart';
 
 @HiveType(typeId: 0)
 class Ritual extends HiveObject{
-  @HiveField(0)
   // Percentage of habit complete
+  @HiveField(0)
   double complete = 0;
 
-  @HiveField(1)
   // Path to the habit
+  @HiveField(1)
   String url = "";
 
-  @HiveField(2)
   // Background image of Ritual only
+  @HiveField(2)
   String? background;
 
-  @HiveField(3)
   // Reminder Time for Ritual
   // TODO: Duration Time for Habit
+  @HiveField(3)
   String? time;
 
-  @HiveField(4)
   // Type of Habit
+  @HiveField(4)
   String? type;
 
-  @HiveField(5)
   // Expiry for Sprints and Highlights
+  @HiveField(5)
   DateTime? expiry;
+
+  // Habit Position in the Ritual screen
+  @HiveField(6)
+  int? position;
+
+  // Habit priority
+  @HiveField(7)
+  int priority = 4;
 }

@@ -83,7 +83,9 @@ class _Commit2HabitState extends State<Commit2Habit> {
                             ..complete = 0
                             ..url =
                                 "${data['uri']}/${_textFieldController.text}"
-                            ..type = "habit";
+                            ..type = "habit"
+                            ..position = data['position'];
+
 
                           final box = Boxes.getBox();
                           box.add(ritual);

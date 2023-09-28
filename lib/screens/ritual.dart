@@ -15,6 +15,8 @@ class Rituals extends StatefulWidget {
 }
 
 class _RitualsState extends State<Rituals> {
+  int habitCount = 0;
+
   @override
   Widget build(BuildContext context) {
     // Data from caller page
@@ -48,7 +50,8 @@ class _RitualsState extends State<Rituals> {
                   IconButton(
                     icon: const Icon(Icons.sort),
                     onPressed: () {
-                      Navigator.pushNamed(context, "/sort/ritual", arguments: {"ritual": data["ritual"]});
+                      Navigator.pushNamed(context, "/sort/ritual",
+                          arguments: {"ritual": data["ritual"]});
                     },
                   ),
                   Expanded(
@@ -65,9 +68,13 @@ class _RitualsState extends State<Rituals> {
                   ),
                   IconButton(
                     onPressed: () {
+
+                      debugPrint("position: $habitCount, ${habitCount.runtimeType}");
+
                       Navigator.pushNamed(context, "/commit/habit", arguments: {
                         "uri": data["ritual"].url,
-                        "mode": "new"
+                        "mode": "new",
+                        "position": habitCount
                       });
                     },
                     icon: const Icon(Icons.add),
@@ -80,6 +87,7 @@ class _RitualsState extends State<Rituals> {
           ValueListenableBuilder<Box<Ritual>>(
             valueListenable: Boxes.getBox().listenable(),
             builder: (context, box, _) {
+              habitCount = 0;
               final contents = box.values.toList().cast<Ritual>();
               var rituals = <Ritual>[];
               for (var ritual in contents) {
@@ -87,9 +95,13 @@ class _RitualsState extends State<Rituals> {
                     ritual.url.contains(data['ritual'].url)) {
                   rituals.add(ritual);
                 }
-                debugPrint("Ritual: ${ritual.url}");
+                debugPrint("Working on Ritual: ${ritual.url} @ ${ritual.position}");
               }
-              debugPrint("Rituals: ${rituals.length}");
+              debugPrint("Habits: ${rituals.length}");
+
+              // Sort rituals based on the 'position' field
+              rituals.sort((a, b) => a.position!.compareTo(b.position!));
+
               return buildContent(rituals);
             },
           ),
@@ -129,6 +141,8 @@ class _RitualsState extends State<Rituals> {
     BuildContext context,
     Ritual ritual,
   ) {
+    habitCount++;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -219,7 +233,7 @@ class _RitualsState extends State<Rituals> {
   void deleteHabit(Ritual r) {
     Boxes.getBox().delete(r.key);
     Boxes.getBox().flush();
-    setState(() => { debugPrint("@ritual: delete setState called")});
+    setState(() => {debugPrint("@ritual: delete setState called")});
   }
 
   void editHabit() {}

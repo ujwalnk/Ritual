@@ -147,9 +147,6 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..time =
                                 "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
 
-                          debugPrint(
-                              "Setting Ritual time to: ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}: $selectedTime");
-
                           box.add(ritual);
                         } else {
                           // Editing a pre-existing Ritual
