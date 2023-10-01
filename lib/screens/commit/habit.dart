@@ -79,12 +79,10 @@ class _Commit2HabitState extends State<Commit2Habit> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _textFieldController.text.isEmpty
-                        ? "Choose Priority"
-                        : "Priority of ${_textFieldController.text}",
+                  const Text(
+                    "Choose Priority",
                     style:
-                        const TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                   ),
                   DropdownButton<String>(
                     value: selectedPriority,
@@ -112,9 +110,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                             Text(
                               priority['text'],
                               style: TextStyle(
-                                color: priority['color'],
-                                fontFamily: "NotoSans-Light"
-                              ),
+                                  color: priority['color'],
+                                  fontFamily: "NotoSans-Light"),
                             ),
                           ],
                         ),
@@ -133,7 +130,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                             (_textFieldController.text.isNotEmpty)),
                     child: FilledButton.tonal(
                       onPressed: () {
-                        debugPrint("Priority: ${int.parse(selectedPriority.substring(selectedPriority.length - 1))}");
+                        debugPrint(
+                            "Priority: ${int.parse(selectedPriority.substring(selectedPriority.length - 1))}");
 
                         if (data['mode'] == "new") {
                           final ritual = Ritual()
@@ -142,22 +140,18 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                 "${data['uri']}/${_textFieldController.text}"
                             ..type = "habit"
                             ..position = data['position']
-                            ..priority = int.parse(selectedPriority.substring(selectedPriority.length - 1));
-
+                            ..priority = int.parse(selectedPriority
+                                .substring(selectedPriority.length - 1));
 
                           final box = Boxes.getBox();
                           box.add(ritual);
                         } else {
-                          debugPrint("@habit Edit habit");
                           Ritual r = Boxes.getBox().get(data['ritual'].key)!;
-                          // r.url = "${data['uri']}/${_textFieldController.text}";
                           if (_textFieldController.text.isNotEmpty) {
-                            r.url = r.url.replaceAll(data['uri'],
-                                  "/${_textFieldController.text}");
-
-                            debugPrint("@habit: Ritual Url: ${r.url}");
+                            r.url = r.url.substring(0, r.url.lastIndexOf("/") + 1) + _textFieldController.text;
                           }
-                          r.priority = int.parse(selectedPriority.substring(selectedPriority.length - 1));
+                          r.priority = int.parse(selectedPriority
+                              .substring(selectedPriority.length - 1));
                           r.save();
                         }
                         // Pop the screen
