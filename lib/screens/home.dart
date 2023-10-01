@@ -12,6 +12,8 @@ import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
 import 'package:ritual/services/colorizer.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -88,7 +90,7 @@ class _HomeState extends State<Home> {
               visible: SharedPreferencesManager().getShowHighlight() &&
                   hideHighlights,
               child: ValueListenableBuilder<Box<Ritual>>(
-                valueListenable: Boxes.getBox().listenable(),
+                valueListenable: Boxes.getBox().listenable(keys: [Ritual().key]),
                 builder: (context, box, _) {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
@@ -126,7 +128,7 @@ class _HomeState extends State<Home> {
               visible:
                   SharedPreferencesManager().getShowSprints() && hideSprints,
               child: ValueListenableBuilder<Box<Ritual>>(
-                valueListenable: Boxes.getBox().listenable(),
+                valueListenable: Boxes.getBox().listenable(keys: [Ritual().key]),
                 builder: (context, box, _) {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
@@ -161,7 +163,7 @@ class _HomeState extends State<Home> {
               child: const SizedBox(height: 20),
             ),
             ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getBox().listenable(),
+              valueListenable: Boxes.getBox().listenable(keys: [Ritual().key]),
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
@@ -248,10 +250,11 @@ class _HomeState extends State<Home> {
 
       for (Ritual r in rituals) {
         if (r.url.contains(ritual.url) && r.type == "habit") {
-          habits++;
+          // Higher priority, higher complete
+          habits += (4 - r.priority);
 
           if (r.complete == 1) {
-            complete++;
+            complete += (4 - r.priority);
           }
         }
       }
@@ -381,7 +384,7 @@ class _HomeState extends State<Home> {
                       right: 24,
                       bottom: 8,
                       child: Text(
-                        ritual.time ?? "",
+                        ritual.time != null ? TimeOfDay(hour: int.parse(ritual.time!.split(':')[0]), minute: int.parse(ritual.time!.split(':')[1])).format(context) : "",
                         maxLines: 2,
                         style: const TextStyle(
                             fontSize: 23,

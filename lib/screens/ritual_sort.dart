@@ -3,8 +3,6 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/screens/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 
-// Reminder: https://api.flutter.dev/flutter/material/ReorderableListView-class.html
-
 class RitualSort extends StatefulWidget {
   const RitualSort({super.key});
 
@@ -44,9 +42,16 @@ class _RitualSortState extends State<RitualSort> {
             for (int index = 0; index < habitsOfRitual.length; index += 1)
               ListTile(
                 key: Key('$index'),
-                title: Text(habitsOfRitual[index]
-                    .url
-                    .replaceFirst("${data['ritual'].url.toString()}/", "")),
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Icon(Icons.drag_indicator_sharp),
+                    const SizedBox(width: 10),
+                    Text(habitsOfRitual[index]
+                        .url
+                        .replaceFirst("${data['ritual'].url.toString()}/", "")),
+                  ],
+                ),
               ),
           ],
           onReorder: (int oldIndex, int newIndex) {

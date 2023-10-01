@@ -145,7 +145,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..background = cardBackgroundPath
                             ..type = "ritual"
                             ..time =
-                                "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
+                                "${selectedTime.hour}:${selectedTime.minute}";
 
                           box.add(ritual);
                         } else {
@@ -169,10 +169,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                                 ritual.background = cardBackgroundPath;
                               }
                               ritual.time =
-                                  "${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}";
+                                  "${selectedTime.hour}:${selectedTime.minute}";
 
-                              debugPrint(
-                                  "Setting Ritual time to: ${selectedTime.hour > 12 ? selectedTime.hour - 12 : selectedTime.hour}:${selectedTime.minute} ${selectedTime.hour >= 12 ? "PM" : "AM"}");
                               ritual.save();
                               debugPrint("@ritual: Renamed to: ${ritual.url}");
                             }
