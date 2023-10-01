@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+// Hive imports
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'package:ritual/model/ritual.dart';
 
 // Screens
@@ -27,21 +27,19 @@ class _SplashState extends State<Splash> {
   void initState() {
     super.initState();
     initApp().then((_) {
-      setState(() {
-        // Setstate to Navigate to home screen here
-      });
+      setState(() {});
     });
   }
 
   // Application Setup
   Future<void> initApp() async {
+    // Open hive database
     await Hive.initFlutter();
     Hive.registerAdapter(RitualAdapter());
-
-    await SharedPreferencesManager().init();
-
-    // Open hive database
     await Hive.openBox<Ritual>(Registry.hiveFileName);
+
+    // Initialize SharedPreferences
+    await SharedPreferencesManager().init();
 
     final boxes = Boxes.getBox();
     for (var key in boxes.keys) {
@@ -65,7 +63,7 @@ class _SplashState extends State<Splash> {
 
     // Navigate to the home page
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) => const Home(), // Replace with your home page widget
+      builder: (context) => const Home(),
       settings: const RouteSettings(name: "Home"),
     ));
   }

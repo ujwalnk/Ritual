@@ -248,7 +248,7 @@ class _SettingsState extends State<Settings> {
                               newValue!.substring(newValue.indexOf("-") + 1, newValue.indexOf("."))));
 
                       setState(() {
-                        selectedStyle = newValue!;
+                        selectedStyle = newValue;
                       });
                     },
                   ),

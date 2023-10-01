@@ -12,8 +12,6 @@ import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
 import 'package:ritual/services/colorizer.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
-
 class Home extends StatefulWidget {
   const Home({super.key});
 

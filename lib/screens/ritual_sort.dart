@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ritual/model/ritual.dart';
-import 'package:ritual/screens/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 
 class RitualSort extends StatefulWidget {
@@ -21,15 +20,17 @@ class _RitualSortState extends State<RitualSort> {
 
     List<Ritual> habitsOfRitual = [];
 
+    // Get the habits of the ritual
     for (Ritual r in content) {
       if (r.url.contains(data['ritual'].url) && r.type != "ritual") {
         habitsOfRitual.add(r);
       }
     }
 
+    // Sort the habits by position
     habitsOfRitual.sort((a, b) => a.position!.compareTo(b.position!));
 
-
+    // Build the widget
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -37,19 +38,21 @@ class _RitualSortState extends State<RitualSort> {
           centerTitle: true,
         ),
         body: ReorderableListView(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           children: <Widget>[
             for (int index = 0; index < habitsOfRitual.length; index += 1)
               ListTile(
                 key: Key('$index'),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(Icons.drag_indicator_sharp),
-                    const SizedBox(width: 10),
+                    // Habit card text
                     Text(habitsOfRitual[index]
                         .url
                         .replaceFirst("${data['ritual'].url.toString()}/", "")),
+                    // Reorder handle icon
+                    const Icon(Icons.drag_indicator_sharp),
                   ],
                 ),
               ),
@@ -66,8 +69,6 @@ class _RitualSortState extends State<RitualSort> {
               for (int i = 0; i < habitsOfRitual.length; i++) {
                 habitsOfRitual[i].position = i;
               }
-
-              debugPrint("Reordering Item @$oldIndex to $newIndex");
             });
           },
         ));
