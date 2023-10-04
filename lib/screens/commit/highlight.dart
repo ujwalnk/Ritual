@@ -10,6 +10,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/shared_prefs.dart';
+import 'package:ritual/services/constants.dart';
 
 class Commit2Highlight extends StatefulWidget {
   const Commit2Highlight({super.key});
@@ -22,7 +23,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
-  String cardBackgroundPath = "default";
+  String cardBackgroundPath = Constants.noBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +50,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                       debugPrint("@Ritual: Deleting Ritual");
                       
                       // Delete the user image
-                      if(data['ritual'].background != "default"){
+                      if(data['ritual'].background != Constants.noBackground){
                         await File(data['ritual'].background).delete();
                       }
 
@@ -179,7 +180,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
           SharedPreferencesManager().setFileSequence(
               SharedPreferencesManager().getFileSequence() + 1);
         } else if ((data['mode'] == "edit") &&
-            (data["background"] != "default")) {
+            (data["background"] != Constants.noBackground)) {
           cardBackgroundPath = data['background'];
 
           // On image replace, needs a cache refresh
@@ -217,7 +218,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
     } else {
       // Set it to default value to show white background
-      cardBackgroundPath = "default";
+      cardBackgroundPath = Constants.noBackground;
     }
   }
 }

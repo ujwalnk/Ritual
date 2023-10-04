@@ -23,8 +23,8 @@
 ///
 import 'package:flutter/widgets.dart';
 
-class Ritual {
-  Ritual._();
+class CustomIcons {
+  CustomIcons._();
 
   static const _kFontFam = 'Ritual';
   static const String? _kFontPkg = null;
@@ -32,4 +32,10 @@ class Ritual {
   static const IconData directionsRun = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData fire = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData lightbulbOutline = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
+  // Habit Icons
+  static const IconData puzzle = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData puzzleOutline = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData hourglass = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData circle1 = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

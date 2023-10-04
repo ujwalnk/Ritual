@@ -5,6 +5,8 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/ritual_icons.dart';
+import 'package:ritual/services/constants.dart';
 
 class Commit2Habit extends StatefulWidget {
   const Commit2Habit({super.key});
@@ -25,11 +27,52 @@ class _Commit2HabitState extends State<Commit2Habit> {
     {'text': 'Priority 4', 'color': Colors.black},
   ];
 
+  // Define a list of habit types with associated icons.
+  final List<Map<String, dynamic>> habitTypes = [
+    {
+      'text': 'Habit',
+      'icon': const Icon(CustomIcons.puzzle),
+      'value': Constants.typeRHabit
+    },
+    {
+      'text': 'deHabit',
+      'icon': const Icon(CustomIcons.puzzleOutline),
+      'value': Constants.typeDHabit
+    },
+    {
+      'text': '1% habit',
+      'icon': const Icon(CustomIcons.circle1),
+      'value': Constants.type1Habit
+    },
+    {
+      'text': 'Timed Habits',
+      'icon': const Icon(CustomIcons.hourglass),
+      'value': Constants.typeTHabit
+    },
+  ];
+
+  // Set defaults - Priority 4 and Regular Habit
   String selectedPriority = "Priority 4";
+  String selectedType = Constants.typeRHabit;
+
+  bool initWidget = false;
 
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
+
+    if (!initWidget) {
+      initWidget = true;
+      // OnEdit set Habit properties:
+      selectedPriority = data['mode'] == "edit"
+          ? "Priority ${data['ritual'].priority}"
+          : "Priority 4";
+      selectedType = data['mode'] == "edit"
+          ? data['ritual'].type.toString().substring(
+              data['ritual'].type.toString().indexOf("/") + 1,
+              data['ritual'].type.toString().length)
+          : Constants.typeRHabit;
+    }
 
     _textFieldFocusNode.requestFocus();
 
@@ -121,6 +164,47 @@ class _Commit2HabitState extends State<Commit2Habit> {
                 ],
               ),
               const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Choose Type",
+                    style:
+                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                  ),
+                  DropdownButton<String>(
+                    value: selectedType,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedType = newValue!;
+                      });
+                    },
+                    // Create dropdown items based on the priorities list.
+                    items: habitTypes.map((habitType) {
+                      return DropdownMenuItem<String>(
+                        value: habitType['value'],
+                        child: Row(
+                          children: [
+                            // Add a icon before the text.
+                            Container(
+                              width: 24,
+                              height: 24,
+                              child: habitType['icon'],
+                              margin: const EdgeInsets.only(right: 10.0),
+                            ),
+                            Text(
+                              habitType['text'],
+                              style:
+                                  const TextStyle(fontFamily: "NotoSans-Light"),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -138,20 +222,30 @@ class _Commit2HabitState extends State<Commit2Habit> {
                             ..complete = 0
                             ..url =
                                 "${data['uri']}/${_textFieldController.text}"
-                            ..type = "habit"
+                            ..type = "habit/$selectedType"
                             ..position = data['position']
                             ..priority = int.parse(selectedPriority
-                                .substring(selectedPriority.length - 1));
+                                .substring(selectedPriority.length - 1))
+                            ..createdOn = DateTime.now();
 
                           final box = Boxes.getBox();
                           box.add(ritual);
                         } else {
                           Ritual r = Boxes.getBox().get(data['ritual'].key)!;
+
+                          // Change the name
                           if (_textFieldController.text.isNotEmpty) {
-                            r.url = r.url.substring(0, r.url.lastIndexOf("/") + 1) + _textFieldController.text;
+                            r.url =
+                                r.url.substring(0, r.url.lastIndexOf("/") + 1) +
+                                    _textFieldController.text;
                           }
+
+                          // Set the priority
                           r.priority = int.parse(selectedPriority
                               .substring(selectedPriority.length - 1));
+
+                          // Set the type
+                          r.type = "habit/$selectedType";
                           r.save();
                         }
                         // Pop the screen

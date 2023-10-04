@@ -4,10 +4,6 @@ A new Flutter project.
 
 # Development
 
-## Illustrations Naming
-- Use adler32 for illustration naming
-    `python -c "import zlib; print(zlib.adler32(\"./<file_name>.<file_extension>\".encode()))"`
-
 ## Getting Started
 
 This project is a starting point for a Flutter application.
@@ -23,3 +19,8 @@ samples, guidance on mobile development, and a full API reference.
 
 
 > Images from Freepik - check out the attributions @ attributions.md
+
+deepti - Optamaoly - 28
+
+- Pride and Prejudice
+10k leagues under the sea

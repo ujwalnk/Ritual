@@ -36,4 +36,7 @@ class Ritual extends HiveObject{
   // Habit priority
   @HiveField(7)
   int priority = 4;
+
+  // Creation Date for 1% habits
+  DateTime? createdOn;
 }

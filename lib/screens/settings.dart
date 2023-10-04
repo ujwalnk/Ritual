@@ -304,17 +304,23 @@ class _SettingsState extends State<Settings> {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
+                try{
                 // Delete Card Backgrounds
                 final appDirPath =
                     (await getApplicationDocumentsDirectory()).path;
                 Directory("$appDirPath/images").deleteSync(recursive: true);
+                } catch (_) {
+                  debugPrint("No user images to delete");
+                }
 
                 // Reset SharedPreferences
                 _deleteSharedPrefs();
 
                 // Close the dialog and restart the app
-                Boxes.getBox().deleteFromDisk();
+                await Boxes.getBox().deleteFromDisk();
                 await Restart.restartApp();
+
+                debugPrint("Deleted everything");
               },
               child: const Text('Delete Permanently!'),
             ),

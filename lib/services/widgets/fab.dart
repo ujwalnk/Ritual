@@ -35,7 +35,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
                         arguments: {"mode": "new"});
                     _collapseFAB();
                   },
-                  icon: const Icon(Ritual.lightbulbOutline),
+                  icon: const Icon(CustomIcons.lightbulbOutline),
                   tooltip: 'Set Highlight',
                 ),
               if (_isExpanded && widget.highlight) const SizedBox(height: 8),
@@ -46,7 +46,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
                         arguments: {"mode": "new"});
                     _collapseFAB();
                   },
-                  icon: const Icon(Ritual.directionsRun),
+                  icon: const Icon(CustomIcons.directionsRun),
                   tooltip: 'Set Sprint',
                 ),
               if (_isExpanded && widget.sprint) const SizedBox(height: 8),
@@ -57,7 +57,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
                         arguments: {"mode": "new"});
                     _collapseFAB();
                   },
-                  icon: const Icon(Ritual.fire),
+                  icon: const Icon(CustomIcons.fire),
                   tooltip: 'New Ritual',
                 ),
               const SizedBox(height: 8), // Adjust the height as needed

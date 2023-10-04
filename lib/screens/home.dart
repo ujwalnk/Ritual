@@ -8,6 +8,7 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
 import 'package:ritual/services/colorizer.dart';
@@ -88,7 +89,7 @@ class _HomeState extends State<Home> {
               visible: SharedPreferencesManager().getShowHighlight() &&
                   hideHighlights,
               child: ValueListenableBuilder<Box<Ritual>>(
-                valueListenable: Boxes.getBox().listenable(keys: [Ritual().key]),
+                valueListenable: Boxes.getBox().listenable(),
                 builder: (context, box, _) {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
@@ -100,7 +101,6 @@ class _HomeState extends State<Home> {
                   // Sort alphabetically
                   rituals.sort((a, b) => a.url.compareTo(b.url));
 
-                  debugPrint("Rituals: ${rituals.length}");
                   return buildContent(rituals, type: typeHLight);
                 },
               ),
@@ -126,7 +126,7 @@ class _HomeState extends State<Home> {
               visible:
                   SharedPreferencesManager().getShowSprints() && hideSprints,
               child: ValueListenableBuilder<Box<Ritual>>(
-                valueListenable: Boxes.getBox().listenable(keys: [Ritual().key]),
+                valueListenable: Boxes.getBox().listenable(),
                 builder: (context, box, _) {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
@@ -138,7 +138,6 @@ class _HomeState extends State<Home> {
                   // Sort by expiry
                   rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
 
-                  debugPrint("Rituals: ${rituals.length}");
                   return buildContent(rituals, type: typeSprint);
                 },
               ),
@@ -161,7 +160,7 @@ class _HomeState extends State<Home> {
               child: const SizedBox(height: 20),
             ),
             ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getBox().listenable(keys: [Ritual().key]),
+              valueListenable: Boxes.getBox().listenable(),
               builder: (context, box, _) {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
@@ -173,7 +172,6 @@ class _HomeState extends State<Home> {
                 // Sort by time
                 rituals.sort((a, b) => a.time!.compareTo(b.time!));
 
-                debugPrint("Rituals: ${rituals.length}");
                 return buildContent(rituals);
               },
             ),
@@ -230,7 +228,7 @@ class _HomeState extends State<Home> {
       setState(() {});*/
     }
 
-    if (ritual.background == "default") {
+    if (ritual.background == Constants.noBackground) {
       cardTextColor = Colors.black;
     } else {
       // Load the image and generate the palette
@@ -247,12 +245,12 @@ class _HomeState extends State<Home> {
       int complete = 0;
 
       for (Ritual r in rituals) {
-        if (r.url.contains(ritual.url) && r.type == "habit") {
+        if (r.url.contains(ritual.url) && (r.type?.contains("habit") ?? false)) {
           // Higher priority, higher complete
-          habits += (4 - r.priority);
+          habits += (5 - r.priority);
 
           if (r.complete == 1) {
-            complete += (4 - r.priority);
+            complete += (5 - r.priority);
           }
         }
       }
@@ -324,7 +322,7 @@ class _HomeState extends State<Home> {
                 // Use a Stack to overlay the image and text.
                 children: [
                   // Background
-                  if (ritual.background != "default")
+                  if (ritual.background != Constants.noBackground)
                     ColorFiltered(
                       colorFilter: ColorFilter.mode(
                         // Set greyscale intensity
@@ -367,7 +365,7 @@ class _HomeState extends State<Home> {
                       style: TextStyle(
                           fontSize: 23,
                           // color: Colors.white,
-                          // color: ritual.background == "default" ? Colors.black: paletteGenerator(File(ritual.background!)).then((value) => value.dominantColor),
+                          // color: ritual.background == Constants.noBackground ? Colors.black: paletteGenerator(File(ritual.background!)).then((value) => value.dominantColor),
                           color: cardTextColor,
                           fontFamily: "NotoSans-Light"),
                     ),

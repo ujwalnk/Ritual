@@ -9,11 +9,11 @@ import 'package:ritual/model/ritual.dart';
 // Screens
 import 'package:ritual/screens/home.dart';
 
-
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/registry.dart';
 import 'package:ritual/services/shared_prefs.dart';
+import 'package:ritual/services/constants.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -46,12 +46,12 @@ class _SplashState extends State<Splash> {
       debugPrint("@splash: Iterating through: $key > ${boxes.get(key)?.expiry} =? ${DateTime.now()}");
       if (DateTime.now().isAfter(boxes.get(key)?.expiry ?? DateTime.now())) {
         debugPrint("@splash: Expired: ${boxes.get(key)?.url} ${boxes.get(key)?.type} ${boxes.get(key)?.expiry}");
-        if(boxes.get(key)?.type == "habit"){
+        if(boxes.get(key)?.type!.contains("habit") != -1){
           // Uncheck Expired Habits
           boxes.get(key)?.complete = 0;
         } else if(boxes.get(key)?.type == "sprint" || boxes.get(key)?.type == "highlight"){
           // Delete the stored Image file
-          if((boxes.get(key)?.background?.isNotEmpty ?? false) && boxes.get(key)?.background != "default"){
+          if((boxes.get(key)?.background?.isNotEmpty ?? false) && boxes.get(key)?.background != Constants.noBackground){
             File(boxes.get(key)?.background ?? '').delete();
           }
           

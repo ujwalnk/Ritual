@@ -11,6 +11,7 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/widgets/date_picker.dart';
 import 'package:ritual/services/shared_prefs.dart';
+import 'package:ritual/services/constants.dart';
 
 class Commit2Sprint extends StatefulWidget {
   const Commit2Sprint({super.key});
@@ -25,7 +26,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
 
   DateTime? selectedDate;
 
-  String cardBackgroundPath = "default";
+  String cardBackgroundPath = Constants.noBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                       debugPrint("@Ritual: Deleting Ritual");
 
                       // Delete the user image
-                      if(data['ritual'].background != "default"){
+                      if(data['ritual'].background != Constants.noBackground){
                         await File(data['ritual'].background).delete();
                       }
                       
@@ -211,7 +212,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
           SharedPreferencesManager().setFileSequence(
               SharedPreferencesManager().getFileSequence() + 1);
         } else if ((data['mode'] == "edit") &&
-            (data["background"] != "default")) {
+            (data["background"] != Constants.noBackground)) {
           cardBackgroundPath = data['background'];
 
           // On image replace, needs a cache refresh
@@ -249,7 +250,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
     } else {
       // Set it to default value to show white background
-      cardBackgroundPath = "default";
+      cardBackgroundPath = Constants.noBackground;
     }
   }
 }

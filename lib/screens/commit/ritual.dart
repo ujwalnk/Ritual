@@ -9,6 +9,7 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/widgets/time_picker.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
@@ -26,7 +27,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
   TimeOfDay selectedTime = TimeOfDay.now();
   bool _init = false;
 
-  String cardBackgroundPath = "default";
+  String cardBackgroundPath = Constants.noBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                       debugPrint("@Ritual: Deleting Ritual");
 
                       // Delete the image file
-                      if (data['ritual'].background != "default") {
+                      if (data['ritual'].background != Constants.noBackground) {
                         await File(data['ritual'].background).delete();
                       }
 
@@ -157,7 +158,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                           for (Ritual ritual in contents) {
                             // Edit time and name of ritual
                             if (ritual.url.contains(data['uri']) &&
-                                (ritual.type == "habit" ||
+                                (ritual.type!.contains("habit") ||
                                     ritual.type == "ritual")) {
                               debugPrint(
                                   "@ritual: Renaming ritual ${ritual.url} to /${_textFieldController.text}");
@@ -214,7 +215,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
           SharedPreferencesManager().setFileSequence(
               SharedPreferencesManager().getFileSequence() + 1);
         } else if ((data['mode'] == "edit") &&
-            (data["background"] != "default")) {
+            (data["background"] != Constants.noBackground)) {
           cardBackgroundPath = data['background'];
 
           // On image replace, needs a cache refresh
@@ -252,7 +253,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
     } else {
       // Set it to default value to show white background
-      cardBackgroundPath = "default";
+      cardBackgroundPath = Constants.noBackground;
     }
   }
 
@@ -273,7 +274,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
     for (var ritual in contents) {
       // Delete all rituals having the same URL
-      if ((ritual.type == "habit" || ritual.type == "ritual") &&
+      if ((ritual.type!.contains ("habit") || ritual.type == "ritual") &&
           ritual.url.contains(currentRitualURL)) {
         box.delete(ritual.key);
       }

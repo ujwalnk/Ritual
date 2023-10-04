@@ -1,12 +1,17 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:ritual/services/boxes.dart';
+// Database
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ritual/model/ritual.dart';
+
+// Services
+import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
 class Rituals extends StatefulWidget {
@@ -33,7 +38,7 @@ class _RitualsState extends State<Rituals> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: (data["ritual"].background == "default")
+                image: (data["ritual"].background == Constants.noBackground)
                     ? const AssetImage("assets/illustrations/ritual.jpg")
                         as ImageProvider
                     : FileImage(File(data['background'])),
@@ -84,20 +89,17 @@ class _RitualsState extends State<Rituals> {
           ),
           const SizedBox(height: 10),
           ValueListenableBuilder<Box<Ritual>>(
-            valueListenable: Boxes.getBox().listenable(keys: Ritual().key),
+            valueListenable: Boxes.getBox().listenable(),
             builder: (context, box, _) {
               habitCount = 0;
               final contents = box.values.toList().cast<Ritual>();
               var rituals = <Ritual>[];
               for (var ritual in contents) {
-                if (ritual.type == "habit" &&
+                if ((ritual.type?.contains("habit") ?? false) &&
                     ritual.url.contains(data['ritual'].url)) {
                   rituals.add(ritual);
                 }
-                debugPrint(
-                    "Working on Ritual: ${ritual.url} @ ${ritual.position}");
               }
-              debugPrint("Habits: ${rituals.length}");
 
               // Sort rituals based on the 'position' field
               rituals.sort((a, b) => a.position!.compareTo(b.position!));
@@ -179,11 +181,8 @@ class _RitualsState extends State<Rituals> {
         SizedBox(
           height: 100,
           child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
-            ),
             color: Colors.white,
-            elevation: 1,
+            elevation: 0,
             child: Slidable(
               key: Key(ritual.key.toString()),
               startActionPane: ActionPane(
@@ -197,6 +196,7 @@ class _RitualsState extends State<Rituals> {
                       backgroundColor: const Color.fromRGBO(229, 115, 115, 1),
                       icon: Icons.delete_forever,
                       label: "Delete",
+                      borderRadius: BorderRadius.zero,
                     ),
                     SlidableAction(
                       onPressed: ((context) => Navigator.pushNamed(
@@ -210,21 +210,50 @@ class _RitualsState extends State<Rituals> {
                       label: "Edit",
                     ),
                   ]),
-              child: Center(
-                child: Text(
-                  ritual.url.split("/").last,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 23,
-                    color: ritual.priority == 1
-                        ? Colors.red
-                        : (ritual.priority == 2
-                            ? Colors.orange
-                            : (ritual.priority == 3
-                                ? Colors.blue
-                                : Colors.black)),
-                    fontFamily: "NotoSans-Light",
-                  ),
+              child: Container(
+                height: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Icon(
+                        (ritual.type == "habit/${Constants.typeRHabit}")
+                            ? CustomIcons.puzzle
+                            : (ritual.type == "habit/${Constants.typeDHabit}"
+                                ? CustomIcons.puzzleOutline
+                                : (ritual.type == "habit/${Constants.type1Habit}"
+                                    ? CustomIcons.circle1
+                                    : CustomIcons.hourglass)),
+                        color: ritual.priority == 1
+                            ? Colors.red
+                            : (ritual.priority == 2
+                                ? Colors.orange
+                                : (ritual.priority == 3
+                                    ? Colors.blue
+                                    : Colors.black)),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Text(
+                        ritual.url.split("/").last,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: 23,
+                          color: ritual.priority == 1
+                              ? Colors.red
+                              : (ritual.priority == 2
+                                  ? Colors.orange
+                                  : (ritual.priority == 3
+                                      ? Colors.blue
+                                      : Colors.black)),
+                          fontFamily: "NotoSans-Light",
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -236,9 +265,8 @@ class _RitualsState extends State<Rituals> {
           child: Visibility(
             visible: ritual.complete == 1,
             child: SvgPicture.asset(
-              "assets/strikethrough/style-${SharedPreferencesManager().getStrikethroughStyle()}.svg",
-              width: 300
-            ),
+                "assets/strikethrough/style-${SharedPreferencesManager().getStrikethroughStyle()}.svg",
+                width: 300),
           ),
         )
       ]),
