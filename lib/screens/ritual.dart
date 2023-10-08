@@ -151,7 +151,9 @@ class _RitualsState extends State<Rituals> {
         // Mark the habit done
         if (ritual.complete == 0) {
           setState(() {
+            // Set to complete and expire the next day
             ritual.complete = 1;
+            ritual.checkedOn = DateTime.now();
             ritual.save();
           });
         } else {
@@ -179,7 +181,7 @@ class _RitualsState extends State<Rituals> {
       },
       child: Stack(children: [
         SizedBox(
-          height: 100,
+          height: 70,
           child: Card(
             color: Colors.white,
             elevation: 0,
@@ -210,38 +212,24 @@ class _RitualsState extends State<Rituals> {
                       label: "Edit",
                     ),
                   ]),
-              child: Container(
-                height: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Icon(
-                        (ritual.type == "habit/${Constants.typeRHabit}")
-                            ? CustomIcons.puzzle
-                            : (ritual.type == "habit/${Constants.typeDHabit}"
-                                ? CustomIcons.puzzleOutline
-                                : (ritual.type == "habit/${Constants.type1Habit}"
-                                    ? CustomIcons.circle1
-                                    : CustomIcons.hourglass)),
-                        color: ritual.priority == 1
-                            ? Colors.red
-                            : (ritual.priority == 2
-                                ? Colors.orange
-                                : (ritual.priority == 3
-                                    ? Colors.blue
-                                    : Colors.black)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        ritual.url.split("/").last,
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontSize: 23,
+              child: Stack(children: [
+                Container(
+                  height: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Icon(
+                          (ritual.type == "habit/${Constants.typeRHabit}")
+                              ? CustomIcons.puzzle
+                              : (ritual.type == "habit/${Constants.typeDHabit}"
+                                  ? CustomIcons.puzzleOutline
+                                  : (ritual.type ==
+                                          "habit/${Constants.type1Habit}"
+                                      ? CustomIcons.circle1
+                                      : CustomIcons.hourglass)),
                           color: ritual.priority == 1
                               ? Colors.red
                               : (ritual.priority == 2
@@ -249,26 +237,58 @@ class _RitualsState extends State<Rituals> {
                                   : (ritual.priority == 3
                                       ? Colors.blue
                                       : Colors.black)),
-                          fontFamily: "NotoSans-Light",
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              ritual.url.split("/").last,
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: 23,
+                                color: ritual.priority == 1
+                                    ? Colors.red
+                                    : (ritual.priority == 2
+                                        ? Colors.orange
+                                        : (ritual.priority == 3
+                                            ? Colors.blue
+                                            : Colors.black)),
+                                fontFamily: "NotoSans-Light",
+                              ),
+                            ),
+                            Text(
+                              " ${ritual.duration?.inMinutes} Min",
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontFamily: "NotoSans-Light",
+                              )
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Positioned(
+                    top: 20,
+                    left: 350,
+                    child: Visibility(
+                      // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
+                      visible: ritual.complete == 1,
+                      child: (ritual.type?.contains("dHabit") ?? false)
+                          ? const Icon(CustomIcons.crossCircle,
+                              color: Colors.red)
+                          : const Icon(CustomIcons.checkCircle,
+                              color: Colors.green),
+                    )),
+              ]),
             ),
           ),
         ),
-        Positioned(
-          top: 47,
-          left: 51.7, // (cardsize - width) / 2
-          child: Visibility(
-            visible: ritual.complete == 1,
-            child: SvgPicture.asset(
-                "assets/strikethrough/style-${SharedPreferencesManager().getStrikethroughStyle()}.svg",
-                width: 300),
-          ),
-        )
       ]),
     );
   }

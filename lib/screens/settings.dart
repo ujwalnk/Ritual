@@ -20,18 +20,6 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  String selectedStyle = 'assets/strikethrough/style-${SharedPreferencesManager().getStrikethroughStyle()}.svg';
-
-  // Define a list of strikethrough
-  final List<Map<String, dynamic>> strikethroughs = [
-    {'path': 'assets/strikethrough/style-0.svg'},
-    {'path': 'assets/strikethrough/style-1.svg'},
-    {'path': 'assets/strikethrough/style-2.svg'},
-    {'path': 'assets/strikethrough/style-3.svg'},
-    {'path': 'assets/strikethrough/style-4.svg'},
-    {'path': 'assets/strikethrough/style-5.svg'},
-    {'path': 'assets/strikethrough/style-6.svg'},
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -207,52 +195,6 @@ class _SettingsState extends State<Settings> {
               ),
               const SizedBox(
                 height: 20,
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Styling",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "NotoSans-Light")),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Stack(children: [
-                    const Text(
-                      "Strikethrough",
-                      style:
-                          TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-                    ),
-                    Positioned(
-                      top: 10,
-                      child: SvgPicture.asset(
-                        selectedStyle,
-                        width: 110, 
-                        fit: BoxFit.cover
-                      ),
-                    ),
-                  ]),
-                  DropdownButton<String>(
-                    value: selectedStyle,
-                    items: strikethroughs.map((style) {
-                      return DropdownMenuItem<String>(
-                        value: style['path'],
-                        child: SvgPicture.asset(style['path']),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) async {
-
-                      await SharedPreferencesManager().setStrikethroughStyle(
-                          int.parse(
-                              newValue!.substring(newValue.indexOf("-") + 1, newValue.indexOf("."))));
-
-                      setState(() {
-                        selectedStyle = newValue;
-                      });
-                    },
-                  ),
-                ],
               ),
             ],
           ),

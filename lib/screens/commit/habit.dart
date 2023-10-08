@@ -8,6 +8,8 @@ import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/constants.dart';
 
+import 'package:duration_picker/duration_picker.dart';
+
 class Commit2Habit extends StatefulWidget {
   const Commit2Habit({super.key});
 
@@ -56,6 +58,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
   String selectedType = Constants.typeRHabit;
 
   bool initWidget = false;
+
+  Duration d = const Duration(minutes: -1);
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +209,31 @@ class _Commit2HabitState extends State<Commit2Habit> {
                 ],
               ),
               const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Choose Duration",
+                    style:
+                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                  ),
+                  TextButton.icon(
+                      onPressed: () async {
+                        var resultingDuration = await showDurationPicker(
+                          context: context,
+                          initialTime: Duration(minutes: data['mode'] == "edit" ? data['ritual'].duration.inMinutes : 5),
+                          snapToMins: 5,
+                        );
+
+                        d = resultingDuration ?? (d.isNegative ? Duration.zero : d);
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.timelapse),
+                      label: Text(d.isNegative ? "Pick Duration" : "${d.inMinutes} Min")
+                      )
+                ],
+              ),
+              const SizedBox(height: 30),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -226,7 +255,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                             ..position = data['position']
                             ..priority = int.parse(selectedPriority
                                 .substring(selectedPriority.length - 1))
-                            ..createdOn = DateTime.now();
+                            ..createdOn = DateTime.now()
+                            ..duration = d;
 
                           final box = Boxes.getBox();
                           box.add(ritual);
@@ -246,6 +276,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
 
                           // Set the type
                           r.type = "habit/$selectedType";
+                          r.duration = d;
                           r.save();
                         }
                         // Pop the screen

@@ -8,6 +8,10 @@ class Ritual extends HiveObject{
   @HiveField(0)
   double complete = 0;
 
+  // Checked on Date
+  @HiveField(9)
+  DateTime? checkedOn;
+
   // Path to the habit
   @HiveField(1)
   String url = "";
@@ -17,9 +21,8 @@ class Ritual extends HiveObject{
   String? background;
 
   // Reminder Time for Ritual
-  // TODO: Duration Time for Habit
   @HiveField(3)
-  String? time;
+  Map time = {"hour": 0, "minute": 0};
 
   // Type of Habit
   @HiveField(4)
@@ -38,5 +41,10 @@ class Ritual extends HiveObject{
   int priority = 4;
 
   // Creation Date for 1% habits
+  @HiveField(8)
   DateTime? createdOn;
+
+  // Habit Duration
+  Duration? duration;
 }
+

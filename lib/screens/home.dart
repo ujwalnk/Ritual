@@ -11,7 +11,6 @@ import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
-import 'package:ritual/services/colorizer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -169,8 +168,16 @@ class _HomeState extends State<Home> {
                     rituals.add(ritual);
                   }
                 }
+
+                debugPrint("Rituals ${rituals.length}");
                 // Sort by time
-                rituals.sort((a, b) => a.time!.compareTo(b.time!));
+                rituals.sort((a, b) {
+                  if (a.time["hour"] != b.time["hour"]) {
+                    return a.time["hour"] - b.time["hour"];
+                  } else {
+                    return a.time["minute"] - b.time["minute"];
+                  }
+                });
 
                 return buildContent(rituals);
               },
@@ -204,38 +211,6 @@ class _HomeState extends State<Home> {
 
   Widget buildCard(BuildContext context, Ritual ritual,
       {String type = typeRitual}) {
-    Color? cardTextColor = Colors.pink;
-
-    Future<void> generateTextColor(Ritual ritual) async {
-      // final palette = await paletteGenerator(File(ritual.background!));
-
-      // Use the dominant color from the generated palette
-      // cardTextColor = palette.dominantColor?.color;
-      // debugPrint("CardTextColor: $cardTextColor");
-
-      /*if (cardTextColor != null) {
-        debugPrint("Inverting Colors");
-        // Invert the color
-        cardTextColor = Color.fromARGB(
-          cardTextColor!.alpha,
-          255 - cardTextColor!.red,
-          255 - cardTextColor!.green,
-          255 - cardTextColor!.blue,
-        );
-      }
-
-      // Ensure the UI is updated with the new color
-      setState(() {});*/
-    }
-
-    if (ritual.background == Constants.noBackground) {
-      cardTextColor = Colors.black;
-    } else {
-      // Load the image and generate the palette
-      debugPrint("Running palette gen");
-      generateTextColor(ritual);
-      debugPrint("Palette Gen Ran");
-    }
 
     // Calculate the percentage complete of ritual
     if (type == typeRitual) {
@@ -245,7 +220,8 @@ class _HomeState extends State<Home> {
       int complete = 0;
 
       for (Ritual r in rituals) {
-        if (r.url.contains(ritual.url) && (r.type?.contains("habit") ?? false)) {
+        if (r.url.contains(ritual.url) &&
+            (r.type?.contains("habit") ?? false)) {
           // Higher priority, higher complete
           habits += (5 - r.priority);
 
@@ -274,6 +250,7 @@ class _HomeState extends State<Home> {
             if (ritual.complete == 0) {
               setState(() {
                 ritual.complete = 1;
+                ritual.checkedOn = DateTime.now();
                 ritual.save();
               });
             } else {
@@ -346,8 +323,10 @@ class _HomeState extends State<Home> {
                         BlendMode.saturation,
                       ),
                       child: Image.asset(
-                        "assets/illustrations/$type.jpg",
-                        fit: BoxFit.cover,
+                        // "assets/illustrations/$type.jpg",
+                        "assets/illustrations/e.jpg",
+                        fit: BoxFit.fitHeight,
+                        alignment: Alignment.centerRight,
                         width: double.infinity,
                         height: 200,
                       ),
@@ -362,11 +341,9 @@ class _HomeState extends State<Home> {
                     child: Text(
                       ritual.url.replaceAll("/", ""),
                       maxLines: 2,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 23,
-                          // color: Colors.white,
-                          // color: ritual.background == Constants.noBackground ? Colors.black: paletteGenerator(File(ritual.background!)).then((value) => value.dominantColor),
-                          color: cardTextColor,
+                          color: Colors.white,
                           fontFamily: "NotoSans-Light"),
                     ),
                   ),
@@ -380,11 +357,11 @@ class _HomeState extends State<Home> {
                       right: 24,
                       bottom: 8,
                       child: Text(
-                        ritual.time != null ? TimeOfDay(hour: int.parse(ritual.time!.split(':')[0]), minute: int.parse(ritual.time!.split(':')[1])).format(context) : "",
+                        "${ritual.time['hour'] > 12 ? ritual.time['hour'] - 12 : ritual.time['hour']}:${ritual.time['minute'] < 10 ? '0${ritual.time['minute']}' : ritual.time['minute']} ${ritual.time['hour'] >= 12 ? "PM" : "AM"}",
                         maxLines: 2,
                         style: const TextStyle(
                             fontSize: 23,
-                            color: Colors.red,
+                            color: Colors.white,
                             fontFamily: "NotoSans-Light"),
                       ),
                     ),

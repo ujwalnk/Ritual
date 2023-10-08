@@ -145,8 +145,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..url = "/${_textFieldController.text}"
                             ..background = cardBackgroundPath
                             ..type = "ritual"
-                            ..time =
-                                "${selectedTime.hour}:${selectedTime.minute}";
+                            ..time = {"hour": selectedTime.hour, "minute": selectedTime.minute};;
 
                           box.add(ritual);
                         } else {
@@ -169,8 +168,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                               if (cardBackgroundPath.isNotEmpty) {
                                 ritual.background = cardBackgroundPath;
                               }
-                              ritual.time =
-                                  "${selectedTime.hour}:${selectedTime.minute}";
+                              ritual.time = {"hour": selectedTime.hour, "minute": selectedTime.minute};
 
                               ritual.save();
                               debugPrint("@ritual: Renamed to: ${ritual.url}");

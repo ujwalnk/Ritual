@@ -29,6 +29,7 @@ class CustomIcons {
   static const _kFontFam = 'Ritual';
   static const String? _kFontPkg = null;
 
+  // Fab Icons
   static const IconData directionsRun = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData fire = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData lightbulbOutline = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -38,4 +39,8 @@ class CustomIcons {
   static const IconData puzzleOutline = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData hourglass = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData circle1 = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
+  // Check Icon
+  static const IconData checkCircle = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData crossCircle = IconData(0xf057, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

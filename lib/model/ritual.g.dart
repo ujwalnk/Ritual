@@ -18,21 +18,25 @@ class RitualAdapter extends TypeAdapter<Ritual> {
     };
     return Ritual()
       ..complete = fields[0] as double
+      ..checkedOn = fields[9] as DateTime?
       ..url = fields[1] as String
       ..background = fields[2] as String?
-      ..time = fields[3] as String?
+      ..time = (fields[3] as Map).cast<dynamic, dynamic>()
       ..type = fields[4] as String?
       ..expiry = fields[5] as DateTime?
       ..position = fields[6] as int?
-      ..priority = fields[7] as int;
+      ..priority = fields[7] as int
+      ..createdOn = fields[8] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, Ritual obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.complete)
+      ..writeByte(9)
+      ..write(obj.checkedOn)
       ..writeByte(1)
       ..write(obj.url)
       ..writeByte(2)
@@ -46,7 +50,9 @@ class RitualAdapter extends TypeAdapter<Ritual> {
       ..writeByte(6)
       ..write(obj.position)
       ..writeByte(7)
-      ..write(obj.priority);
+      ..write(obj.priority)
+      ..writeByte(8)
+      ..write(obj.createdOn);
   }
 
   @override

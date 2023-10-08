@@ -46,7 +46,7 @@ class _SplashState extends State<Splash> {
       debugPrint("@splash: Iterating through: $key > ${boxes.get(key)?.expiry} =? ${DateTime.now()}");
       if (DateTime.now().isAfter(boxes.get(key)?.expiry ?? DateTime.now())) {
         debugPrint("@splash: Expired: ${boxes.get(key)?.url} ${boxes.get(key)?.type} ${boxes.get(key)?.expiry}");
-        if(boxes.get(key)?.type!.contains("habit") != -1){
+        if(boxes.get(key)?.type!.contains("habit") ?? false){
           // Uncheck Expired Habits
           boxes.get(key)?.complete = 0;
         } else if(boxes.get(key)?.type == "sprint" || boxes.get(key)?.type == "highlight"){
@@ -58,6 +58,8 @@ class _SplashState extends State<Splash> {
           // Delete Expired Sprint & Highlight
           boxes.delete(key);
         }
+
+        // TODO: Uncheck habits based on checkedOn field
       }
     }
 

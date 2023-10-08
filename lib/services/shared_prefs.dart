@@ -55,13 +55,4 @@ class SharedPreferencesManager {
   Future<void> setFileSequence(int value) async {
     await _prefs.setInt('file_sequence', value);
   }
-
-  /// Strikethrough styling option
-  int getStrikethroughStyle() {
-    return _prefs.getInt('strikethrough') ?? 0;
-  }
-
-  Future<void> setStrikethroughStyle(int value) async {
-    await _prefs.setInt('strikethrough', value);
-  }
 }
