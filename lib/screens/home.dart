@@ -169,7 +169,6 @@ class _HomeState extends State<Home> {
                   }
                 }
 
-                debugPrint("Rituals ${rituals.length}");
                 // Sort by time
                 rituals.sort((a, b) {
                   if (a.time["hour"] != b.time["hour"]) {
@@ -211,7 +210,6 @@ class _HomeState extends State<Home> {
 
   Widget buildCard(BuildContext context, Ritual ritual,
       {String type = typeRitual}) {
-
     // Calculate the percentage complete of ritual
     if (type == typeRitual) {
       final rituals = Boxes.getBox().values.toList().cast<Ritual>();
@@ -220,18 +218,25 @@ class _HomeState extends State<Home> {
       int complete = 0;
 
       for (Ritual r in rituals) {
-        if (r.url.contains(ritual.url) &&
-            (r.type?.contains("habit") ?? false)) {
+        if (r.url.contains(ritual.url) && (r.type!.contains("habit"))) {
           // Higher priority, higher complete
-          habits += (5 - r.priority);
+          if(! r.type!.contains(Constants.typeDHabit)){
+            habits += (5 - r.priority);
+          }
 
           if (r.complete == 1) {
-            complete += (5 - r.priority);
-          }
+            if (r.type!.contains(Constants.typeDHabit)) {
+              habits += (5 - r.priority);
+              complete -= (5 - r.priority);
+            } else {
+              complete += (5 - r.priority);
+            }
+          } 
         }
       }
 
-      ritual.complete = (habits == 0) ? 1 : complete / habits;
+      ritual.complete =
+          complete >= 0 ? ((habits == 0) ? 1 : complete / habits) : 0;
       ritual.save();
     }
 

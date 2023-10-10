@@ -45,6 +45,10 @@ class Ritual extends HiveObject{
   DateTime? createdOn;
 
   // Habit Duration
-  Duration? duration;
+  @HiveField(10)
+  int? duration;
+
+  // Initial Value for 1% Habits
+  int? initValue;
 }
 

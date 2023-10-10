@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 // Database
 import 'package:hive_flutter/hive_flutter.dart';
@@ -12,7 +12,6 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/ritual_icons.dart';
-import 'package:ritual/services/shared_prefs.dart';
 
 class Rituals extends StatefulWidget {
   const Rituals({super.key});
@@ -144,7 +143,6 @@ class _RitualsState extends State<Rituals> {
     Ritual ritual,
   ) {
     habitCount++;
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -223,20 +221,22 @@ class _RitualsState extends State<Rituals> {
                         padding: const EdgeInsets.only(left: 20),
                         child: Icon(
                           (ritual.type == "habit/${Constants.typeRHabit}")
-                              ? CustomIcons.puzzle
-                              : (ritual.type == "habit/${Constants.typeDHabit}"
-                                  ? CustomIcons.puzzleOutline
+                              ? CustomIcons.rHabit
+                              : (ritual.type ==
+                                      "habit/${Constants.typeDHabit}"
+                                  ? CustomIcons.dHabit
                                   : (ritual.type ==
-                                          "habit/${Constants.type1Habit}"
-                                      ? CustomIcons.circle1
-                                      : CustomIcons.hourglass)),
+                                          "habit/${Constants.typeSHabit}"
+                                      ? CustomIcons.sHabit
+                                      : CustomIcons.tHabit)),
                           color: ritual.priority == 1
-                              ? Colors.red
+                              ? const Color.fromARGB(75, 244, 67, 54)
                               : (ritual.priority == 2
-                                  ? Colors.orange
+                                  ? const Color.fromARGB(75, 255, 153, 0)
                                   : (ritual.priority == 3
-                                      ? Colors.blue
-                                      : Colors.black)),
+                                      ? const Color.fromARGB(75, 33, 149, 243)
+                                      : const Color.fromARGB(75, 0, 0, 0))),
+                          size: 16,
                         ),
                       ),
                       Padding(
@@ -260,13 +260,11 @@ class _RitualsState extends State<Rituals> {
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),
-                            Text(
-                              " ${ritual.duration?.inMinutes} Min",
-                              style: TextStyle(
-                                color: Colors.grey[500],
-                                fontFamily: "NotoSans-Light",
-                              )
-                            )
+                            Text(" ${ritual.duration} Min",
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontFamily: "NotoSans-Light",
+                                ))
                           ],
                         ),
                       ),
@@ -276,15 +274,43 @@ class _RitualsState extends State<Rituals> {
                 Positioned(
                     top: 20,
                     left: 350,
-                    child: Visibility(
-                      // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
-                      visible: ritual.complete == 1,
-                      child: (ritual.type?.contains("dHabit") ?? false)
-                          ? const Icon(CustomIcons.crossCircle,
-                              color: Colors.red)
-                          : const Icon(CustomIcons.checkCircle,
-                              color: Colors.green),
-                    )),
+                    child: Stack(children: [
+                      Visibility(
+                        // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
+                        visible: ritual.complete == 1,
+                        child: (ritual.type?.contains("dHabit") ?? false)
+                            ? const Icon(CustomIcons.crossCircle,
+                                color: Colors.red)
+                            : const Icon(CustomIcons.checkCircle,
+                                color: Colors.green),
+                      ),
+                      Visibility(
+                        // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
+                        visible: ritual.complete == 0 &&
+                            ritual.type!.contains(Constants.typeSHabit),
+                        child: Text(
+                            "${(ritual.initValue ?? 0 * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays)))}",
+                            style: const TextStyle(
+                                fontFamily: "NotoSans-Light", fontSize: 20)),
+                      ),
+                    ])),
+                Visibility(
+                  visible: ritual.complete == 0 &&
+                        ritual.type!.contains(Constants.typeTHabit),
+                  child: Positioned(
+                      top: 10,
+                      left: 338,
+                      child: IconButton(
+                          icon: const Icon(Icons.timer,
+                              color: Color.fromARGB(75, 158, 158, 158)),
+                          onPressed: () {
+                            Navigator.pushNamed(context, "/timer",
+                                arguments: {
+                                  "ritual": ritual,
+                                });
+                          }),
+                    ),
+                )
               ]),
             ),
           ),

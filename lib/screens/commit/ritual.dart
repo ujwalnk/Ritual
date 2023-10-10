@@ -145,7 +145,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..url = "/${_textFieldController.text}"
                             ..background = cardBackgroundPath
                             ..type = "ritual"
-                            ..time = {"hour": selectedTime.hour, "minute": selectedTime.minute};;
+                            ..time = {"hour": selectedTime.hour, "minute": selectedTime.minute};
 
                           box.add(ritual);
                         } else {

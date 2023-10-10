@@ -43,25 +43,37 @@ class _SplashState extends State<Splash> {
 
     final boxes = Boxes.getBox();
     for (var key in boxes.keys) {
-      debugPrint("@splash: Iterating through: $key > ${boxes.get(key)?.expiry} =? ${DateTime.now()}");
+      debugPrint(
+          "@splash: Iterating through: $key > ${boxes.get(key)?.expiry} =? ${DateTime.now()}");
       if (DateTime.now().isAfter(boxes.get(key)?.expiry ?? DateTime.now())) {
-        debugPrint("@splash: Expired: ${boxes.get(key)?.url} ${boxes.get(key)?.type} ${boxes.get(key)?.expiry}");
-        if(boxes.get(key)?.type!.contains("habit") ?? false){
+        debugPrint(
+            "@splash: Expired: ${boxes.get(key)?.url} ${boxes.get(key)?.type} ${boxes.get(key)?.expiry}");
+        if (boxes.get(key)?.type!.contains("habit") ?? false) {
           // Uncheck Expired Habits
           boxes.get(key)?.complete = 0;
-        } else if(boxes.get(key)?.type == "sprint" || boxes.get(key)?.type == "highlight"){
+        } else if (boxes.get(key)?.type == "sprint" ||
+            boxes.get(key)?.type == "highlight") {
           // Delete the stored Image file
-          if((boxes.get(key)?.background?.isNotEmpty ?? false) && boxes.get(key)?.background != Constants.noBackground){
+          if ((boxes.get(key)?.background?.isNotEmpty ?? false) &&
+              boxes.get(key)?.background != Constants.noBackground) {
             File(boxes.get(key)?.background ?? '').delete();
           }
-          
+
           // Delete Expired Sprint & Highlight
           boxes.delete(key);
         }
-
-        // TODO: Uncheck habits based on checkedOn field
+      } 
+      // Uncheck habits based on checkedOn field on the next day
+      if ((boxes.get(key)?.checkedOn?.isBefore(DateTime(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day)) ??
+              false) &&
+          (boxes.get(key)?.type!.contains("habit") ?? false)) {
+        boxes.get(key)!.complete = 0;
+        boxes.get(key)!.save();
       }
     }
+
+    debugPrint("Date today: ${DateTime.now().day}");
 
     // Navigate to the home page
     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -75,7 +87,8 @@ class _SplashState extends State<Splash> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child:Image.asset("assets/icons/icon.png"), // Show a loading indicator while initializing
+          child: Image.asset(
+              "assets/icons/icon.png"), // Show a loading indicator while initializing
         ),
       ),
     );

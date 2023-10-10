@@ -6,6 +6,7 @@ import 'package:ritual/screens/ritual.dart';
 import 'package:ritual/screens/ritual_sort.dart';
 import 'package:ritual/screens/settings.dart';
 import 'package:ritual/screens/splash.dart';
+import 'package:ritual/screens/timer.dart';
 
 // Commit Screens
 import 'package:ritual/screens/commit/habit.dart';
@@ -34,6 +35,7 @@ void main() async {
 
       // Other Screens
       "/sort/ritual": (context) => const RitualSort(),
+      "/timer": (context) => Timer(),
     },
 
     theme: ThemeData(

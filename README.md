@@ -19,8 +19,3 @@ samples, guidance on mobile development, and a full API reference.
 
 
 > Images from Freepik - check out the attributions @ attributions.md
-
-deepti - Optamaoly - 28
-
-- Pride and Prejudice
-10k leagues under the sea

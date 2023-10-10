@@ -35,12 +35,18 @@ class CustomIcons {
   static const IconData lightbulbOutline = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 
   // Habit Icons
-  static const IconData puzzle = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData puzzleOutline = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData hourglass = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData circle1 = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData rHabit = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sHabit = IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dHabit = IconData(0xf057, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData tHabit = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 
   // Check Icon
-  static const IconData checkCircle = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData crossCircle = IconData(0xf057, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData checkCircle = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData crossCircle = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
+  static const IconData circle4 = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData circle3 = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData circle2 = IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData circle1 = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
 }
