@@ -9,6 +9,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
 
@@ -42,18 +43,18 @@ class _HomeState extends State<Home> {
               ? "Home"
               : "Rituals",
           style: const TextStyle(
-            color: Colors.white,
+            // color: Colors.white,
             fontFamily: "NotoSans-Light",
           ),
         ),
-        backgroundColor: Colors.blue[800],
-        shadowColor: Colors.blue[400],
+        backgroundColor: Constants.primaryColor,
+        shadowColor: Constants.primaryAccent,
         elevation: 2,
         actions: <Widget>[
           IconButton(
             icon: const Icon(
               Icons.settings,
-              color: Colors.white,
+              // color: Colors.white,
             ),
             onPressed: () async {
               await Navigator.pushNamed(context, '/settings');
@@ -76,10 +77,25 @@ class _HomeState extends State<Home> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                  child: Text(
-                    hideHighlights ? "Highlights" : "(Highlights)",
-                    style: const TextStyle(
-                        fontSize: 22, fontFamily: "NotoSans-Light"),
+                  child: Stack(
+                    children: [
+                      Text(
+                        "Highlights",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontFamily: "NotoSans-Light",
+                            decoration: hideHighlights
+                                ? TextDecoration.none
+                                : TextDecoration.lineThrough),
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Icon(CustomIcons.lightbulbOutline,
+                                color: Constants.primaryAccent.withAlpha(50)),
+                          ))
+                    ],
                   ),
                 ),
               ),
@@ -113,11 +129,23 @@ class _HomeState extends State<Home> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                  child: Text(
-                    hideSprints ? "Sprints" : "(Sprints)",
-                    style: const TextStyle(
-                        fontSize: 22, fontFamily: "NotoSans-Light"),
-                  ),
+                  child: Stack(children: [
+                    Text(
+                      "Sprints",
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontFamily: "NotoSans-Light",
+                          decoration: hideSprints
+                              ? TextDecoration.none
+                              : TextDecoration.lineThrough),
+                    ),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Icon(CustomIcons.directionsRun,
+                                color: Constants.primaryAccent.withAlpha(50))))
+                  ]),
                 ),
               ),
             ),
@@ -144,12 +172,22 @@ class _HomeState extends State<Home> {
             Visibility(
               visible: SharedPreferencesManager().getShowHighlight() ||
                   SharedPreferencesManager().getShowSprints(),
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                child: Text(
-                  "Rituals",
-                  style: TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
+                child: Stack(children: [
+                  const Text(
+                    "Rituals",
+                    style:
+                        TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
+                  ),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Icon(CustomIcons.fire,
+                            color: Constants.primaryAccent.withAlpha(50)),
+                      ))
+                ]),
               ),
             ),
             Visibility(
@@ -192,12 +230,7 @@ class _HomeState extends State<Home> {
   Widget buildContent(List<Ritual> rituals, {String type = typeRitual}) {
     if (rituals.isEmpty) {
       // Return a message or an empty state widget when there are no rituals.
-      return Center(
-        child: Text(
-          'Tap the + icon to create your first $type',
-          style: const TextStyle(fontSize: 18),
-        ),
-      );
+      return const SizedBox(height: 0, width: 0);
     } else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +253,7 @@ class _HomeState extends State<Home> {
       for (Ritual r in rituals) {
         if (r.url.contains(ritual.url) && (r.type!.contains("habit"))) {
           // Higher priority, higher complete
-          if(! r.type!.contains(Constants.typeDHabit)){
+          if (!r.type!.contains(Constants.typeDHabit)) {
             habits += (5 - r.priority);
           }
 
@@ -231,7 +264,7 @@ class _HomeState extends State<Home> {
             } else {
               complete += (5 - r.priority);
             }
-          } 
+          }
         }
       }
 

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Constants{
   // Habit constants
   static const String typeRHabit = "rHabit";
@@ -7,4 +9,8 @@ class Constants{
 
   // Card Background constant
   static const String noBackground = "default";
+
+  // Application Colors
+  static const Color primaryColor = Color.fromARGB(255, 255, 255, 255);
+  static const Color primaryAccent = Color.fromARGB(255, 0, 0, 0);
 }

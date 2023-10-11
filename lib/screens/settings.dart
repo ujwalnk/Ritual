@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
 
 // Services
+import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/data_shuttle.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
@@ -26,9 +27,9 @@ class _SettingsState extends State<Settings> {
         appBar: AppBar(
           title: const Text(
             "Settings",
-            style: TextStyle(color: Colors.white, fontFamily: "NotoSans-Light"),
+            style: TextStyle(fontFamily: "NotoSans-Light"),
           ),
-          backgroundColor: Colors.blue[800],
+          backgroundColor: Constants.primaryColor,
           elevation: 1,
         ),
         body: Padding(
@@ -53,6 +54,7 @@ class _SettingsState extends State<Settings> {
                     const Text("Show Highlights",
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
+                      activeColor: Constants.primaryAccent,
                       value: SharedPreferencesManager().getShowHighlight(),
                       onChanged: (value) async {
                         await SharedPreferencesManager()
@@ -75,6 +77,7 @@ class _SettingsState extends State<Settings> {
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
                       value: SharedPreferencesManager().getShowSprints(),
+                      activeColor: Constants.primaryAccent,
                       onChanged: (value) async {
                         await SharedPreferencesManager().setShowSprints(value!);
                         setState(() {});
@@ -125,7 +128,7 @@ class _SettingsState extends State<Settings> {
                     children: [
                       Text("Export",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Icon(Icons.upload_file_rounded),
+                      Icon(Icons.upload_file_rounded, color: Constants.primaryAccent),
                     ],
                   ),
                 ),
@@ -166,7 +169,7 @@ class _SettingsState extends State<Settings> {
                     children: [
                       Text("Import",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Icon(Icons.download_rounded),
+                      Icon(Icons.download_rounded, color: Constants.primaryAccent),
                     ],
                   ),
                 ),

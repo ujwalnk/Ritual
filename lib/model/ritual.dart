@@ -49,6 +49,7 @@ class Ritual extends HiveObject{
   int? duration;
 
   // Initial Value for 1% Habits
+  @HiveField(11)
   int? initValue;
 }
 

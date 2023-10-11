@@ -41,9 +41,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       selectedTime = (data['time'] == null)
           ? TimeOfDay.now()
           : TimeOfDay(
-              hour: int.parse(data['time'].split(":")[0]) % 12 +
-                  (data['time'].endsWith("PM") ? 12 : 0),
-              minute: int.parse(data['time'].split(":")[1].split(" ")[0]));
+              hour:data['time']['hour'],
+              minute: data['time']['minute']);
       _init = !_init;
     }
 
@@ -121,7 +120,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     icon: const Icon(Icons.image),
                     label: const Text("Pick an Image",
                         style: TextStyle(
-                            fontSize: 20, fontFamily: "NotoSans-Light")),
+                            fontSize: 20, fontFamily: "NotoSans-Light",)),
                     onPressed: () => _getImage(data),
                   ),
                 ],

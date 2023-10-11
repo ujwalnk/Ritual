@@ -27,13 +27,14 @@ class RitualAdapter extends TypeAdapter<Ritual> {
       ..position = fields[6] as int?
       ..priority = fields[7] as int
       ..createdOn = fields[8] as DateTime?
-      ..duration = fields[10] as int?;
+      ..duration = fields[10] as int?
+      ..initValue = fields[11] as int?;
   }
 
   @override
   void write(BinaryWriter writer, Ritual obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.complete)
       ..writeByte(9)
@@ -55,7 +56,9 @@ class RitualAdapter extends TypeAdapter<Ritual> {
       ..writeByte(8)
       ..write(obj.createdOn)
       ..writeByte(10)
-      ..write(obj.duration);
+      ..write(obj.duration)
+      ..writeByte(11)
+      ..write(obj.initValue);
   }
 
   @override

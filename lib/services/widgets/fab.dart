@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ritual/services/constants.dart';
 
 // Services
 import 'package:ritual/services/ritual_icons.dart';
@@ -68,6 +69,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
                   });
                 },
                 tooltip: _isExpanded ? 'Collapse' : 'Expand',
+                backgroundColor: Constants.primaryColor,
                 child: Icon(_isExpanded ? Icons.close : Icons.add),
               ),
             ],
@@ -89,6 +91,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
           heroTag: null,
           tooltip: tooltip,
           child: icon,
+          backgroundColor: Constants.primaryColor,
         ),
         const SizedBox(height: 8),
       ],

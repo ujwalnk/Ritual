@@ -193,7 +193,7 @@ class _RitualsState extends State<Rituals> {
                   children: [
                     SlidableAction(
                       onPressed: ((context) => editHabit()),
-                      backgroundColor: const Color.fromRGBO(229, 115, 115, 1),
+                      backgroundColor: const Color.fromARGB(189, 229, 198, 190),
                       icon: Icons.delete_forever,
                       label: "Delete",
                       borderRadius: BorderRadius.zero,
@@ -205,7 +205,7 @@ class _RitualsState extends State<Rituals> {
                             "uri": ritual.url,
                             "ritual": ritual
                           })),
-                      backgroundColor: const Color.fromRGBO(144, 202, 249, 1),
+                      backgroundColor: const Color.fromARGB(190, 223, 226, 230),
                       icon: Icons.edit,
                       label: "Edit",
                     ),
@@ -271,44 +271,55 @@ class _RitualsState extends State<Rituals> {
                     ],
                   ),
                 ),
-                Positioned(
-                    top: 20,
-                    left: 350,
-                    child: Stack(children: [
-                      Visibility(
-                        // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
-                        visible: ritual.complete == 1,
-                        child: (ritual.type?.contains("dHabit") ?? false)
-                            ? const Icon(CustomIcons.crossCircle,
-                                color: Colors.red)
-                            : const Icon(CustomIcons.checkCircle,
-                                color: Colors.green),
-                      ),
-                      Visibility(
-                        // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
-                        visible: ritual.complete == 0 &&
-                            ritual.type!.contains(Constants.typeSHabit),
-                        child: Text(
-                            "${(ritual.initValue ?? 0 * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays)))}",
-                            style: const TextStyle(
-                                fontFamily: "NotoSans-Light", fontSize: 20)),
-                      ),
-                    ])),
+                // Check / Cross Icon on habit complete
+                Align(
+                    // top: 20,
+                    // left: 350,
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 32.0),
+                      child: Stack(children: [
+                        Visibility(
+                          // On ritual check show check if icon is not a dHabit, cross mark if it's dHabit
+                          visible: ritual.complete == 1,
+                          child: (ritual.type?.contains("dHabit") ?? false)
+                              ? const Icon(CustomIcons.crossCircle,
+                                  color: Colors.red)
+                              : const Icon(CustomIcons.checkCircle,
+                                  color: Colors.green),
+                        ),
+                        Visibility(
+                          // On habit notCheck, show count for sHabits
+                          visible: ritual.complete == 0 &&
+                              ritual.type!.contains(Constants.typeSHabit),
+                          child: Text(
+                              "${((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays)))}",
+                              style: const TextStyle(
+                                  fontFamily: "NotoSans-Light", fontSize: 20)),
+                        ),
+                      ]),
+                    )),
+
+                // Timer Icon for timed habits
                 Visibility(
                   visible: ritual.complete == 0 &&
                         ritual.type!.contains(Constants.typeTHabit),
-                  child: Positioned(
-                      top: 10,
-                      left: 338,
-                      child: IconButton(
-                          icon: const Icon(Icons.timer,
-                              color: Color.fromARGB(75, 158, 158, 158)),
-                          onPressed: () {
-                            Navigator.pushNamed(context, "/timer",
-                                arguments: {
-                                  "ritual": ritual,
-                                });
-                          }),
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      // top: 10,
+                      // left: 338,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: IconButton(
+                            icon: const Icon(Icons.timer,
+                                color: Color.fromARGB(75, 158, 158, 158)),
+                            onPressed: () {
+                              Navigator.pushNamed(context, "/timer",
+                                  arguments: {
+                                    "ritual": ritual,
+                                  });
+                            }),
+                      ),
                     ),
                 )
               ]),

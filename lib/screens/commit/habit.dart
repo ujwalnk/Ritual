@@ -279,6 +279,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                         SizedBox(
                           width: 150,
                           child: TextField(
+                            keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
                             key: const Key("textField2"),
                             controller: _textFieldControllerIV,
                             focusNode: _textFieldFocusNodeIV,
@@ -289,12 +290,13 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                 border: const OutlineInputBorder(),
                                 hintText: data['mode'] == "new"
                                     ? ""
-                                    : "${data['ritual'].duration}"),
+                                    : "${data['ritual'].initValue}"),
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 30),
                   Expanded(
                     child: Align(
                       alignment: Alignment.topCenter,
@@ -318,7 +320,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                 ..priority = int.parse(selectedPriority
                                     .substring(selectedPriority.length - 1))
                                 ..createdOn = DateTime.now()
-                                ..duration = d.inMinutes;
+                                ..duration = d.inMinutes
+                                ..initValue = int.parse(_textFieldControllerIV.text);
 
                               final box = Boxes.getBox();
                               box.add(ritual);
@@ -336,6 +339,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               // Set the priority
                               r.priority = int.parse(selectedPriority
                                   .substring(selectedPriority.length - 1));
+
+                              r.initValue = int.parse(_textFieldControllerIV.text);
 
                               // Set the type
                               r.type = "habit/$selectedType";
