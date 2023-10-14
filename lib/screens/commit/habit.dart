@@ -321,7 +321,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                     .substring(selectedPriority.length - 1))
                                 ..createdOn = DateTime.now()
                                 ..duration = d.inMinutes
-                                ..initValue = int.parse(_textFieldControllerIV.text);
+                                ..initValue = int.tryParse(_textFieldControllerIV.text);
 
                               final box = Boxes.getBox();
                               box.add(ritual);

@@ -86,7 +86,7 @@ class _RitualsState extends State<Rituals> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          // const SizedBox(height: 10),
           ValueListenableBuilder<Box<Ritual>>(
             valueListenable: Boxes.getBox().listenable(),
             builder: (context, box, _) {
@@ -300,14 +300,12 @@ class _RitualsState extends State<Rituals> {
                       ]),
                     )),
 
-                // Timer Icon for timed habits
+                // Timer Icon for non Stacked Habits
                 Visibility(
                   visible: ritual.complete == 0 &&
-                        ritual.type!.contains(Constants.typeTHabit),
+                        !(ritual.type!.contains(Constants.typeSHabit) || ritual.type!.contains(Constants.typeDHabit)),
                   child: Align(
                       alignment: Alignment.centerRight,
-                      // top: 10,
-                      // left: 338,
                       child: Padding(
                         padding: const EdgeInsets.only(right: 20.0),
                         child: IconButton(

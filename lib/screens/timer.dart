@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/constants.dart';
 
 class Timer extends StatefulWidget {
   @override
@@ -112,7 +113,7 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                                 // Return to Rituals screen
                                 Navigator.pop(context);
                               }
-                              return FloatingActionButton.extended(
+                              return FloatingActionButton(
                                   onPressed: () {
                                     if (controller.isAnimating) {
                                       controller.stop();
@@ -124,12 +125,12 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                                     }
                                     setState(() {});
                                   },
-                                  icon: Icon(controller.isAnimating
+                                  backgroundColor: Constants.primaryColor,
+                                  child: Icon(controller.isAnimating
                                       ? Icons.pause
-                                      : Icons.play_arrow),
-                                  label: Text(controller.isAnimating
-                                      ? "Pause"
-                                      : "Start"));
+                                      : Icons.play_arrow,
+                                      color: Constants.primaryAccent),
+                                      );
                             }),
                       ],
                     ),
