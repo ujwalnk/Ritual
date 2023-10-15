@@ -340,7 +340,9 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               r.priority = int.parse(selectedPriority
                                   .substring(selectedPriority.length - 1));
 
-                              r.initValue = int.parse(_textFieldControllerIV.text);
+                              if(_textFieldControllerIV.text.isNotEmpty){
+                                r.initValue = int.tryParse(_textFieldControllerIV.text);
+                              }
 
                               // Set the type
                               r.type = "habit/$selectedType";

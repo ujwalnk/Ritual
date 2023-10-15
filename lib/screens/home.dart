@@ -71,6 +71,7 @@ class _HomeState extends State<Home> {
             Visibility(
               visible: SharedPreferencesManager().getShowHighlight(),
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   hideHighlights = !hideHighlights;
                   setState(() {});
@@ -88,12 +89,13 @@ class _HomeState extends State<Home> {
                                 ? TextDecoration.none
                                 : TextDecoration.lineThrough),
                       ),
+                      // Don't hide the icon, make it transparent, otherwise GestureDetector won't work
                       Align(
                           alignment: Alignment.centerRight,
                           child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.lightbulbOutline,
-                                color: Constants.primaryAccent.withAlpha(50)),
+                                color: hideHighlights ? Constants.primaryAccent.withAlpha(50) : Constants.primaryAccent.withAlpha(0)),
                           ))
                     ],
                   ),
@@ -123,6 +125,7 @@ class _HomeState extends State<Home> {
             Visibility(
               visible: SharedPreferencesManager().getShowSprints(),
               child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   hideSprints = !hideSprints;
                   setState(() {});
@@ -139,12 +142,13 @@ class _HomeState extends State<Home> {
                               ? TextDecoration.none
                               : TextDecoration.lineThrough),
                     ),
+                    // Don't hide the icon, make it transparent, otherwise GestureDetector won't work
                     Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.directionsRun,
-                                color: Constants.primaryAccent.withAlpha(50))))
+                                color: hideSprints ? Constants.primaryAccent.withAlpha(50) : Constants.primaryAccent.withAlpha(0))))
                   ]),
                 ),
               ),
@@ -175,7 +179,7 @@ class _HomeState extends State<Home> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
                 child: Stack(children: [
-                  const Text(
+                    const Text(
                     "Rituals",
                     style:
                         TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
