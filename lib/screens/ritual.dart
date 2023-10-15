@@ -12,6 +12,7 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/ritual_icons.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 class Rituals extends StatefulWidget {
   const Rituals({super.key});
@@ -181,12 +182,14 @@ class _RitualsState extends State<Rituals> {
         SizedBox(
           height: 70,
           child: Card(
-            color: Colors.white,
+            // Two day rule coloring
+            color: SharedPreferencesManager().getTwoDayRule() ? (((ritual.checkedOn?.difference(DateTime.now()).inDays ?? double.infinity) >= 2) ? Colors.amber[50] : Colors.white) : Colors.white,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
             elevation: 0,
             child: Slidable(
               key: Key(ritual.key.toString()),
               startActionPane: ActionPane(
-                  motion: const DrawerMotion(),
+                  motion: const BehindMotion(),
                   dismissible: DismissiblePane(onDismissed: () {
                     deleteHabit(ritual);
                   }),

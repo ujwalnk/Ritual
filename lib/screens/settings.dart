@@ -198,6 +198,35 @@ class _SettingsState extends State<Settings> {
               const SizedBox(
                 height: 20,
               ),
+                            const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Features",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
+              ),
+              const SizedBox(height: 15),
+              // Check box for Highlight
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Two Day Rule",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: Constants.primaryAccent,
+                      value: SharedPreferencesManager().getTwoDayRule(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setTwoDayRule(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ));
