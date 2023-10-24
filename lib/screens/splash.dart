@@ -53,7 +53,7 @@ class _SplashState extends State<Splash> {
           boxes.get(key)?.complete = 0;
         } else if (boxes.get(key)?.type == "sprint" ||
             boxes.get(key)?.type == "highlight") {
-          // Delete the stored Image file
+          // Delete the stored Image file on highlight & Sprint Expiration
           if ((boxes.get(key)?.background?.isNotEmpty ?? false) &&
               boxes.get(key)?.background != Constants.noBackground) {
             File(boxes.get(key)?.background ?? '').delete();
@@ -62,10 +62,12 @@ class _SplashState extends State<Splash> {
           // Delete Expired Sprint & Highlight
           boxes.delete(key);
         }
-      } 
-      // Uncheck habits based on checkedOn field on the next day
-      if ((boxes.get(key)?.checkedOn?.isBefore(DateTime(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day)) ??
+      }
+      // Uncheck habits based on checkedOn field the next day
+      else if ((boxes.get(key)?.checkedOn?.isBefore(DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day)) ??
               false) &&
           (boxes.get(key)?.type!.contains("habit") ?? false)) {
         boxes.get(key)!.complete = 0;

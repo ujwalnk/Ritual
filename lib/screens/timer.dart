@@ -129,7 +129,7 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                                   child: Icon(controller.isAnimating
                                       ? Icons.pause
                                       : Icons.play_arrow,
-                                      color: Constants.primaryAccent),
+                                      color: Constants.accentColor),
                                       );
                             }),
                       ],

@@ -46,3 +46,6 @@ app.*.map.json
 
 # Temp folder
 tmp/
+
+# Keystore
+.upload-keystore.jks

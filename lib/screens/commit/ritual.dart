@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Hive database packages
 import 'package:ritual/model/ritual.dart';
@@ -41,8 +42,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       selectedTime = (data['time'] == null)
           ? TimeOfDay.now()
           : TimeOfDay(
-              hour:data['time']['hour'],
-              minute: data['time']['minute']);
+              hour: data['time']['hour'], minute: data['time']['minute']);
       _init = !_init;
     }
 
@@ -120,7 +120,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     icon: const Icon(Icons.image),
                     label: const Text("Pick an Image",
                         style: TextStyle(
-                            fontSize: 20, fontFamily: "NotoSans-Light",)),
+                          fontSize: 20,
+                          fontFamily: "NotoSans-Light",
+                        )),
                     onPressed: () => _getImage(data),
                   ),
                 ],
@@ -144,7 +146,10 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..url = "/${_textFieldController.text}"
                             ..background = cardBackgroundPath
                             ..type = "ritual"
-                            ..time = {"hour": selectedTime.hour, "minute": selectedTime.minute};
+                            ..time = {
+                              "hour": selectedTime.hour,
+                              "minute": selectedTime.minute
+                            };
 
                           box.add(ritual);
                         } else {
@@ -167,13 +172,22 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                               if (cardBackgroundPath.isNotEmpty) {
                                 ritual.background = cardBackgroundPath;
                               }
-                              ritual.time = {"hour": selectedTime.hour, "minute": selectedTime.minute};
+                              ritual.time = {
+                                "hour": selectedTime.hour,
+                                "minute": selectedTime.minute
+                              };
 
                               ritual.save();
                               debugPrint("@ritual: Renamed to: ${ritual.url}");
                             }
                           }
                         }
+
+                        // Set future Notifications
+                        // NotificationService().scheduleNotification(
+                        //     title: 'Scheduled Notification',
+                        //     body: '$scheduleTime',
+                        //     scheduledNotificationDateTime: scheduleTime); 
 
                         // Pop the screen
                         Navigator.pop(context);
@@ -271,7 +285,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
     for (var ritual in contents) {
       // Delete all rituals having the same URL
-      if ((ritual.type!.contains ("habit") || ritual.type == "ritual") &&
+      if ((ritual.type!.contains("habit") || ritual.type == "ritual") &&
           ritual.url.contains(currentRitualURL)) {
         box.delete(ritual.key);
       }

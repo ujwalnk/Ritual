@@ -54,7 +54,7 @@ class _SettingsState extends State<Settings> {
                     const Text("Show Highlights",
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      activeColor: Constants.primaryAccent,
+                      activeColor: Constants.accentColor,
                       value: SharedPreferencesManager().getShowHighlight(),
                       onChanged: (value) async {
                         await SharedPreferencesManager()
@@ -77,7 +77,7 @@ class _SettingsState extends State<Settings> {
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
                       value: SharedPreferencesManager().getShowSprints(),
-                      activeColor: Constants.primaryAccent,
+                      activeColor: Constants.accentColor,
                       onChanged: (value) async {
                         await SharedPreferencesManager().setShowSprints(value!);
                         setState(() {});
@@ -128,7 +128,7 @@ class _SettingsState extends State<Settings> {
                     children: [
                       Text("Export",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Icon(Icons.upload_file_rounded, color: Constants.primaryAccent),
+                      Icon(Icons.upload_file_rounded, color: Constants.accentColor),
                     ],
                   ),
                 ),
@@ -169,7 +169,7 @@ class _SettingsState extends State<Settings> {
                     children: [
                       Text("Import",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Icon(Icons.download_rounded, color: Constants.primaryAccent),
+                      Icon(Icons.download_rounded, color: Constants.accentColor),
                     ],
                   ),
                 ),
@@ -198,7 +198,7 @@ class _SettingsState extends State<Settings> {
               const SizedBox(
                 height: 20,
               ),
-                            const Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Features",
                     style: TextStyle(
@@ -216,7 +216,7 @@ class _SettingsState extends State<Settings> {
                     const Text("Two Day Rule",
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      activeColor: Constants.primaryAccent,
+                      activeColor: Constants.accentColor,
                       value: SharedPreferencesManager().getTwoDayRule(),
                       onChanged: (value) async {
                         await SharedPreferencesManager()

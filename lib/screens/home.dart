@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
         highlight: SharedPreferencesManager().getShowHighlight());
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Constants.backgroundColor,
       appBar: AppBar(
         title: Text(
           (SharedPreferencesManager().getShowHighlight() ||
@@ -43,23 +43,28 @@ class _HomeState extends State<Home> {
               ? "Home"
               : "Rituals",
           style: const TextStyle(
-            // color: Colors.white,
+            color: Constants.accentTextColor,
             fontFamily: "NotoSans-Light",
           ),
         ),
-        backgroundColor: Constants.primaryColor,
-        shadowColor: Constants.primaryAccent,
+        backgroundColor: Constants.accentColor,
+        shadowColor: Colors.blueGrey,
         elevation: 2,
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.settings,
-              // color: Colors.white,
+          GestureDetector(
+            child: IconButton(
+              icon: const Icon(
+                Icons.settings,
+                // color: Colors.white,
+              ),
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/settings');
+                // SetState for changes to reflect
+                setState(() {});
+              },
             ),
-            onPressed: () async {
-              await Navigator.pushNamed(context, '/settings');
-              // SetState for changes to reflect
-              setState(() {});
+            onLongPress: () {
+
             },
           )
         ],
@@ -95,7 +100,9 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.lightbulbOutline,
-                                color: hideHighlights ? Constants.primaryAccent.withAlpha(50) : Constants.primaryAccent.withAlpha(0)),
+                                color: hideHighlights
+                                    ? Constants.accentColor.withAlpha(2000)
+                                    : Constants.accentColor.withAlpha(0)),
                           ))
                     ],
                   ),
@@ -148,7 +155,9 @@ class _HomeState extends State<Home> {
                         child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.directionsRun,
-                                color: hideSprints ? Constants.primaryAccent.withAlpha(50) : Constants.primaryAccent.withAlpha(0))))
+                                color: hideSprints
+                                    ? Constants.accentColor.withAlpha(200)
+                                    : Constants.accentColor.withAlpha(0))))
                   ]),
                 ),
               ),
@@ -179,7 +188,7 @@ class _HomeState extends State<Home> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
                 child: Stack(children: [
-                    const Text(
+                  const Text(
                     "Rituals",
                     style:
                         TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
@@ -189,7 +198,7 @@ class _HomeState extends State<Home> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: Icon(CustomIcons.fire,
-                            color: Constants.primaryAccent.withAlpha(50)),
+                            color: Constants.accentColor.withAlpha(200)),
                       ))
                 ]),
               ),
@@ -288,7 +297,7 @@ class _HomeState extends State<Home> {
               "ritual": ritual,
             });
           } else {
-            // Mark the habit done
+            // Mark the Highlight & Sprints as done
             if (ritual.complete == 0) {
               setState(() {
                 ritual.complete = 1;
@@ -301,7 +310,13 @@ class _HomeState extends State<Home> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text('Trying to uncheck?'),
+                    title: GestureDetector(
+                      child: const Text('Trying to uncheck?'),
+                      // DEVELOPER FEATURE
+                      onDoubleTap: () {
+                        ritual.complete = 0;
+                      },
+                    ),
                     content: const Text(
                         'Commitments fullfilled; Why unmark accomplishments?'),
                     actions: [
@@ -365,8 +380,8 @@ class _HomeState extends State<Home> {
                         BlendMode.saturation,
                       ),
                       child: Image.asset(
-                        // "assets/illustrations/$type.jpg",
-                        "assets/illustrations/e.jpg",
+                        "assets/illustrations/$type.jpg",
+                        // "assets/illustrations/e.jpg",
                         fit: BoxFit.fitHeight,
                         alignment: Alignment.centerRight,
                         width: double.infinity,
