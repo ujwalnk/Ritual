@@ -133,7 +133,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                             ..complete = 0
                             ..url = "/${_textFieldController.text}"
                             ..background = cardBackgroundPath
-                            ..type = "sprint"
+                            ..type = Constants.typeSprint
                             ..expiry = selectedDate;
 
                           final box = Boxes.getBox();

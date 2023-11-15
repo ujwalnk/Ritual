@@ -26,6 +26,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
   final TextEditingController _textFieldControllerIV = TextEditingController();
   final FocusNode _textFieldFocusNodeIV = FocusNode();
 
+  bool stackTime = false;
+
   // Define a list of priorities with associated colors.
   final List<Map<String, dynamic>> priorities = [
     {
@@ -67,11 +69,6 @@ class _Commit2HabitState extends State<Commit2Habit> {
       'icon': const Icon(CustomIcons.sHabit, size: 16),
       'value': Constants.typeSHabit
     },
-    {
-      'text': 'Timed',
-      'icon': const Icon(CustomIcons.tHabit, size: 16),
-      'value': Constants.typeTHabit
-    },
   ];
 
   // Set defaults - Priority 4 and Regular Habit
@@ -105,6 +102,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text(
             "Commit",
@@ -125,118 +123,121 @@ class _Commit2HabitState extends State<Commit2Habit> {
                 ]
               : [],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: double.maxFinite,
-              child: Column(
-                children: <Widget>[
-                  const Text(
-                    "Commit to",
-                    style:
-                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-                  ),
-                  const SizedBox(height: 30),
-                  TextField(
-                    key: const Key("textField1"),
-                    controller: _textFieldController,
-                    focusNode: _textFieldFocusNode,
-                    onChanged: (text) {
-                      setState(() {});
-                    },
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: data['mode'] == "new"
-                            ? "What's new in ${data['uri'].toString().replaceFirst("/", "")}"
-                            : "Rename ${data['uri'].toString().replaceFirst("/", '').substring(data['uri'].toString().replaceFirst("/", '').indexOf('/')).replaceFirst('/', '')}"),
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Choose Priority",
-                        style: TextStyle(
-                            fontSize: 20, fontFamily: "NotoSans-Light"),
-                      ),
-                      DropdownButton<String>(
-                        value: selectedPriority,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedPriority = newValue!;
-                          });
-                        },
-                        // Create dropdown items based on the priorities list.
-                        items: priorities.map((priority) {
-                          return DropdownMenuItem<String>(
-                            value: priority['text'],
-                            child: Row(
-                              children: [
-                                // Add a colored bullet before the text.
-                                // Add a icon before the text.
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: priority['icon'],
-                                  margin: const EdgeInsets.only(right: 8.0),
-                                ),
-                                Text(
-                                  priority['text'],
-                                  style: TextStyle(
-                                      color: priority['color'],
-                                      fontFamily: "NotoSans-Light"),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Choose Habit Type",
-                        style: TextStyle(
-                            fontSize: 20, fontFamily: "NotoSans-Light"),
-                      ),
-                      DropdownButton<String>(
-                        value: selectedType,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedType = newValue!;
-                          });
-                        },
-                        // Create dropdown items based on the priorities list.
-                        items: habitTypes.map((habitType) {
-                          return DropdownMenuItem<String>(
-                            value: habitType['value'],
-                            child: Row(
-                              children: [
-                                // Add a icon before the text.
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  child: habitType['icon'],
-                                  margin: const EdgeInsets.only(right: 16.0),
-                                ),
-                                Text(
-                                  habitType['text'],
-                                  style: const TextStyle(
-                                      fontFamily: "NotoSans-Light"),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
+        body: InkWell(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              children: <Widget>[
+                const Text(
+                  "Commit to",
+                  style:
+                      TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                ),
+                const SizedBox(height: 30),
+                TextField(
+                  key: const Key("textField1"),
+                  controller: _textFieldController,
+                  focusNode: _textFieldFocusNode,
+                  onChanged: (text) {
+                    setState(() {});
+                  },
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: data['mode'] == "new"
+                          ? "What's new in ${data['uri'].toString().replaceFirst("/", "")}"
+                          : "Rename ${data['uri'].toString().replaceFirst("/", '').substring(data['uri'].toString().replaceFirst("/", '').indexOf('/')).replaceFirst('/', '')}"),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Choose Priority",
+                      style: TextStyle(
+                          fontSize: 20, fontFamily: "NotoSans-Light"),
+                    ),
+                    DropdownButton<String>(
+                      value: selectedPriority,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedPriority = newValue!;
+                        });
+                      },
+                      // Create dropdown items based on the priorities list.
+                      items: priorities.map((priority) {
+                        return DropdownMenuItem<String>(
+                          value: priority['text'],
+                          child: Row(
+                            children: [
+                              // Add a colored bullet before the text.
+                              // Add a icon before the text.
+                              Container(
+                                width: 24,
+                                height: 24,
+                                child: priority['icon'],
+                                margin: const EdgeInsets.only(right: 8.0),
+                              ),
+                              Text(
+                                priority['text'],
+                                style: TextStyle(
+                                    color: priority['color'],
+                                    fontFamily: "NotoSans-Light"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Choose Habit Type",
+                      style: TextStyle(
+                          fontSize: 20, fontFamily: "NotoSans-Light"),
+                    ),
+                    DropdownButton<String>(
+                      value: selectedType,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedType = newValue!;
+                        });
+                      },
+                      // Create dropdown items based on the priorities list.
+                      items: habitTypes.map((habitType) {
+                        return DropdownMenuItem<String>(
+                          value: habitType['value'],
+                          child: Row(
+                            children: [
+                              // Add a icon before the text.
+                              Container(
+                                width: 24,
+                                height: 24,
+                                child: habitType['icon'],
+                                margin: const EdgeInsets.only(right: 16.0),
+                              ),
+                              Text(
+                                habitType['text'],
+                                style: const TextStyle(
+                                    fontFamily: "NotoSans-Light"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+                Visibility(
+                  visible: !stackTime,
+                  child: const SizedBox(height: 30),
+                ),
+                Visibility(
+                  visible: !stackTime,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
@@ -254,7 +255,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                       : 5),
                               snapToMins: 5,
                             );
-
+                
                             d = resultingDuration ??
                                 (d.isNegative ? Duration.zero : d);
                             setState(() {});
@@ -265,102 +266,140 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               : "${d.inMinutes} Min")),
                     ],
                   ),
-                  const SizedBox(height: 30),
-                  Visibility(
-                    visible: selectedType == Constants.typeSHabit,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Text(
-                          "Initial Value",
-                          style: TextStyle(
-                              fontSize: 20, fontFamily: "NotoSans-Light"),
-                        ),
-                        SizedBox(
-                          width: 150,
-                          child: TextField(
-                            keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
-                            key: const Key("textField2"),
-                            controller: _textFieldControllerIV,
-                            focusNode: _textFieldFocusNodeIV,
-                            onChanged: (text) {
-                              setState(() {});
-                            },
-                            decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                hintText: data['mode'] == "new"
-                                    ? ""
-                                    : "${data['ritual'].initValue}"),
+                ),
+                const SizedBox(height: 30),
+                Visibility(
+                  visible: selectedType == Constants.typeSHabit,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Text(
+                            "Initial Value",
+                            style: TextStyle(
+                                fontSize: 20, fontFamily: "NotoSans-Light"),
                           ),
+                          SizedBox(
+                            width: 150,
+                            child: TextField(
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                      signed: true, decimal: true),
+                              key: const Key("textField2"),
+                              controller: _textFieldControllerIV,
+                              focusNode: _textFieldFocusNodeIV,
+                              onChanged: (text) {
+                                setState(() {});
+                              },
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                hintText: (data['mode'] == "new"
+                                    ? (stackTime ? "Min" : "")
+                                    : (stackTime
+                                        ? "${data['ritual'].initValue ?? data['ritual'].duration} Min"
+                                        : "${data['ritual'].initValue}")),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            const Text("Stack time",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: "NotoSans-Light")),
+                            Checkbox(
+                              activeColor: Constants.accentColor,
+                              value: stackTime,
+                              onChanged: (value) {
+                                stackTime = !stackTime;
+                                setState(() {});
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 30),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Visibility(
-                        visible: !_textFieldController.text.contains("/") &&
-                            ((data['mode'] == "edit") ||
-                                (_textFieldController.text.isNotEmpty &&
-                                   ( d.inMinutes != -1))),
-                        child: FilledButton.tonal(
-                          onPressed: () {
-                            debugPrint(
-                                "Priority: ${int.parse(selectedPriority.substring(selectedPriority.length - 1))}");
-
-                            if (data['mode'] == "new") {
-                              final ritual = Ritual()
-                                ..complete = 0
-                                ..url =
-                                    "${data['uri']}/${_textFieldController.text}"
-                                ..type = "habit/$selectedType"
-                                ..position = data['position']
-                                ..priority = int.parse(selectedPriority
-                                    .substring(selectedPriority.length - 1))
-                                ..createdOn = DateTime.now()
-                                ..duration = d.inMinutes
-                                ..initValue = int.tryParse(_textFieldControllerIV.text);
-
-                              final box = Boxes.getBox();
-                              box.add(ritual);
-                            } else {
-                              Ritual r =
-                                  Boxes.getBox().get(data['ritual'].key)!;
-
-                              // Change the name
-                              if (_textFieldController.text.isNotEmpty) {
-                                r.url = r.url.substring(
-                                        0, r.url.lastIndexOf("/") + 1) +
-                                    _textFieldController.text;
-                              }
-
-                              // Set the priority
-                              r.priority = int.parse(selectedPriority
-                                  .substring(selectedPriority.length - 1));
-
-                              if(_textFieldControllerIV.text.isNotEmpty){
-                                r.initValue = int.tryParse(_textFieldControllerIV.text);
-                              }
-
-                              // Set the type
-                              r.type = "habit/$selectedType";
-                              r.duration = d.inMinutes;
-                              r.save();
+                ),
+                const SizedBox(height: 30),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Visibility(
+                      visible: !_textFieldController.text.contains("/") &&
+                          ((data['mode'] == "edit") ||
+                              (_textFieldController.text.isNotEmpty &&
+                                  (d.inMinutes != -1 || (stackTime && _textFieldControllerIV.text.isNotEmpty)))),
+                      child: FilledButton.tonal(
+                        onPressed: () {
+                          debugPrint(
+                              "Priority: ${int.parse(selectedPriority.substring(selectedPriority.length - 1))}");
+                
+                          if (data['mode'] == "new") {
+                            final ritual = Ritual()
+                              ..complete = 0
+                              ..url =
+                                  "${data['uri']}/${_textFieldController.text}"
+                              ..type = "habit/$selectedType"
+                              ..position = data['position']
+                              ..priority = int.parse(selectedPriority
+                                  .substring(selectedPriority.length - 1))
+                              ..createdOn = DateTime.now()
+                              ..duration = (stackTime ? double.tryParse(_textFieldControllerIV.text) : d.inMinutes as double?)
+                              ..initValue =
+                                  int.tryParse(_textFieldControllerIV.text)
+                              ..stackTime = stackTime;
+                
+                            final box = Boxes.getBox();
+                            box.add(ritual);
+                          } else {
+                            Ritual r =
+                                Boxes.getBox().get(data['ritual'].key)!;
+                
+                            // Change the name
+                            if (_textFieldController.text.isNotEmpty) {
+                              r.url = r.url.substring(
+                                      0, r.url.lastIndexOf("/") + 1) +
+                                  _textFieldController.text;
                             }
-                            // Pop the screen
-                            Navigator.pop(context);
-                          },
-                          child: const Text("Commit",
-                              style: TextStyle(
-                                  fontFamily: "NotoSans-Light", fontSize: 20)),
-                        ),
+                
+                            // Set the priority
+                            r.priority = int.parse(selectedPriority
+                                .substring(selectedPriority.length - 1));
+                
+                            if (_textFieldControllerIV.text.isNotEmpty) {
+                              r.initValue =
+                                  int.tryParse(_textFieldControllerIV.text);
+                            }
+                
+                            if(!d.isNegative){
+                              r.duration = (stackTime ? int.tryParse(_textFieldControllerIV.text) : d.inMinutes) as double?;
+                            }
+
+                            // Set the type
+                            r.type = "habit/$selectedType";
+
+                            r.save();
+                          }
+                          // Pop the screen
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Commit",
+                            style: TextStyle(
+                                fontFamily: "NotoSans-Light", fontSize: 20)),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ));

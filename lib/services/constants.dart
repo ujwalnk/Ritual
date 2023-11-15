@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Constants{
+  // Type constants
+  static const String typeRitual = "ritual";
+  static const String typeSprint = "sprint";
+  static const String typeHLight = "highlight";
+  static const String typeHabits = "habit";
+
   // Habit constants
   static const String typeRHabit = "rHabit";
   static const String typeDHabit = "dHabit";
@@ -22,4 +28,5 @@ class Constants{
   static const Color primaryTextColor = Color.fromARGB(255, 0, 0, 0);
   // static const Color accentTextColor = Color.fromARGB(255, 255, 255, 255);
   static const Color accentTextColor = primaryTextColor;
+
 }

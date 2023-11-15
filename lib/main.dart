@@ -43,5 +43,7 @@ void main() async {
       primarySwatch: Colors.blue
     ),
 
+    debugShowCheckedModeBanner: false,
+
   ));
 }

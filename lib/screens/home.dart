@@ -21,9 +21,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  static const String typeRitual = "ritual";
-  static const String typeSprint = "sprint";
-  static const String typeHLight = "highlight";
 
   bool hideSprints = true;
   bool hideHighlights = true;
@@ -48,7 +45,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         backgroundColor: Constants.accentColor,
-        shadowColor: Colors.blueGrey,
+        shadowColor: Colors.black,
         elevation: 2,
         actions: <Widget>[
           GestureDetector(
@@ -118,14 +115,14 @@ class _HomeState extends State<Home> {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
                   for (var ritual in contents) {
-                    if (ritual.type == typeHLight) {
+                    if (ritual.type == Constants.typeHLight) {
                       rituals.add(ritual);
                     }
                   }
                   // Sort alphabetically
                   rituals.sort((a, b) => a.url.compareTo(b.url));
 
-                  return buildContent(rituals, type: typeHLight);
+                  return buildContent(rituals, type: Constants.typeHLight);
                 },
               ),
             ),
@@ -171,14 +168,14 @@ class _HomeState extends State<Home> {
                   final contents = box.values.toList().cast<Ritual>();
                   var rituals = <Ritual>[];
                   for (var ritual in contents) {
-                    if (ritual.type == typeSprint) {
+                    if (ritual.type == Constants.typeSprint) {
                       rituals.add(ritual);
                     }
                   }
                   // Sort by expiry
                   rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
 
-                  return buildContent(rituals, type: typeSprint);
+                  return buildContent(rituals, type: Constants.typeSprint);
                 },
               ),
             ),
@@ -215,7 +212,7 @@ class _HomeState extends State<Home> {
                 final contents = box.values.toList().cast<Ritual>();
                 var rituals = <Ritual>[];
                 for (var ritual in contents) {
-                  if (ritual.type == "ritual") {
+                  if (ritual.type == Constants.typeRitual) {
                     rituals.add(ritual);
                   }
                 }
@@ -240,7 +237,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildContent(List<Ritual> rituals, {String type = typeRitual}) {
+  Widget buildContent(List<Ritual> rituals, {String type = Constants.typeRitual}) {
     if (rituals.isEmpty) {
       // Return a message or an empty state widget when there are no rituals.
       return const SizedBox(height: 0, width: 0);
@@ -255,9 +252,9 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildCard(BuildContext context, Ritual ritual,
-      {String type = typeRitual}) {
+      {String type = Constants.typeRitual}) {
     // Calculate the percentage complete of ritual
-    if (type == typeRitual) {
+    if (type == Constants.typeRitual) {
       final rituals = Boxes.getBox().values.toList().cast<Ritual>();
 
       int habits = 0;
@@ -291,7 +288,7 @@ class _HomeState extends State<Home> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          if (type == typeRitual) {
+          if (type == Constants.typeRitual) {
             Navigator.pushNamed(context, "/rituals", arguments: {
               "background": ritual.background!,
               "ritual": ritual,
@@ -349,7 +346,7 @@ class _HomeState extends State<Home> {
           height: 100,
           child: Card(
             color: Colors.transparent,
-            elevation: 3,
+            elevation: 10,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
               child: Stack(
@@ -381,8 +378,7 @@ class _HomeState extends State<Home> {
                       ),
                       child: Image.asset(
                         "assets/illustrations/$type.jpg",
-                        // "assets/illustrations/e.jpg",
-                        fit: BoxFit.fitHeight,
+                        fit: BoxFit.cover,
                         alignment: Alignment.centerRight,
                         width: double.infinity,
                         height: 200,
@@ -407,7 +403,7 @@ class _HomeState extends State<Home> {
 
                   // Text to the bottom of the image.
                   Visibility(
-                    visible: type == typeRitual,
+                    visible: type == Constants.typeRitual,
                     child: Positioned(
                       left: 24,
                       top: 48,

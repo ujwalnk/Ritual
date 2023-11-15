@@ -263,7 +263,7 @@ class _RitualsState extends State<Rituals> {
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),
-                            Text(" ${ritual.duration} Min",
+                            Text(ritual.stackTime ? " ${num.parse(((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))).toStringAsFixed(2))} Min" : " ${ritual.duration} Min",
                                 style: TextStyle(
                                   color: Colors.grey[500],
                                   fontFamily: "NotoSans-Light",
@@ -294,9 +294,9 @@ class _RitualsState extends State<Rituals> {
                         Visibility(
                           // On habit notCheck, show count for sHabits
                           visible: ritual.complete == 0 &&
-                              ritual.type!.contains(Constants.typeSHabit),
+                              ritual.type!.contains(Constants.typeSHabit) && !ritual.stackTime,
                           child: Text(
-                              "${((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays)))}",
+                              "${num.parse(((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))).toStringAsFixed(2))}",
                               style: const TextStyle(
                                   fontFamily: "NotoSans-Light", fontSize: 20)),
                         ),
@@ -306,7 +306,7 @@ class _RitualsState extends State<Rituals> {
                 // Timer Icon for non Stacked Habits
                 Visibility(
                   visible: ritual.complete == 0 &&
-                        !(ritual.type!.contains(Constants.typeSHabit) || ritual.type!.contains(Constants.typeDHabit)),
+                        !((ritual.type!.contains(Constants.typeSHabit) && !ritual.stackTime) || ritual.type!.contains(Constants.typeDHabit)),
                   child: Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
@@ -315,6 +315,7 @@ class _RitualsState extends State<Rituals> {
                             icon: const Icon(Icons.timer,
                                 color: Color.fromARGB(75, 158, 158, 158)),
                             onPressed: () {
+                              ritual.duration = ((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))) as double?;
                               Navigator.pushNamed(context, "/timer",
                                   arguments: {
                                     "ritual": ritual,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/constants.dart';
 
 class RitualSort extends StatefulWidget {
   const RitualSort({super.key});
@@ -22,7 +23,7 @@ class _RitualSortState extends State<RitualSort> {
 
     // Get the habits of the ritual
     for (Ritual r in content) {
-      if (r.url.contains(data['ritual'].url) && r.type != "ritual") {
+      if (r.url.contains(data['ritual'].url) && r.type != Constants.typeRitual) {
         habitsOfRitual.add(r);
       }
     }

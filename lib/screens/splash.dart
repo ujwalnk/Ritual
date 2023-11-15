@@ -51,8 +51,8 @@ class _SplashState extends State<Splash> {
         if (boxes.get(key)?.type!.contains("habit") ?? false) {
           // Uncheck Expired Habits
           boxes.get(key)?.complete = 0;
-        } else if (boxes.get(key)?.type == "sprint" ||
-            boxes.get(key)?.type == "highlight") {
+        } else if (boxes.get(key)?.type == Constants.typeSprint ||
+            boxes.get(key)?.type == Constants.typeHLight) {
           // Delete the stored Image file on highlight & Sprint Expiration
           if ((boxes.get(key)?.background?.isNotEmpty ?? false) &&
               boxes.get(key)?.background != Constants.noBackground) {
@@ -69,7 +69,17 @@ class _SplashState extends State<Splash> {
                   DateTime.now().month,
                   DateTime.now().day)) ??
               false) &&
-          (boxes.get(key)?.type!.contains("habit") ?? false)) {
+          (boxes.get(key)?.type!.contains(Constants.typeHabits) ?? false)) {
+        boxes.get(key)!.complete = 0;
+        boxes.get(key)!.save();
+      }
+      // Uncheck sprints based on checkedOn field the next day
+      else if ((boxes.get(key)?.checkedOn?.isBefore(DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day)) ??
+              false) &&
+          (boxes.get(key)?.type!.contains(Constants.typeSprint) ?? false)) {
         boxes.get(key)!.complete = 0;
         boxes.get(key)!.save();
       }
@@ -86,11 +96,12 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
+    // Show a loading indicator while initializing
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Image.asset(
-              "assets/icons/icon.png"), // Show a loading indicator while initializing
+              "assets/icons/icon.png"),
         ),
       ),
     );

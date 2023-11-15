@@ -46,10 +46,18 @@ class Ritual extends HiveObject{
 
   // Habit Duration
   @HiveField(10)
-  int? duration;
+  double? duration;
 
   // Initial Value for 1% Habits
   @HiveField(11)
   int? initValue;
+
+  // Stack time for stacked Habits
+  @HiveField(12)
+  bool stackTime = false;
+
+  // Stack value type
+  @HiveField(13)
+  bool integralStackValue = true;
 }
 

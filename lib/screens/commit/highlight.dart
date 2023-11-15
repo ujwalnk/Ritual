@@ -114,7 +114,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                             ..complete = 0
                             ..url = "/${_textFieldController.text}"
                             ..background = cardBackgroundPath
-                            ..type = "highlight"
+                            ..type = Constants.typeHLight
                             // Highlight expires the next day
                             ..expiry = DateTime(
                                 now.year, now.month, now.day + 1, 0, 0, 0, 0);

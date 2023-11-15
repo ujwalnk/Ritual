@@ -145,7 +145,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                             ..complete = 0
                             ..url = "/${_textFieldController.text}"
                             ..background = cardBackgroundPath
-                            ..type = "ritual"
+                            ..type = Constants.typeRitual
                             ..time = {
                               "hour": selectedTime.hour,
                               "minute": selectedTime.minute
@@ -161,8 +161,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                           for (Ritual ritual in contents) {
                             // Edit time and name of ritual
                             if (ritual.url.contains(data['uri']) &&
-                                (ritual.type!.contains("habit") ||
-                                    ritual.type == "ritual")) {
+                                (ritual.type!.contains(Constants.typeHabits) ||
+                                    ritual.type == Constants.typeRitual)) {
                               debugPrint(
                                   "@ritual: Renaming ritual ${ritual.url} to /${_textFieldController.text}");
                               if (_textFieldController.text.isNotEmpty) {
@@ -285,7 +285,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
     for (var ritual in contents) {
       // Delete all rituals having the same URL
-      if ((ritual.type!.contains("habit") || ritual.type == "ritual") &&
+      if ((ritual.type!.contains(Constants.typeHabits) || ritual.type == Constants.typeRitual) &&
           ritual.url.contains(currentRitualURL)) {
         box.delete(ritual.key);
       }
