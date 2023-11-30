@@ -353,7 +353,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               ..priority = int.parse(selectedPriority
                                   .substring(selectedPriority.length - 1))
                               ..createdOn = DateTime.now()
-                              ..duration = (stackTime ? double.tryParse(_textFieldControllerIV.text) : d.inMinutes as double?)
+                              ..duration = (stackTime ? double.tryParse(_textFieldControllerIV.text) : double.tryParse(d.inMinutes.toString()))
                               ..initValue =
                                   int.tryParse(_textFieldControllerIV.text)
                               ..stackTime = stackTime;

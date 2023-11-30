@@ -2,6 +2,8 @@ import os
 import hashlib
 import shutil
 
+file_names = []
+
 def md5_hash_file(file_path):
     hasher = hashlib.md5()
     with open(file_path, 'rb') as file:
@@ -16,12 +18,14 @@ def rename_files(directory):
             file_path = os.path.join(directory, filename)
             
             # Calculate MD5 hash
-            md5_hash = md5_hash_file(file_path)
+            md5_hash = md5_hash_file(file_path)[0:5]
             _, file_extension = os.path.splitext(filename)
             
             # Construct new file name using MD5 hash
             new_filename = md5_hash + file_extension
             new_file_path = os.path.join(directory, new_filename)
+
+            file_names.append(new_file_path)
             
             # Rename the file
             os.rename(file_path, new_file_path)
@@ -30,3 +34,5 @@ def rename_files(directory):
 if __name__ == "__main__":
     directory_path = "assets/illustrations"
     rename_files(directory_path)
+
+    print(file_names)

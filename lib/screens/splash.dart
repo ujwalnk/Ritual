@@ -63,6 +63,7 @@ class _SplashState extends State<Splash> {
           boxes.delete(key);
         }
       }
+      
       // Uncheck habits based on checkedOn field the next day
       else if ((boxes.get(key)?.checkedOn?.isBefore(DateTime(
                   DateTime.now().year,

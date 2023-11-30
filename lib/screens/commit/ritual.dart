@@ -11,6 +11,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/widgets/image_picker.dart';
 import 'package:ritual/services/widgets/time_picker.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
@@ -123,7 +124,20 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                           fontSize: 20,
                           fontFamily: "NotoSans-Light",
                         )),
-                    onPressed: () => _getImage(data),
+                    // onPressed: () => _getImage(data),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomImagePicker(
+                            onImageSelected: (String selectedImage) {
+                              cardBackgroundPath = selectedImage;
+                              debugPrint("@ritual: Image selected: $selectedImage");
+                            },
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
@@ -187,7 +201,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         // NotificationService().scheduleNotification(
                         //     title: 'Scheduled Notification',
                         //     body: '$scheduleTime',
-                        //     scheduledNotificationDateTime: scheduleTime); 
+                        //     scheduledNotificationDateTime: scheduleTime);
 
                         // Pop the screen
                         Navigator.pop(context);
@@ -202,70 +216,6 @@ class _Commit2RitualState extends State<Commit2Ritual> {
             ],
           ),
         ));
-  }
-
-  void _getImage(Map data) async {
-    // Pick an image from the user gallery
-    ImagePicker imagePicker = ImagePicker();
-    final imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
-
-    if (imageFile != null) {
-      // Get the application directory
-      final String appDirPath = (await getApplicationDocumentsDirectory()).path;
-
-      setState(() {
-        // int fileNameIndex = imageFile.path.lastIndexOf("/");
-        int fileExtensionIndex = imageFile.path.lastIndexOf(".");
-
-        // cardBackgroundPath: <app_folder>/images/<current_file_sequence>.<image_extension>
-        if (data['mode'] == "new") {
-          cardBackgroundPath =
-              "$appDirPath/images/${SharedPreferencesManager().getFileSequence()}${imageFile.path.substring(fileExtensionIndex)}";
-
-          // Increment the file numbering sequence
-          SharedPreferencesManager().setFileSequence(
-              SharedPreferencesManager().getFileSequence() + 1);
-        } else if ((data['mode'] == "edit") &&
-            (data["background"] != Constants.noBackground)) {
-          cardBackgroundPath = data['background'];
-
-          // On image replace, needs a cache refresh
-          imageCache.clearLiveImages();
-        } else {
-          cardBackgroundPath =
-              "$appDirPath/images/${SharedPreferencesManager().getFileSequence()}${imageFile.path.substring(fileExtensionIndex)}";
-
-          // Increment the file numbering sequence
-          SharedPreferencesManager().setFileSequence(
-              SharedPreferencesManager().getFileSequence() + 1);
-        }
-      });
-
-      File imageFileTemp = File(imageFile.path);
-      try {
-        // Create directory if not exist
-        Directory("$appDirPath/images").createSync(recursive: true);
-
-        // Copy the source file to internal memory
-        await imageFileTemp.copy(cardBackgroundPath);
-
-        // Check if the file was successfully copied
-        if (File("$appDirPath$cardBackgroundPath").existsSync()) {
-          debugPrint('File copied to: $cardBackgroundPath');
-        } else {
-          debugPrint('Failed to copy the file.');
-        }
-      } catch (e) {
-        // Handle any errors that may occur during the copy operation
-        debugPrint('Error copying the file: $e');
-      }
-
-      // imageFile.saveTo(cardBackgroundPath);
-      debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
-    } else {
-      // Set it to default value to show white background
-      cardBackgroundPath = Constants.noBackground;
-    }
   }
 
   /// Update the selected time
@@ -285,7 +235,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
     for (var ritual in contents) {
       // Delete all rituals having the same URL
-      if ((ritual.type!.contains(Constants.typeHabits) || ritual.type == Constants.typeRitual) &&
+      if ((ritual.type!.contains(Constants.typeHabits) ||
+              ritual.type == Constants.typeRitual) &&
           ritual.url.contains(currentRitualURL)) {
         box.delete(ritual.key);
       }

@@ -21,12 +21,15 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   bool hideSprints = true;
   bool hideHighlights = true;
 
   @override
   Widget build(BuildContext context) {
+    for (var imagePath in Constants.illustrations) {
+      precacheImage(AssetImage(imagePath), context);
+    }
+
     ExpandableFab fab = ExpandableFab(
         sprint: SharedPreferencesManager().getShowSprints(),
         highlight: SharedPreferencesManager().getShowHighlight());
@@ -60,9 +63,7 @@ class _HomeState extends State<Home> {
                 setState(() {});
               },
             ),
-            onLongPress: () {
-
-            },
+            onLongPress: () {},
           )
         ],
       ),
@@ -237,7 +238,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildContent(List<Ritual> rituals, {String type = Constants.typeRitual}) {
+  Widget buildContent(List<Ritual> rituals,
+      {String type = Constants.typeRitual}) {
     if (rituals.isEmpty) {
       // Return a message or an empty state widget when there are no rituals.
       return const SizedBox(height: 0, width: 0);
@@ -361,8 +363,8 @@ class _HomeState extends State<Home> {
                         // Use the saturation blend mode to create greyscale effect
                         BlendMode.saturation,
                       ),
-                      child: Image.file(
-                        File(ritual.background!),
+                      child: Image.asset(
+                        ritual.background!,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: 200,
@@ -397,7 +399,19 @@ class _HomeState extends State<Home> {
                       style: const TextStyle(
                           fontSize: 23,
                           color: Colors.white,
-                          fontFamily: "NotoSans-Light"),
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0.2, 0.2),
+                              blurRadius: 3.0,
+                              color: Color.fromARGB(15, 0, 0, 0),
+                            ),
+                            Shadow(
+                              offset: Offset(0.2, 0.2),
+                              blurRadius: 8.0,
+                              color: Color.fromARGB(100, 0, 0, 255),
+                            ),
+                          ],
+                          fontFamily: "NotoSans-SemiBold"),
                     ),
                   ),
 
