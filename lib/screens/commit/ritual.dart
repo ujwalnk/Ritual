@@ -25,6 +25,7 @@ class Commit2Ritual extends StatefulWidget {
 class _Commit2RitualState extends State<Commit2Ritual> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
+  Map cardIllustrations = {};
 
   TimeOfDay selectedTime = TimeOfDay.now();
   bool _init = false;
@@ -45,6 +46,19 @@ class _Commit2RitualState extends State<Commit2Ritual> {
           : TimeOfDay(
               hour: data['time']['hour'], minute: data['time']['minute']);
       _init = !_init;
+    }
+
+        // Precache card illustrations
+    for (var image in Constants.illustrations) {
+      cardIllustrations.addAll({
+        image: Image.asset(
+          image,
+          fit: BoxFit.cover,
+          // width: double.infinity,
+          height: 200,
+        )
+      });
+      precacheImage(cardIllustrations[image].image, context);
     }
 
     return Scaffold(
@@ -134,6 +148,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                               cardBackgroundPath = selectedImage;
                               debugPrint("@ritual: Image selected: $selectedImage");
                             },
+                            cardIllustrations: cardIllustrations,
                           );
                         },
                       );

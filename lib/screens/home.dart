@@ -20,14 +20,27 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+Map cardIllustrations = {};
+
 class _HomeState extends State<Home> {
   bool hideSprints = true;
   bool hideHighlights = true;
 
+
   @override
   Widget build(BuildContext context) {
-    for (var imagePath in Constants.illustrations) {
-      precacheImage(AssetImage(imagePath), context);
+
+    // Precache card illustrations
+    for (var image in Constants.illustrations) {
+      cardIllustrations.addAll({
+        image: Image.asset(
+          image,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: 200,
+        )
+      });
+      precacheImage(cardIllustrations[image].image, context);
     }
 
     ExpandableFab fab = ExpandableFab(
@@ -357,19 +370,13 @@ class _HomeState extends State<Home> {
                   // Background
                   if (ritual.background != Constants.noBackground)
                     ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        // Set greyscale intensity
-                        Colors.grey.withOpacity((1 - ritual.complete)),
-                        // Use the saturation blend mode to create greyscale effect
-                        BlendMode.saturation,
-                      ),
-                      child: Image.asset(
-                        ritual.background!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 200,
-                      ),
-                    )
+                        colorFilter: ColorFilter.mode(
+                          // Set greyscale intensity
+                          Colors.grey.withOpacity((1 - ritual.complete)),
+                          // Use the saturation blend mode to create greyscale effect
+                          BlendMode.saturation,
+                        ),
+                        child: cardIllustrations[ritual.background!])
                   else
                     ColorFiltered(
                       colorFilter: ColorFilter.mode(

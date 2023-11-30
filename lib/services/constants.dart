@@ -30,6 +30,6 @@ class Constants{
   static const Color accentTextColor = primaryTextColor;
 
   // Illustration Assets
-  static const List illustrations = ['assets/illustrations/102ac.jpg', 'assets/illustrations/16d55.jpg', 'assets/illustrations/1bcb7.jpg', 'assets/illustrations/1ef4a.jpg', 'assets/illustrations/77d94.jpg', 'assets/illustrations/990f2.jpg', 'assets/illustrations/a962a.jpg', 'assets/illustrations/b2a02.jpg', 'assets/illustrations/c1ad9.jpg', 'assets/illustrations/d5564.jpg', 'assets/illustrations/d7456.jpg', 'assets/illustrations/e1040.jpg', 'assets/illustrations/eef9c.jpg'];
+  static const List<String> illustrations = ['assets/illustrations/102ac.jpg', 'assets/illustrations/16d55.jpg', 'assets/illustrations/1bcb7.jpg', 'assets/illustrations/1ef4a.jpg', 'assets/illustrations/77d94.jpg', 'assets/illustrations/990f2.jpg', 'assets/illustrations/a962a.jpg', 'assets/illustrations/b2a02.jpg', 'assets/illustrations/c1ad9.jpg', 'assets/illustrations/d5564.jpg', 'assets/illustrations/d7456.jpg', 'assets/illustrations/e1040.jpg', 'assets/illustrations/eef9c.jpg'];
 
 }
