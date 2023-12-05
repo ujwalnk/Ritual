@@ -21,7 +21,6 @@ class Constants{
   // Background Colors
   static const Color primaryColor = Color.fromARGB(255, 255, 255, 255);
   // static const Color accentColor = Color.fromARGB(255, 0, 90, 146);
-  static const Color accentColor = Color.fromARGB(255, 255, 204, 0);
   static const Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
   
   // Text Color

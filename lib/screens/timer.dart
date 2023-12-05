@@ -7,13 +7,16 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 class Timer extends StatefulWidget {
+  const Timer({super.key});
+
   @override
   _TimerState createState() => _TimerState();
 }
 
-// TODO: On complete show makr complete button instead of play pause
+// TODO: On complete show mark complete button instead of play pause
 // TODO: Play audio beep at end
 class _TimerState extends State<Timer> with TickerProviderStateMixin {
   late AnimationController controller;
@@ -129,7 +132,7 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                                   child: Icon(controller.isAnimating
                                       ? Icons.pause
                                       : Icons.play_arrow,
-                                      color: Constants.accentColor),
+                                      color: Color(SharedPreferencesManager().getAccentColor())),
                                       );
                             }),
                       ],

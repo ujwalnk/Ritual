@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
@@ -54,5 +55,14 @@ class SharedPreferencesManager {
 
   Future<void> setFileSequence(int value) async {
     await _prefs.setInt('file_sequence', value);
+  }
+
+  /// App Accent Color
+  int getAccentColor() {
+    return _prefs.getInt('accent_color') ?? 0xFFFFEB3B;
+  }
+
+  Future<void> setAccentColor(int value) async {
+    await _prefs.setInt('accent_color', value);
   }
 }

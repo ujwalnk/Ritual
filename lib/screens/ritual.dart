@@ -41,7 +41,12 @@ class _RitualsState extends State<Rituals> {
                 image: (data["ritual"].background == Constants.noBackground)
                     ? const AssetImage("assets/illustrations/ritual.jpg")
                         as ImageProvider
-                    : FileImage(File(data['background'])),
+                    : (!data["ritual"]
+                            .background
+                            .toString()
+                            .contains("assets/illustrations")
+                        ? FileImage(File(data['ritual'].background))
+                        : AssetImage(data['ritual'].background) as ImageProvider),
                 fit: BoxFit.cover,
               ),
             ),
@@ -183,8 +188,15 @@ class _RitualsState extends State<Rituals> {
           height: 70,
           child: Card(
             // Two day rule coloring
-            color: SharedPreferencesManager().getTwoDayRule() ? (((ritual.checkedOn?.difference(DateTime.now()).inDays ?? double.infinity) >= 2) ? Colors.amber[50] : Colors.white) : Colors.white,
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            color: SharedPreferencesManager().getTwoDayRule()
+                ? (((ritual.checkedOn?.difference(DateTime.now()).inDays ??
+                            double.infinity) >=
+                        2)
+                    ? Colors.amber[50]
+                    : Colors.white)
+                : Colors.white,
+            shape:
+                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
             elevation: 0,
             child: Slidable(
               key: Key(ritual.key.toString()),
@@ -225,8 +237,7 @@ class _RitualsState extends State<Rituals> {
                         child: Icon(
                           (ritual.type == "habit/${Constants.typeRHabit}")
                               ? CustomIcons.rHabit
-                              : (ritual.type ==
-                                      "habit/${Constants.typeDHabit}"
+                              : (ritual.type == "habit/${Constants.typeDHabit}"
                                   ? CustomIcons.dHabit
                                   : (ritual.type ==
                                           "habit/${Constants.typeSHabit}"
@@ -263,7 +274,10 @@ class _RitualsState extends State<Rituals> {
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),
-                            Text(ritual.stackTime ? " ${num.parse(((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))).toStringAsFixed(2))} Min" : " ${ritual.duration} Min",
+                            Text(
+                                ritual.stackTime
+                                    ? " ${num.parse(((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))).toStringAsFixed(2))} Min"
+                                    : " ${ritual.duration} Min",
                                 style: TextStyle(
                                   color: Colors.grey[500],
                                   fontFamily: "NotoSans-Light",
@@ -294,7 +308,8 @@ class _RitualsState extends State<Rituals> {
                         Visibility(
                           // On habit notCheck, show count for sHabits
                           visible: ritual.complete == 0 &&
-                              ritual.type!.contains(Constants.typeSHabit) && !ritual.stackTime,
+                              ritual.type!.contains(Constants.typeSHabit) &&
+                              !ritual.stackTime,
                           child: Text(
                               "${num.parse(((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))).toStringAsFixed(2))}",
                               style: const TextStyle(
@@ -306,23 +321,29 @@ class _RitualsState extends State<Rituals> {
                 // Timer Icon for non Stacked Habits
                 Visibility(
                   visible: ritual.complete == 0 &&
-                        !((ritual.type!.contains(Constants.typeSHabit) && !ritual.stackTime) || ritual.type!.contains(Constants.typeDHabit)),
+                      !((ritual.type!.contains(Constants.typeSHabit) &&
+                              !ritual.stackTime) ||
+                          ritual.type!.contains(Constants.typeDHabit)),
                   child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: IconButton(
-                            icon: const Icon(Icons.timer,
-                                color: Color.fromARGB(75, 158, 158, 158)),
-                            onPressed: () {
-                              ritual.duration = ((ritual.initValue ?? 0) * pow((1 + 0.01), (DateTime.now().difference(ritual.createdOn!).inDays))) as double?;
-                              Navigator.pushNamed(context, "/timer",
-                                  arguments: {
-                                    "ritual": ritual,
-                                  });
-                            }),
-                      ),
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: IconButton(
+                          icon: const Icon(Icons.timer,
+                              color: Color.fromARGB(75, 158, 158, 158)),
+                          onPressed: () {
+                            ritual.duration = ((ritual.initValue ?? 0) *
+                                pow(
+                                    (1 + 0.01),
+                                    (DateTime.now()
+                                        .difference(ritual.createdOn!)
+                                        .inDays))) as double?;
+                            Navigator.pushNamed(context, "/timer", arguments: {
+                              "ritual": ritual,
+                            });
+                          }),
                     ),
+                  ),
                 )
               ]),
             ),

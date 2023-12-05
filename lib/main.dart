@@ -35,7 +35,7 @@ void main() async {
 
       // Other Screens
       "/sort/ritual": (context) => const RitualSort(),
-      "/timer": (context) => Timer(),
+      "/timer": (context) => const Timer(),
     },
 
     theme: ThemeData(

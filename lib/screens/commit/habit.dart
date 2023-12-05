@@ -7,6 +7,7 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 import 'package:duration_picker/duration_picker.dart';
 
@@ -95,7 +96,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
               data['ritual'].type.toString().length)
           : Constants.typeRHabit;
       d = data['mode'] == "edit"
-          ? Duration(minutes: data['ritual'].duration)
+          ? Duration(minutes: data['ritual'].duration.toInt(), seconds: (data['ritual'].duration - data['ritual'].duration.truncate()).toInt())
           : const Duration(minutes: -1);
       // Focus on the text Field
       _textFieldFocusNode.requestFocus();
@@ -251,7 +252,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               context: context,
                               initialTime: Duration(
                                   minutes: data['mode'] == "edit"
-                                      ? data['ritual'].duration
+                                      ? data['ritual'].duration.toInt()
                                       : 5),
                               snapToMins: 5,
                             );
@@ -316,7 +317,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                     fontSize: 20,
                                     fontFamily: "NotoSans-Light")),
                             Checkbox(
-                              activeColor: Constants.accentColor,
+                              activeColor: Color(SharedPreferencesManager().getAccentColor()),
                               value: stackTime,
                               onChanged: (value) {
                                 stackTime = !stackTime;

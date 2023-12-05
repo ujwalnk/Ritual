@@ -32,6 +32,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
 
   String cardBackgroundPath = Constants.noBackground;
 
+  final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
+
   @override
   Widget build(BuildContext context) {
     // Get data from parent screen
@@ -48,7 +50,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
       _init = !_init;
     }
 
-        // Precache card illustrations
+    // Precache card illustrations
     for (var image in Constants.illustrations) {
       cardIllustrations.addAll({
         image: Image.asset(
@@ -78,7 +80,12 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                       debugPrint("@Ritual: Deleting Ritual");
 
                       // Delete the image file
-                      if (data['ritual'].background != Constants.noBackground) {
+                      if ((data['ritual'].background !=
+                              Constants.noBackground) &&
+                          !(data["ritual"]
+                              .background
+                              .toString()
+                              .contains("assets/illustrations"))) {
                         await File(data['ritual'].background).delete();
                       }
 
@@ -131,29 +138,36 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     style:
                         TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                   ),
-                  TextButton.icon(
-                    icon: const Icon(Icons.image),
-                    label: const Text("Pick an Image",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: "NotoSans-Light",
-                        )),
-                    // onPressed: () => _getImage(data),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CustomImagePicker(
-                            onImageSelected: (String selectedImage) {
-                              cardBackgroundPath = selectedImage;
-                              debugPrint("@ritual: Image selected: $selectedImage");
-                            },
-                            cardIllustrations: cardIllustrations,
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  Row(children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.image,
+                        color: accentColor,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomImagePicker(
+                              onImageSelected: (String selectedImage) {
+                                cardBackgroundPath = selectedImage;
+                                debugPrint(
+                                    "@ritual: Image selected: $selectedImage");
+                              },
+                              cardIllustrations: cardIllustrations,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.image_search,
+                        color: accentColor,
+                      ),
+                      onPressed: () => _getImage(data),
+                    ),
+                  ])
                 ],
               ),
               Expanded(
@@ -231,6 +245,70 @@ class _Commit2RitualState extends State<Commit2Ritual> {
             ],
           ),
         ));
+  }
+
+  void _getImage(Map data) async {
+    // Pick an image from the user gallery
+    ImagePicker imagePicker = ImagePicker();
+    final imageFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      // Get the application directory
+      final String appDirPath = (await getApplicationDocumentsDirectory()).path;
+
+      setState(() {
+        // int fileNameIndex = imageFile.path.lastIndexOf("/");
+        int fileExtensionIndex = imageFile.path.lastIndexOf(".");
+
+        // cardBackgroundPath: <app_folder>/images/<current_file_sequence>.<image_extension>
+        if (data['mode'] == "new") {
+          cardBackgroundPath =
+              "$appDirPath/images/${SharedPreferencesManager().getFileSequence()}${imageFile.path.substring(fileExtensionIndex)}";
+
+          // Increment the file numbering sequence
+          SharedPreferencesManager().setFileSequence(
+              SharedPreferencesManager().getFileSequence() + 1);
+        } else if ((data['mode'] == "edit") &&
+            (data["background"] != Constants.noBackground)) {
+          cardBackgroundPath = data['background'];
+
+          // On image replace, needs a cache refresh
+          imageCache.clearLiveImages();
+        } else {
+          cardBackgroundPath =
+              "$appDirPath/images/${SharedPreferencesManager().getFileSequence()}${imageFile.path.substring(fileExtensionIndex)}";
+
+          // Increment the file numbering sequence
+          SharedPreferencesManager().setFileSequence(
+              SharedPreferencesManager().getFileSequence() + 1);
+        }
+      });
+
+      File imageFileTemp = File(imageFile.path);
+      try {
+        // Create directory if not exist
+        Directory("$appDirPath/images").createSync(recursive: true);
+
+        // Copy the source file to internal memory
+        await imageFileTemp.copy(cardBackgroundPath);
+
+        // Check if the file was successfully copied
+        if (File("$appDirPath$cardBackgroundPath").existsSync()) {
+          debugPrint('File copied to: $cardBackgroundPath');
+        } else {
+          debugPrint('Failed to copy the file.');
+        }
+      } catch (e) {
+        // Handle any errors that may occur during the copy operation
+        debugPrint('Error copying the file: $e');
+      }
+
+      // imageFile.saveTo(cardBackgroundPath);
+      debugPrint("@ritual: CardbackgroundPath: $cardBackgroundPath");
+    } else {
+      // Set it to default value to show white background
+      cardBackgroundPath = Constants.noBackground;
+    }
   }
 
   /// Update the selected time

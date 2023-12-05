@@ -26,10 +26,10 @@ class _HomeState extends State<Home> {
   bool hideSprints = true;
   bool hideHighlights = true;
 
+  Color accentColor = Color(SharedPreferencesManager().getAccentColor());
 
   @override
   Widget build(BuildContext context) {
-
     // Precache card illustrations
     for (var image in Constants.illustrations) {
       cardIllustrations.addAll({
@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
             fontFamily: "NotoSans-Light",
           ),
         ),
-        backgroundColor: Constants.accentColor,
+        backgroundColor: accentColor,
         shadowColor: Colors.black,
         elevation: 2,
         actions: <Widget>[
@@ -112,8 +112,8 @@ class _HomeState extends State<Home> {
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.lightbulbOutline,
                                 color: hideHighlights
-                                    ? Constants.accentColor.withAlpha(2000)
-                                    : Constants.accentColor.withAlpha(0)),
+                                    ? accentColor.withAlpha(2000)
+                                    : accentColor.withAlpha(0)),
                           ))
                     ],
                   ),
@@ -167,8 +167,8 @@ class _HomeState extends State<Home> {
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.directionsRun,
                                 color: hideSprints
-                                    ? Constants.accentColor.withAlpha(200)
-                                    : Constants.accentColor.withAlpha(0))))
+                                    ? accentColor.withAlpha(200)
+                                    : accentColor.withAlpha(0))))
                   ]),
                 ),
               ),
@@ -209,7 +209,7 @@ class _HomeState extends State<Home> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10.0),
                         child: Icon(CustomIcons.fire,
-                            color: Constants.accentColor.withAlpha(200)),
+                            color: accentColor.withAlpha(200)),
                       ))
                 ]),
               ),
@@ -376,7 +376,13 @@ class _HomeState extends State<Home> {
                           // Use the saturation blend mode to create greyscale effect
                           BlendMode.saturation,
                         ),
-                        child: cardIllustrations[ritual.background!])
+                        child:
+                            (ritual.background!.contains("assets/illustrations")
+                                ? cardIllustrations[ritual.background!]
+                                : Image.file(File(ritual.background!),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 200)))
                   else
                     ColorFiltered(
                       colorFilter: ColorFilter.mode(
@@ -415,7 +421,7 @@ class _HomeState extends State<Home> {
                             Shadow(
                               offset: Offset(0.2, 0.2),
                               blurRadius: 8.0,
-                              color: Color.fromARGB(100, 0, 0, 255),
+                              color: Colors.black,
                             ),
                           ],
                           fontFamily: "NotoSans-SemiBold"),
