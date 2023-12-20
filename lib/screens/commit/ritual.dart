@@ -39,6 +39,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
+    // Get the background used for the card
+    cardBackgroundPath = data["ritual"].background;
+
     // Focus the text Field
     _textFieldFocusNode.requestFocus();
 
@@ -166,6 +169,13 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         color: accentColor,
                       ),
                       onPressed: () => _getImage(data),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.broken_image,
+                        color: accentColor,
+                      ),
+                      onPressed: () => cardBackgroundPath = Constants.noBackground,
                     ),
                   ])
                 ],

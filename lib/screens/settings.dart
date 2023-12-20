@@ -99,6 +99,7 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
+              const SizedBox(height: 15),
 
               // Check box for Sprint
               Align(
@@ -120,9 +121,10 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
+              const SizedBox(height: 15),
               // App theme color
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.centerRight,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,6 +159,7 @@ class _SettingsState extends State<Settings> {
 
                                       // Update the colors
                                       setState(() {});
+
                                     },
                                     enableAlpha: true,
                                     displayThumbColor: true,
@@ -165,6 +168,7 @@ class _SettingsState extends State<Settings> {
                               );
                             },
                           );
+                          _restartAlert();
                         },
                         icon: Icon(
                           Icons.palette,
@@ -186,9 +190,9 @@ class _SettingsState extends State<Settings> {
               const SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
+              // SizedBox(
+                // width: double.infinity,
+                /*child:*/ TextButton(
                   onPressed: () async {
                     debugPrint("Exporting");
                     try {
@@ -220,7 +224,7 @@ class _SettingsState extends State<Settings> {
                     ],
                   ),
                 ),
-              ),
+              // ),
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
@@ -233,7 +237,7 @@ class _SettingsState extends State<Settings> {
                         final file = result.files.first;
                         restoreHiveBox(file.path!);
 
-                        // Show a confirmation dialog to restart the app
+                        // Show a confirmation dialog to )restart the app
                         _restartAlert();
                       } else {
                         // No file selected
@@ -328,13 +332,13 @@ class _SettingsState extends State<Settings> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Restart Confirmation'),
-          content: const Text('We need to restart the app to sync the data'),
+          content: const Text('Please maunally restart the app to sync the data'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 // Close the dialog and restart the app
-                // Navigator.of(context).pop();
-                Restart.restartApp();
+                Navigator.of(context).pop();
+                // Restart.restartApp();
               },
               child: const Text('Ok!'),
             ),

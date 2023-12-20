@@ -35,22 +35,24 @@ class _RitualsState extends State<Rituals> {
 
       body: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: (data["ritual"].background == Constants.noBackground)
-                    ? const AssetImage("assets/illustrations/ritual.jpg")
-                        as ImageProvider
-                    : (!data["ritual"]
-                            .background
-                            .toString()
-                            .contains("assets/illustrations")
-                        ? FileImage(File(data['ritual'].background))
-                        : AssetImage(data['ritual'].background) as ImageProvider),
-                fit: BoxFit.cover,
+          GestureDetector(
+            onDoubleTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: (data["ritual"].background == Constants.noBackground)
+                      ? const AssetImage("assets/illustrations/ritual.jpg")
+                      : (!data["ritual"]
+                              .background
+                              .toString()
+                              .contains("assets/illustrations")
+                          ? FileImage(File(data['ritual'].background))
+                          : AssetImage(data['ritual'].background) as ImageProvider),
+                  fit: BoxFit.cover,
+                ),
               ),
+              height: 200,
             ),
-            height: 200,
           ),
           Container(
             color: Colors.white,
