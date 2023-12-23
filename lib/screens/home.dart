@@ -28,6 +28,12 @@ class _HomeState extends State<Home> {
 
   Color accentColor = Color(SharedPreferencesManager().getAccentColor());
 
+  Color getFontColorForBackground(Color background) {
+    return (background.computeLuminance() > 0.179)
+        ? Colors.black
+        : Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Precache card illustrations
@@ -55,8 +61,8 @@ class _HomeState extends State<Home> {
                   SharedPreferencesManager().getShowSprints())
               ? "Home"
               : "Rituals",
-          style: const TextStyle(
-            color: Constants.accentTextColor,
+          style: TextStyle(
+            color: getFontColorForBackground(accentColor),
             fontFamily: "NotoSans-Light",
           ),
         ),
@@ -66,9 +72,9 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           GestureDetector(
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.settings,
-                // color: Colors.white,
+                color: getFontColorForBackground(accentColor),
               ),
               onPressed: () async {
                 await Navigator.pushNamed(context, '/settings');
@@ -371,8 +377,10 @@ class _HomeState extends State<Home> {
                   if (ritual.background != Constants.noBackground)
                     ColorFiltered(
                         colorFilter: ColorFilter.mode(
-                          // Set greyscale intensity
-                          Colors.grey.withOpacity((1 - ritual.complete)),
+                          // Set greyscale intensity if Saturate Cards Enabled
+                          SharedPreferencesManager().getSaturateCard() == true
+                              ? Colors.grey.withOpacity((1 - ritual.complete))
+                              : Colors.white.withOpacity(0),
                           // Use the saturation blend mode to create greyscale effect
                           BlendMode.saturation,
                         ),
@@ -386,8 +394,10 @@ class _HomeState extends State<Home> {
                   else
                     ColorFiltered(
                       colorFilter: ColorFilter.mode(
-                        // Set greyscale intensity
-                        Colors.grey.withOpacity((1 - ritual.complete)),
+                        // Set greyscale intensity if Saturate Cards Enabled
+                        SharedPreferencesManager().getSaturateCard() == true
+                            ? Colors.grey.withOpacity((1 - ritual.complete))
+                            : Colors.white.withOpacity(0),
                         // Use the saturation blend mode to create greyscale effect
                         BlendMode.saturation,
                       ),
@@ -442,6 +452,18 @@ class _HomeState extends State<Home> {
                         style: const TextStyle(
                             fontSize: 23,
                             color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0.2, 0.2),
+                                blurRadius: 3.0,
+                                color: Color.fromARGB(15, 0, 0, 0),
+                              ),
+                              Shadow(
+                                offset: Offset(0.2, 0.2),
+                                blurRadius: 8.0,
+                                color: Colors.black,
+                              ),
+                            ],
                             fontFamily: "NotoSans-Light"),
                       ),
                     ),

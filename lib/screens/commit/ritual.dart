@@ -40,7 +40,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     // Get the background used for the card
-    cardBackgroundPath = data["ritual"].background;
+    cardBackgroundPath = data["ritual"] == null ? Constants.noBackground : data["ritual"].background;
 
     // Focus the text Field
     _textFieldFocusNode.requestFocus();

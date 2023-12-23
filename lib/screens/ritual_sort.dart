@@ -11,7 +11,6 @@ class RitualSort extends StatefulWidget {
 }
 
 class _RitualSortState extends State<RitualSort> {
-  
   @override
   Widget build(BuildContext context) {
     // Data from caller page
@@ -23,7 +22,8 @@ class _RitualSortState extends State<RitualSort> {
 
     // Get the habits of the ritual
     for (Ritual r in content) {
-      if (r.url.contains(data['ritual'].url) && r.type != Constants.typeRitual) {
+      if (r.url.contains(data['ritual'].url) &&
+          r.type != Constants.typeRitual) {
         habitsOfRitual.add(r);
       }
     }
@@ -39,24 +39,28 @@ class _RitualSortState extends State<RitualSort> {
           centerTitle: true,
         ),
         body: ReorderableListView(
+          buildDefaultDragHandles: false,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           children: <Widget>[
             for (int index = 0; index < habitsOfRitual.length; index += 1)
-              ListTile(
+              ReorderableDragStartListener(
                 key: Key('$index'),
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Habit card text
-                    Text(habitsOfRitual[index]
-                        .url
-                        .replaceFirst("${data['ritual'].url.toString()}/", "")),
-                    // Reorder handle icon
-                    const Icon(Icons.drag_indicator_sharp),
-                  ],
+                index: index,
+                child: ListTile(
+                  key: Key('$index'),
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Habit card text
+                      Text(habitsOfRitual[index].url.replaceFirst(
+                          "${data['ritual'].url.toString()}/", "")),
+                      // Reorder handle icon
+                      const Icon(Icons.drag_indicator_sharp),
+                    ],
+                  ),
                 ),
-              ),
+              )
           ],
           onReorder: (int oldIndex, int newIndex) {
             setState(() {

@@ -209,7 +209,7 @@ class _RitualsState extends State<Rituals> {
                   }),
                   children: [
                     SlidableAction(
-                      onPressed: ((context) => editHabit()),
+                      onPressed: ((context) => deleteHabit(ritual)),
                       backgroundColor: const Color.fromARGB(189, 229, 198, 190),
                       icon: Icons.delete_forever,
                       label: "Delete",
@@ -266,13 +266,13 @@ class _RitualsState extends State<Rituals> {
                               maxLines: 2,
                               style: TextStyle(
                                 fontSize: 23,
-                                color: ritual.priority == 1
+                                color: SharedPreferencesManager().getColorizeHabitText == true ? (ritual.priority == 1
                                     ? Colors.red
                                     : (ritual.priority == 2
                                         ? Colors.orange
                                         : (ritual.priority == 3
                                             ? Colors.blue
-                                            : Colors.black)),
+                                            : Colors.black))) : Colors.black,
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),
@@ -325,7 +325,7 @@ class _RitualsState extends State<Rituals> {
                   visible: ritual.complete == 0 &&
                       !((ritual.type!.contains(Constants.typeSHabit) &&
                               !ritual.stackTime) ||
-                          ritual.type!.contains(Constants.typeDHabit)),
+                          ritual.type!.contains(Constants.typeDHabit)) && (ritual.duration != 0),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Padding(

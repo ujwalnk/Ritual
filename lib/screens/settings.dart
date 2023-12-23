@@ -24,13 +24,26 @@ class _SettingsState extends State<Settings> {
 
   Color accentColor = Color(SharedPreferencesManager().getAccentColor());
 
+  Color getFontColorForBackground(Color background) {
+    return (background.computeLuminance() > 0.179)? Colors.black : Colors.white;
+  }
+
+  // Spacing between elements of a field
+  static const double elementSpacing = 0;
+
+  // Spacing between different fields
+  static const double fieldSpacing = 15;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             "Settings",
-            style: TextStyle(fontFamily: "NotoSans-Light"),
+            style: TextStyle(
+              fontFamily: "NotoSans-Light",
+              color: getFontColorForBackground(accentColor),  
+            ),
           ),
           backgroundColor: accentColor,
           elevation: 1,
@@ -46,7 +59,7 @@ class _SettingsState extends State<Settings> {
                         fontWeight: FontWeight.bold,
                         fontFamily: "NotoSans-Light")),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: elementSpacing),
               // Check box for Highlight
               Align(
                 alignment: Alignment.centerLeft,
@@ -67,9 +80,29 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
+              const SizedBox(height: elementSpacing),
+              // Check box for Ritual Saturization
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Saturate Ritual Cards",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: accentColor,
+                      value: SharedPreferencesManager().getSaturateCard(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setSaturateCard(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(height: fieldSpacing),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Display",
@@ -77,7 +110,7 @@ class _SettingsState extends State<Settings> {
                         fontWeight: FontWeight.bold,
                         fontFamily: "NotoSans-Light")),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: elementSpacing),
               // Check box for Highlight
               Align(
                 alignment: Alignment.centerLeft,
@@ -99,7 +132,7 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: elementSpacing),
 
               // Check box for Sprint
               Align(
@@ -121,7 +154,29 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: elementSpacing),
+              // Check box for Highlight
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Colorize Habit Text",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: accentColor,
+                      value: SharedPreferencesManager().getColorizeHabitText(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setColorizeHabitText(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: elementSpacing),
               // App theme color
               Align(
                 alignment: Alignment.centerRight,
@@ -177,9 +232,7 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: fieldSpacing),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Data",
@@ -288,9 +341,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: fieldSpacing),
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Brought to you with love by Madilu",

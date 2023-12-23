@@ -24,6 +24,7 @@ class SharedPreferencesManager {
     return await SharedPreferences.getInstance();
   }
 
+  /// Display Highlights
   bool getShowHighlight() {
     return _prefs.getBool('show_highlight') ?? true;
   }
@@ -32,6 +33,7 @@ class SharedPreferencesManager {
     await _prefs.setBool('show_highlight', value);
   }
 
+  /// Display Sprints
   bool getShowSprints() {
     return _prefs.getBool('show_sprints') ?? true;
   }
@@ -40,6 +42,7 @@ class SharedPreferencesManager {
     await _prefs.setBool('show_sprints', value);
   }
 
+  /// Two Day Rule
   bool getTwoDayRule() {
     return _prefs.getBool('two_day_rule') ?? false;
   }
@@ -55,6 +58,24 @@ class SharedPreferencesManager {
 
   Future<void> setFileSequence(int value) async {
     await _prefs.setInt('file_sequence', value);
+  }
+
+  /// Colorize Habit Text
+  bool getColorizeHabitText() {
+    return _prefs.getBool('colorize_habit_text') ?? true;
+  }
+
+  Future<void> setColorizeHabitText(bool value) async {
+    await _prefs.setBool('colorize_habit_text', value);
+  }
+
+  /// Saturate Ritual Cards
+  bool getSaturateCard() {
+    return _prefs.getBool('saturate_cards') ?? true;
+  }
+
+  Future<void> setSaturateCard(bool value) async {
+    await _prefs.setBool('saturate_cards', value);
   }
 
   /// App Accent Color
