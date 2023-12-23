@@ -4,11 +4,8 @@
   Ritual
 </h1>
 
-<p align="center"><b>A Comprehensive Habit Tracker</b>, <i>"The Free &amp; Open Source Habit Tracker"</i>. </p>
+<p align="center"><b>A Comprehensive Habit Tracker</b>, <i>"The Free &amp; Open Source Habit Tracker"</i>. <br/> designed to help users track their daily routines, habits, highlights, and sprints.</p>
 
-# Ritual
-
-A Comprehensive Habit Tracker designed to help users track their daily routines, habits, highlights, and sprints.
 
 ## Key Features
 The Comprehensive Habit Tracker app offers a range of powerful features to help you achieve your personal and professional goals. Here's a closer look at what you can do with the app:
