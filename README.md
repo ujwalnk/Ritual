@@ -4,7 +4,8 @@
   Ritual
 </h1>
 
-<p align="center"><b>A Comprehensive Habit Tracker</b>, <i>"The Free &amp; Open Source Habit Tracker"</i>. <br/> designed to help users track their daily routines, habits, highlights, and sprints.</p>
+<p align="center"><b>A Comprehensive Habit Tracker</b>, <i>"The Free &amp; Open Source Habit Tracker"</i>. <br/> 
+designed to help users track their daily routines, habits, highlights, and sprints.</p>
 
 
 ## Key Features
