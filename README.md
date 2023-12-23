@@ -1,3 +1,11 @@
+<h1 align="center">
+  <img src="assets/icons/path53.svg" alt="Ritual">
+  <br />
+  Ritual
+</h1>
+
+<p align="center"><b>A Comprehensive Habit Tracker</b>, <i>"The Free &amp; Open Source Habit Tracker"</i>. </p>
+
 # Ritual
 
 A Comprehensive Habit Tracker designed to help users track their daily routines, habits, highlights, and sprints.
