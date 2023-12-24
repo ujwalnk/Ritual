@@ -69,3 +69,17 @@ Please ensure that your code adheres to the coding style and conventions of the 
 ## Acknowledgments
 
 - Images from Freepik - check out the attributions @ attributions.md
+
+
+## Renaming images using python
+
+```bash
+cd <> # Navigate to the root dierctory
+python3 ./tools/name_assets.py
+```
+
+Copy the output array into the constants.dart file 
+
+```dart
+static const List<String> illustrations = <copy the array here>
+```
