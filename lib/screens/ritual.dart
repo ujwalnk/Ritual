@@ -47,7 +47,8 @@ class _RitualsState extends State<Rituals> {
                               .toString()
                               .contains("assets/illustrations")
                           ? FileImage(File(data['ritual'].background))
-                          : AssetImage(data['ritual'].background) as ImageProvider),
+                          : AssetImage(data['ritual'].background)
+                              as ImageProvider),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -266,13 +267,17 @@ class _RitualsState extends State<Rituals> {
                               maxLines: 2,
                               style: TextStyle(
                                 fontSize: 23,
-                                color: SharedPreferencesManager().getColorizeHabitText == true ? (ritual.priority == 1
-                                    ? Colors.red
-                                    : (ritual.priority == 2
-                                        ? Colors.orange
-                                        : (ritual.priority == 3
-                                            ? Colors.blue
-                                            : Colors.black))) : Colors.black,
+                                color: SharedPreferencesManager()
+                                            .getColorizeHabitText ==
+                                        true
+                                    ? (ritual.priority == 1
+                                        ? Colors.red
+                                        : (ritual.priority == 2
+                                            ? Colors.orange
+                                            : (ritual.priority == 3
+                                                ? Colors.blue
+                                                : Colors.black)))
+                                    : Colors.black,
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),
@@ -325,7 +330,8 @@ class _RitualsState extends State<Rituals> {
                   visible: ritual.complete == 0 &&
                       !((ritual.type!.contains(Constants.typeSHabit) &&
                               !ritual.stackTime) ||
-                          ritual.type!.contains(Constants.typeDHabit)) && (ritual.duration != 0),
+                          ritual.type!.contains(Constants.typeDHabit)) &&
+                      (ritual.duration != 0),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
@@ -334,15 +340,20 @@ class _RitualsState extends State<Rituals> {
                           icon: const Icon(Icons.timer,
                               color: Color.fromARGB(75, 158, 158, 158)),
                           onPressed: () {
-                            ritual.duration = ((ritual.initValue ?? 0) *
-                                pow(
-                                    (1 + 0.01),
-                                    (DateTime.now()
-                                        .difference(ritual.createdOn!)
-                                        .inDays))) as double?;
+                            debugPrint("Before navigator: ${ritual.duration}");
+                            if (ritual.type == Constants.typeSHabit) {
+                              ritual.duration = ((ritual.initValue ?? 0) *
+                                  pow(
+                                      (1 + 0.01),
+                                      (DateTime.now()
+                                          .difference(ritual.createdOn!)
+                                          .inDays))) as double?;
+                              ritual.save();
+                            }
                             Navigator.pushNamed(context, "/timer", arguments: {
                               "ritual": ritual,
                             });
+                            debugPrint("After navigator: ${ritual.duration}");
                           }),
                     ),
                   ),

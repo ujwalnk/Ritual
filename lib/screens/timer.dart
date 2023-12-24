@@ -34,10 +34,11 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
 
     // init
     if (!init) {
+
       // Set duration
       controller = AnimationController(
           vsync: this,
-          duration: Duration(minutes: data['ritual'].duration),
+          duration: Duration(minutes: data['ritual'].duration.toInt()),
           value: 1.0);
       init = true;
     }
@@ -106,12 +107,14 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                               if (controller.value == 0) {
                                 // Notify user on TimeUp
                                 FlutterRingtonePlayer.playNotification();
-                                
+                                debugPrint("Ritual duration before: ${data["ritual"].duration}");
                                 // Save Habit as Complete
                                 Ritual r = Boxes.getBox().get(data['ritual'].key)!;
                                 r.complete = 1;
                                 r.checkedOn = DateTime.now();
                                 r.save();
+
+                                debugPrint("Ritual duration after: ${data["ritual"].duration}");
 
                                 // Return to Rituals screen
                                 Navigator.pop(context);

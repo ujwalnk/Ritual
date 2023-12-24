@@ -37,17 +37,17 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     // Precache card illustrations
-    for (var image in Constants.illustrations) {
-      cardIllustrations.addAll({
-        image: Image.asset(
-          image,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: 200,
-        )
-      });
-      precacheImage(cardIllustrations[image].image, context);
-    }
+    // for (var image in Constants.illustrations) {
+    //   cardIllustrations.addAll({
+    //     image: Image.asset(
+    //       image,
+    //       fit: BoxFit.cover,
+    //       width: double.infinity,
+    //       height: 200,
+    //     )
+    //   });
+    //   precacheImage(cardIllustrations[image].image, context);
+    // }
 
     ExpandableFab fab = ExpandableFab(
         sprint: SharedPreferencesManager().getShowSprints(),
@@ -386,7 +386,10 @@ class _HomeState extends State<Home> {
                         ),
                         child:
                             (ritual.background!.contains("assets/illustrations")
-                                ? cardIllustrations[ritual.background!]
+                                ? Image.asset(ritual.background!,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 200)
                                 : Image.file(File(ritual.background!),
                                     fit: BoxFit.cover,
                                     width: double.infinity,
