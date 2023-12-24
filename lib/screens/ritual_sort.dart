@@ -70,10 +70,17 @@ class _RitualSortState extends State<RitualSort> {
               final Ritual item = habitsOfRitual.removeAt(oldIndex);
               habitsOfRitual.insert(newIndex, item);
 
+              final box = Boxes.getBox();
+
               // Update positions
               for (int i = 0; i < habitsOfRitual.length; i++) {
                 habitsOfRitual[i].position = i;
-              }
+
+              // Save position to Hive
+              Ritual r = box.get(habitsOfRitual[i].key)!;
+              r.position = i;
+              r.save();
+              }            
             });
           },
         ));
