@@ -21,6 +21,12 @@ Image by <a href="https://www.freepik.com/free-vector/top-view-modern-office-des
 
 <a href="https://www.freepik.com/free-vector/hand-human-lifting-hearts-scene_29171342.htm#page=4&position=12&from_view=author&uuid=305e3483-6281-4a8c-a7af-0e6bc8e97c9c">Image by gstudioimagen1</a> on Freepik
 
+https://www.freepik.com/free-ai-image/full-shot-ninja-wearing-equipment_81008304.htm#query=illustration&position=41&from_view=search&track=sph&uuid=d73853f5-f1e5-4070-a0e0-4615c224cd7a
+
+<a href="https://www.freepik.com/free-vector/nature-scene-rural-land-agriculture-grassland-abtract-silhouette-asian-farmers-working-rice-field-illustration_12953546.htm#page=2&query=illustration&position=10&from_view=search&track=sph&uuid=d73853f5-f1e5-4070-a0e0-4615c224cd7a">Image by jcomp</a> on Freepik
+
+<a href="https://www.freepik.com/free-photo/sunset-silhouettes-trees-mountains-generative-ai_39657536.htm#page=3&query=illustration&position=14&from_view=search&track=sph&uuid=d73853f5-f1e5-4070-a0e0-4615c224cd7a">Image by pvproductions</a> on Freepik
+
 # Default Images
 
 Sprint: Image by <a href="https://www.freepik.com/free-vector/flat-design-race-starting-line-illustration_28917548.htm#query=sprint%20illustration&position=48&from_view=search&track=ais">Freepik</a>
