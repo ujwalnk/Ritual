@@ -12,7 +12,6 @@ import 'package:ritual/screens/home.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/registry.dart';
-import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/constants.dart';
 
 class Splash extends StatefulWidget {
@@ -37,9 +36,6 @@ class _SplashState extends State<Splash> {
     await Hive.initFlutter();
     Hive.registerAdapter(RitualAdapter());
     await Hive.openBox<Ritual>(Registry.hiveFileName);
-
-    // Initialize SharedPreferences
-    await SharedPreferencesManager().init();
 
     final boxes = Boxes.getBox();
     for (var key in boxes.keys) {

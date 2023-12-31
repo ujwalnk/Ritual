@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
@@ -14,6 +13,15 @@ class SharedPreferencesManager {
 
   SharedPreferencesManager._internal();
 
+  static const String showHighlight = 'a';
+  static const String showSprints = 'b';
+  static const String twoDayRule = 'c';
+  static const String fileSequence = 'd';
+  static const String appMode = 'e';
+  static const String colorizeHabitText = 'f';
+  static const String saturateCards = 'g';
+  static const String accentColor = 'h';
+
   // Initialize SharedPreferences asynchronously
   Future<void> init() async {
     _prefs = await _initPrefs();
@@ -26,64 +34,73 @@ class SharedPreferencesManager {
 
   /// Display Highlights
   bool getShowHighlight() {
-    return _prefs.getBool('show_highlight') ?? true;
+    return _prefs.getBool(showHighlight) ?? true;
   }
 
   Future<void> setShowHighlight(bool value) async {
-    await _prefs.setBool('show_highlight', value);
+    await _prefs.setBool(showHighlight, value);
   }
 
   /// Display Sprints
   bool getShowSprints() {
-    return _prefs.getBool('show_sprints') ?? true;
+    return _prefs.getBool(showSprints) ?? true;
   }
 
   Future<void> setShowSprints(bool value) async {
-    await _prefs.setBool('show_sprints', value);
+    await _prefs.setBool(showSprints, value);
   }
 
   /// Two Day Rule
   bool getTwoDayRule() {
-    return _prefs.getBool('two_day_rule') ?? false;
+    return _prefs.getBool(twoDayRule) ?? false;
   }
 
   Future<void> setTwoDayRule(bool value) async {
-    await _prefs.setBool('two_day_rule', value);
+    await _prefs.setBool(twoDayRule, value);
   }
 
   /// File Numbering for stored files
   int getFileSequence() {
-    return _prefs.getInt('file_sequence') ?? 0;
+    return _prefs.getInt(fileSequence) ?? 0;
   }
 
   Future<void> setFileSequence(int value) async {
-    await _prefs.setInt('file_sequence', value);
+    await _prefs.setInt(fileSequence, value);
+  }
+
+  /// File Numbering for stored files
+  int getAppMode() {
+    return _prefs.getInt(appMode) ?? 0;
+  }
+
+  Future<void> setAppMode(int value) async {
+    await _prefs.setInt(appMode, value);
   }
 
   /// Colorize Habit Text
   bool getColorizeHabitText() {
-    return _prefs.getBool('colorize_habit_text') ?? true;
+    return _prefs.getBool(colorizeHabitText) ?? true;
   }
 
   Future<void> setColorizeHabitText(bool value) async {
-    await _prefs.setBool('colorize_habit_text', value);
+    await _prefs.setBool(colorizeHabitText, value);
   }
 
   /// Saturate Ritual Cards
   bool getSaturateCard() {
-    return _prefs.getBool('saturate_cards') ?? true;
+    return _prefs.getBool(saturateCards) ?? true;
   }
 
   Future<void> setSaturateCard(bool value) async {
-    await _prefs.setBool('saturate_cards', value);
+    await _prefs.setBool(saturateCards, value);
   }
 
   /// App Accent Color
   int getAccentColor() {
-    return _prefs.getInt('accent_color') ?? 0xFFFFEB3B;
+    return _prefs.getInt(accentColor) ?? 0xFFFFEB3B;
   }
 
   Future<void> setAccentColor(int value) async {
-    await _prefs.setInt('accent_color', value);
+    await _prefs.setInt(accentColor, value);
   }
 }

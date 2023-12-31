@@ -13,15 +13,20 @@ import 'package:ritual/screens/commit/habit.dart';
 import 'package:ritual/screens/commit/highlight.dart';
 import 'package:ritual/screens/commit/ritual.dart';
 import 'package:ritual/screens/commit/sprint.dart';
+import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize SharedPreferences
+  await SharedPreferencesManager().init();
 
   runApp(MaterialApp(
-
     // App initialization during splash
     initialRoute: "/splash",
 
-    routes:{
+    routes: {
       "/splash": (context) => const Splash(), // Loading Screen
       "/home": (context) => const Home(), // Default page
       "/settings": (context) => const Settings(),
@@ -38,12 +43,14 @@ void main() async {
       "/timer": (context) => const Timer(),
     },
 
-    theme: ThemeData(
-      useMaterial3: true,
-      primarySwatch: Colors.blue
-    ),
+    theme: ThemeData(),
+    darkTheme: ThemeData.dark(),
+    themeMode: (SharedPreferencesManager().getAppMode() == Constants.modeAuto
+        ? ThemeMode.system
+        : (SharedPreferencesManager().getAppMode() == Constants.modeDark
+            ? ThemeMode.dark
+            : ThemeMode.light)),
 
     debugShowCheckedModeBanner: false,
-
   ));
 }

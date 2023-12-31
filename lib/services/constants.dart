@@ -16,6 +16,11 @@ class Constants{
   // Card Background constant
   static const String noBackground = "default";
 
+  // Application mode selection
+  static const int modeLight = 0;
+  static const int modeDark = 1;
+  static const int modeAuto = 2;
+
   // Application Colors
   
   // Background Colors

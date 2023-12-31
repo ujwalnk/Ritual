@@ -54,7 +54,6 @@ class _HomeState extends State<Home> {
         highlight: SharedPreferencesManager().getShowHighlight());
 
     return Scaffold(
-      backgroundColor: Constants.backgroundColor,
       appBar: AppBar(
         title: Text(
           (SharedPreferencesManager().getShowHighlight() ||

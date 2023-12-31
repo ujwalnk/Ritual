@@ -16,8 +16,6 @@ class Timer extends StatefulWidget {
   _TimerState createState() => _TimerState();
 }
 
-// TODO: On complete show mark complete button instead of play pause
-// TODO: Play audio beep at end
 class _TimerState extends State<Timer> with TickerProviderStateMixin {
   late AnimationController controller;
   bool init = false;
@@ -105,16 +103,16 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                             animation: controller,
                             builder: (context, child) {
                               if (controller.value == 0) {
-                                // Notify user on TimeUp
+                                
+                                // Notify user on TimeUp - Double Ping
                                 FlutterRingtonePlayer.playNotification();
-                                debugPrint("Ritual duration before: ${data["ritual"].duration}");
-                                // Save Habit as Complete
+                                FlutterRingtonePlayer.playNotification();
+                                
+                                // Mark Habit as Complete and save into hive
                                 Ritual r = Boxes.getBox().get(data['ritual'].key)!;
                                 r.complete = 1;
                                 r.checkedOn = DateTime.now();
                                 r.save();
-
-                                debugPrint("Ritual duration after: ${data["ritual"].duration}");
 
                                 // Return to Rituals screen
                                 Navigator.pop(context);
@@ -124,6 +122,9 @@ class _TimerState extends State<Timer> with TickerProviderStateMixin {
                                     if (controller.isAnimating) {
                                       controller.stop();
                                     } else {
+                                      // Ping on timer start
+                                      FlutterRingtonePlayer.playNotification();
+
                                       controller.reverse(
                                           from: controller.value == 0.0
                                               ? 1.0

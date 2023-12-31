@@ -11,6 +11,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
@@ -56,7 +57,6 @@ class _RitualsState extends State<Rituals> {
             ),
           ),
           Container(
-            color: Colors.white,
             child: SizedBox(
               width: double.infinity,
               height: 50,
@@ -74,7 +74,6 @@ class _RitualsState extends State<Rituals> {
                       child: Text(
                         data['ritual'].url.toString().replaceFirst('/', ""),
                         style: const TextStyle(
-                          color: Colors.black,
                           fontFamily: "NotoSans-Light",
                           fontSize: 32,
                         ),
@@ -196,8 +195,8 @@ class _RitualsState extends State<Rituals> {
                             double.infinity) >=
                         2)
                     ? Colors.amber[50]
-                    : Colors.white)
-                : Colors.white,
+                    : (Misc.isDark(context) ? Colors.black26 : Colors.white))
+                : ((Misc.isDark(context)) ? Colors.black26 : Colors.white),
             shape:
                 const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
             elevation: 0,
@@ -252,7 +251,7 @@ class _RitualsState extends State<Rituals> {
                                   ? const Color.fromARGB(75, 255, 153, 0)
                                   : (ritual.priority == 3
                                       ? const Color.fromARGB(75, 33, 149, 243)
-                                      : const Color.fromARGB(75, 0, 0, 0))),
+                                      : (Misc.isDark(context) ? const Color.fromARGB(75, 255, 255, 255) : const Color.fromARGB(75, 0, 0, 0)))),
                           size: 16,
                         ),
                       ),
@@ -276,8 +275,8 @@ class _RitualsState extends State<Rituals> {
                                             ? Colors.orange
                                             : (ritual.priority == 3
                                                 ? Colors.blue
-                                                : Colors.black)))
-                                    : Colors.black,
+                                                : (Misc.isDark(context) ? Colors.black : Colors.white))))
+                                    : (Misc.isDark(context) ? Colors.white : Colors.black),
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),
