@@ -7,14 +7,22 @@ import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
 class Misc {
-
   // Check for using dark background
   static bool isDark(BuildContext context) {
-    debugPrint("Returning: ${(((MediaQuery.of(context).platformBrightness == Brightness.dark) &&
-            (SharedPreferencesManager().getAppMode() == Constants.modeAuto)) ||
-        (SharedPreferencesManager().getAppMode() == Constants.modeDark))}");
+    debugPrint(
+        "Returning: ${(((MediaQuery.of(context).platformBrightness == Brightness.dark) && (SharedPreferencesManager().getAppMode() == Constants.modeAuto)) || (SharedPreferencesManager().getAppMode() == Constants.modeDark))}");
     return (((MediaQuery.of(context).platformBrightness == Brightness.dark) &&
             (SharedPreferencesManager().getAppMode() == Constants.modeAuto)) ||
         (SharedPreferencesManager().getAppMode() == Constants.modeDark));
+  }
+
+  // SnackBar
+  static void showAutoDismissSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 }

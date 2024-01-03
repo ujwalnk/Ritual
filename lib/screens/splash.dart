@@ -7,12 +7,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ritual/model/ritual.dart';
 
 // Screens
+import 'package:ritual/screens/getting_started.dart';
 import 'package:ritual/screens/home.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/registry.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/shared_prefs.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -84,10 +86,12 @@ class _SplashState extends State<Splash> {
 
     debugPrint("Date today: ${DateTime.now().day}");
 
-    // Navigate to the home page
+    bool shouldnavigateHome = SharedPreferencesManager().getAppInit();
+
+    // Navigate to the home page if appInit otherwise to GettingStarted 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) => const Home(),
-      settings: const RouteSettings(name: "Home"),
+      builder: (context) => shouldnavigateHome ? const Home() : const GettingStarted(),
+      settings: RouteSettings(name: shouldnavigateHome ? "Home" : "Getting Started"),
     ));
   }
 

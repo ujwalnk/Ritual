@@ -114,10 +114,16 @@ class _RitualsState extends State<Rituals> {
               return buildContent(rituals);
             },
           ),
-        ],
+        ], 
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+
+        },
+        child: const Icon(Icons.fast_forward_rounded)
       ),
     );
-  }
+  } 
 
   /// Build the list of cards
   Widget buildContent(List<Ritual> content) {
@@ -134,10 +140,15 @@ class _RitualsState extends State<Rituals> {
         closeWhenOpened: true,
         child: Expanded(
           child: ListView.builder(
-            itemCount: content.length,
+            itemCount: content.length + 1,
             itemBuilder: (BuildContext context, int index) {
-              final ritual = content[index];
-              return buildCard(context, ritual);
+              if (index < content.length) {
+                final ritual = content[index];
+                return buildCard(context, ritual);
+              } else {
+                // Add extra space in the end for the FAB
+                return const SizedBox(height: 100.0);
+              }
             },
           ),
         ),
@@ -194,7 +205,9 @@ class _RitualsState extends State<Rituals> {
                 ? (((ritual.checkedOn?.difference(DateTime.now()).inDays ??
                             double.infinity) >=
                         2)
-                    ? Colors.amber[50]
+                    ? (Misc.isDark(context)
+                        ? const Color.fromARGB(255, 63, 51, 12)
+                        : Colors.amber[50])
                     : (Misc.isDark(context) ? Colors.black26 : Colors.white))
                 : ((Misc.isDark(context)) ? Colors.black26 : Colors.white),
             shape:
@@ -228,7 +241,7 @@ class _RitualsState extends State<Rituals> {
                     ),
                   ]),
               child: Stack(children: [
-                Container(
+                SizedBox(
                   height: double.infinity,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -251,7 +264,11 @@ class _RitualsState extends State<Rituals> {
                                   ? const Color.fromARGB(75, 255, 153, 0)
                                   : (ritual.priority == 3
                                       ? const Color.fromARGB(75, 33, 149, 243)
-                                      : (Misc.isDark(context) ? const Color.fromARGB(75, 255, 255, 255) : const Color.fromARGB(75, 0, 0, 0)))),
+                                      : (Misc.isDark(context)
+                                          ? const Color.fromARGB(
+                                              75, 255, 255, 255)
+                                          : const Color.fromARGB(
+                                              75, 0, 0, 0)))),
                           size: 16,
                         ),
                       ),
@@ -275,8 +292,12 @@ class _RitualsState extends State<Rituals> {
                                             ? Colors.orange
                                             : (ritual.priority == 3
                                                 ? Colors.blue
-                                                : (Misc.isDark(context) ? Colors.black : Colors.white))))
-                                    : (Misc.isDark(context) ? Colors.white : Colors.black),
+                                                : (Misc.isDark(context)
+                                                    ? Colors.black
+                                                    : Colors.white))))
+                                    : (Misc.isDark(context)
+                                        ? Colors.white
+                                        : Colors.black),
                                 fontFamily: "NotoSans-Light",
                               ),
                             ),

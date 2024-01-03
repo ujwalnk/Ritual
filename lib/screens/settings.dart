@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -56,357 +57,388 @@ class _SettingsState extends State<Settings> {
           backgroundColor: accentColor,
           elevation: 1,
         ),
-        body: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              children: <Widget>[
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Features",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "NotoSans-Light")),
+        body: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            children: <Widget>[
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Features",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
+              ),
+              const SizedBox(height: elementSpacing),
+              // Check box for Highlight
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Two Day Rule",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: accentColor,
+                      value: SharedPreferencesManager().getTwoDayRule(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager().setTwoDayRule(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: elementSpacing),
-                // Check box for Highlight
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Two Day Rule",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        activeColor: accentColor,
-                        value: SharedPreferencesManager().getTwoDayRule(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager().setTwoDayRule(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
+              ),
+              const SizedBox(height: elementSpacing),
+              // Check box for Ritual Saturization
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Saturate Ritual Cards",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: accentColor,
+                      value: SharedPreferencesManager().getSaturateCard(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setSaturateCard(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: elementSpacing),
-                // Check box for Ritual Saturization
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Saturate Ritual Cards",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        activeColor: accentColor,
-                        value: SharedPreferencesManager().getSaturateCard(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setSaturateCard(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: fieldSpacing),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Display",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "NotoSans-Light")),
-                ),
-                const SizedBox(height: elementSpacing),
-                // Check box for Highlight
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Show Highlights",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        activeColor: accentColor,
-                        value: SharedPreferencesManager().getShowHighlight(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setShowHighlight(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: elementSpacing),
-        
-                // Check box for Sprint
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Show Sprints",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        value: SharedPreferencesManager().getShowSprints(),
-                        activeColor: accentColor,
-                        onChanged: (value) async {
-                          await SharedPreferencesManager().setShowSprints(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: elementSpacing),
-                // Check box for Highlight
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Colorize Habit Text",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        activeColor: accentColor,
-                        value: SharedPreferencesManager().getColorizeHabitText(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setColorizeHabitText(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: elementSpacing),
-        
-                // Check box for Sprint
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("App Theme",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      IconButton(
-                          onPressed: () {
-                            int currentAppMode =
-                                SharedPreferencesManager().getAppMode() + 1;
-                            currentAppMode =
-                                currentAppMode >= 3 ? 0 : currentAppMode;
-        
-                            SharedPreferencesManager().setAppMode(currentAppMode);
+              ),
+              const SizedBox(height: elementSpacing),
+              // Clock for Break Time between habits for runRitual
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Break Time",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                     TextButton.icon(
+                          onPressed: () async {
+                            var resultingDuration = await showDurationPicker(
+                              context: context,
+                              initialTime: Duration(
+                                  minutes: SharedPreferencesManager().getBreakTime()),
+                              snapToMins: 5,
+                              baseUnit: BaseUnit.second
+                            );
+                
+                            debugPrint("@Settings - Resulting Duration: ${resultingDuration?.inSeconds}");
+
+                            SharedPreferencesManager().setBreakTime(resultingDuration?.inSeconds ?? 0);
                             setState(() {});
                           },
-                          icon: appModeIcon[
-                              SharedPreferencesManager().getAppMode()])
-                    ],
-                  ),
+                          icon: const Icon(Icons.timelapse),
+                          label: Text(SharedPreferencesManager().getBreakTime().isNegative
+                              ? "Pick Duration"
+                              : "${SharedPreferencesManager().getBreakTime()} Sec"))
+                  ],
                 ),
-                const SizedBox(height: elementSpacing),
+              ),
+              const SizedBox(height: fieldSpacing),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Display",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
+              ),
+              const SizedBox(height: elementSpacing),
+              // Check box for Highlight
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Show Highlights",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: accentColor,
+                      value: SharedPreferencesManager().getShowHighlight(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setShowHighlight(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: elementSpacing),
         
-                // App theme color
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Accent Color",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  titlePadding: const EdgeInsets.all(0),
-                                  contentPadding: const EdgeInsets.all(0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        MediaQuery.of(context).orientation ==
-                                                Orientation.portrait
-                                            ? const BorderRadius.vertical(
-                                                top: Radius.circular(500),
-                                                bottom: Radius.circular(100),
-                                              )
-                                            : const BorderRadius.horizontal(
-                                                right: Radius.circular(500)),
-                                  ),
-                                  content: SingleChildScrollView(
-                                    child: HueRingPicker(
-                                      pickerColor: Color(
-                                          SharedPreferencesManager()
-                                              .getAccentColor()),
-                                      onColorChanged: (Color c) {
+              // Check box for Sprint
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Show Sprints",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      value: SharedPreferencesManager().getShowSprints(),
+                      activeColor: accentColor,
+                      onChanged: (value) async {
+                        await SharedPreferencesManager().setShowSprints(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: elementSpacing),
+
+              // Check box for Colorize habit text
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Colorize Habit Text",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Checkbox(
+                      activeColor: accentColor,
+                      value: SharedPreferencesManager().getColorizeHabitText(),
+                      onChanged: (value) async {
+                        await SharedPreferencesManager()
+                            .setColorizeHabitText(value!);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: elementSpacing),
+        
+              // App Theme Toggle
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("App Theme",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    IconButton(
+                        onPressed: () {
+                          int currentAppMode =
+                              SharedPreferencesManager().getAppMode() + 1;
+                          currentAppMode =
+                              currentAppMode >= 3 ? 0 : currentAppMode;
+        
+                          SharedPreferencesManager().setAppMode(currentAppMode);
+                          setState(() {});
+                        },
+                        icon: appModeIcon[
+                            SharedPreferencesManager().getAppMode()])
+                  ],
+                ),
+              ),
+              const SizedBox(height: elementSpacing),
+        
+              // App theme color
+              Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const Text("Accent Color",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                titlePadding: const EdgeInsets.all(0),
+                                contentPadding: const EdgeInsets.all(0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      MediaQuery.of(context).orientation ==
+                                              Orientation.portrait
+                                          ? const BorderRadius.vertical(
+                                              top: Radius.circular(500),
+                                              bottom: Radius.circular(100),
+                                            )
+                                          : const BorderRadius.horizontal(
+                                              right: Radius.circular(500)),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: HueRingPicker(
+                                    pickerColor: Color(
                                         SharedPreferencesManager()
-                                            .setAccentColor(c.value);
-                                        accentColor = c;
+                                            .getAccentColor()),
+                                    onColorChanged: (Color c) {
+                                      SharedPreferencesManager()
+                                          .setAccentColor(c.value);
+                                      accentColor = c;
         
-                                        // Update the colors
-                                        setState(() {});
-                                      },
-                                      enableAlpha: true,
-                                      displayThumbColor: true,
-                                    ),
+                                      // Update the colors
+                                      setState(() {});
+                                    },
+                                    enableAlpha: true,
+                                    displayThumbColor: true,
                                   ),
-                                );
-                              },
-                            );
-                            _restartAlert();
-                          },
-                          icon: Icon(
-                            Icons.palette,
-                            color: accentColor,
-                          ))
-                    ],
-                  ),
+                                ),
+                              );
+                            },
+                          );
+                          _restartAlert();
+                        },
+                        icon: Icon(
+                          Icons.palette,
+                          color: accentColor,
+                        ))
+                  ],
                 ),
-                const SizedBox(height: fieldSpacing),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Data",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "NotoSans-Light")),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                // SizedBox(
-                // width: double.infinity,
-                /*child:*/ TextButton(
-                  onPressed: () async {
-                    debugPrint("Exporting");
-                    try {
-                      final result = await FilePicker.platform.getDirectoryPath();
-                      if (result != null) {
-                        // Use the selected path (result) to save your file
-                        debugPrint("Selected path: $result");
-                        backupHiveBox(result);
-                        _snackBar("Backup successful",
-                            backgroundColor: Colors.lightGreen);
-                      } else {
-                        // Show a failure snackbar
-                        _snackBar("Backup failed", backgroundColor: Colors.red);
-                      }
-                    } catch (e) {
-                      debugPrint("Error picking a directory: $e");
+              ),
+              const SizedBox(height: fieldSpacing),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Data",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              // SizedBox(
+              // width: double.infinity,
+              /*child:*/ TextButton(
+                onPressed: () async {
+                  debugPrint("Exporting");
+                  try {
+                    final result = await FilePicker.platform.getDirectoryPath();
+                    if (result != null) {
+                      // Use the selected path (result) to save your file
+                      debugPrint("Selected path: $result");
+                      backupHiveBox(result);
+                      _snackBar("Backup successful",
+                          backgroundColor: Colors.lightGreen);
+                    } else {
                       // Show a failure snackbar
                       _snackBar("Backup failed", backgroundColor: Colors.red);
+                    }
+                  } catch (e) {
+                    debugPrint("Error picking a directory: $e");
+                    // Show a failure snackbar
+                    _snackBar("Backup failed", backgroundColor: Colors.red);
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Export",
+                        style: TextStyle(fontFamily: "NotoSans-Light")),
+                    Icon(Icons.upload_file_rounded, color: accentColor),
+                  ],
+                ),
+              ),
+              // ),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () async {
+                    debugPrint("Importing");
+                    try {
+                      final result = await FilePicker.platform.pickFiles();
+        
+                      if (result != null && result.files.isNotEmpty) {
+                        final file = result.files.first;
+                        restoreHiveBox(file.path!);
+        
+                        // Show a confirmation dialog to )restart the app
+                        _restartAlert();
+                      } else {
+                        // No file selected
+                        _snackBar("No file selected",
+                            backgroundColor: Colors.red);
+                      }
+                    } catch (e) {
+                      debugPrint("Error picking a file: $e");
+        
+                      // Show a failure snackbar
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Restoration failed"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Export",
+                      const Text("Import",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Icon(Icons.upload_file_rounded, color: accentColor),
+                      Icon(Icons.download_rounded, color: accentColor),
                     ],
                   ),
                 ),
-                // ),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () async {
-                      debugPrint("Importing");
-                      try {
-                        final result = await FilePicker.platform.pickFiles();
-        
-                        if (result != null && result.files.isNotEmpty) {
-                          final file = result.files.first;
-                          restoreHiveBox(file.path!);
-        
-                          // Show a confirmation dialog to )restart the app
-                          _restartAlert();
-                        } else {
-                          // No file selected
-                          _snackBar("No file selected",
-                              backgroundColor: Colors.red);
-                        }
-                      } catch (e) {
-                        debugPrint("Error picking a file: $e");
-        
-                        // Show a failure snackbar
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Restoration failed"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text("Import",
-                            style: TextStyle(fontFamily: "NotoSans-Light")),
-                        Icon(Icons.download_rounded, color: accentColor),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () async {
-                      debugPrint("Deleting Hive Database");
-                      // Show a confirmation dialog to restart the app
-                      _deleteForever();
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Delete",
-                            style: TextStyle(fontFamily: "NotoSans-Light")),
-                        Icon(
-                          Icons.delete_forever,
-                          color: Colors.red,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: fieldSpacing),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("Brought to you with love by Madilu",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "NotoSans-Light")),
-                ),
-                const SizedBox(height: 15),
-                // Check box for Highlight
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () async {
+                    debugPrint("Deleting Hive Database");
+                    // Show a confirmation dialog to restart the app
+                    _deleteForever();
+                  },
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      GestureDetector(
-                        behavior: HitTestBehavior.deferToChild,
-                        child: const Text("Find any bugs? Report",
-                            style: TextStyle(fontFamily: "NotoSans-Light")),
-                        onTap: () async {
-                          await launchUrl(Uri.parse(
-                              "https://github.com/ujwalnk/Ritual/issues/new"));
-                          debugPrint("launching browser link");
-                        },
-                      )
+                    children: [
+                      Text("Delete",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
+                      Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: fieldSpacing),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Brought to you with love by Madilu",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "NotoSans-Light")),
+              ),
+              const SizedBox(height: fieldSpacing),
+              // Report bugs links
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    GestureDetector(
+                      behavior: HitTestBehavior.deferToChild,
+                      child: const Text("Find any bugs? Report",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
+                      onTap: () async {
+                        await launchUrl(Uri.parse(
+                            "https://github.com/ujwalnk/Ritual/issues/new"));
+                        debugPrint("launching browser link");
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ));
   }

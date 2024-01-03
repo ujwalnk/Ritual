@@ -21,6 +21,9 @@ class SharedPreferencesManager {
   static const String colorizeHabitText = 'f';
   static const String saturateCards = 'g';
   static const String accentColor = 'h';
+  static const String screenTimeout = 'i';
+  static const String appInit = 'j';
+  static const String breakTime = 'k';
 
   // Initialize SharedPreferences asynchronously
   Future<void> init() async {
@@ -102,5 +105,32 @@ class SharedPreferencesManager {
 
   Future<void> setAccentColor(int value) async {
     await _prefs.setInt(accentColor, value);
+  }
+
+  /// Screen Timeout on Timer Screen
+  bool getScreenTimeout() {
+    return _prefs.getBool(screenTimeout) ?? true;
+  }
+
+  Future<void> setScreenTimeout(bool b) async {
+    await _prefs.setBool(screenTimeout, b);
+  }
+
+  /// Screen Timeout on Timer Screen
+  bool getAppInit() {
+    return _prefs.getBool(appInit) ?? false;
+  }
+
+  Future<void> setAppInit(bool b) async {
+    await _prefs.setBool(appInit, b);
+  }
+
+  /// Break Time between Habits
+  int getBreakTime() {
+    return _prefs.getInt(breakTime) ?? 0;
+  }
+
+  Future<void> setBreakTime(int value) async {
+    await _prefs.setInt(breakTime, value);
   }
 }

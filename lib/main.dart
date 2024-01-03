@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Screens
+import 'package:ritual/screens/getting_started.dart';
 import 'package:ritual/screens/home.dart';
 import 'package:ritual/screens/ritual.dart';
 import 'package:ritual/screens/ritual_sort.dart';
@@ -31,6 +32,7 @@ void main() async {
       "/home": (context) => const Home(), // Default page
       "/settings": (context) => const Settings(),
       "/rituals": (context) => const Rituals(),
+      "/gettingstarted": (context) => const GettingStarted(),
 
       // Commit Screens
       "/commit/habit": (context) => const Commit2Habit(),
@@ -43,7 +45,9 @@ void main() async {
       "/timer": (context) => const Timer(),
     },
 
-    theme: ThemeData(),
+    theme: ThemeData(
+      primaryColor: Color(SharedPreferencesManager().getAccentColor()),
+    ),
     darkTheme: ThemeData.dark(),
     themeMode: (SharedPreferencesManager().getAppMode() == Constants.modeAuto
         ? ThemeMode.system

@@ -27,6 +27,14 @@ https://www.freepik.com/free-ai-image/full-shot-ninja-wearing-equipment_81008304
 
 <a href="https://www.freepik.com/free-photo/sunset-silhouettes-trees-mountains-generative-ai_39657536.htm#page=3&query=illustration&position=14&from_view=search&track=sph&uuid=d73853f5-f1e5-4070-a0e0-4615c224cd7a">Image by pvproductions</a> on Freepik
 
+<a href="https://www.freepik.com/free-photo/sunset-silhouettes-trees-mountains-generative-ai_39657536.htm#page=3&query=illustration&position=14&from_view=search&track=sph&uuid=d73853f5-f1e5-4070-a0e0-4615c224cd7a">Image by pvproductions</a> on Freepik
+
+Image by <a href="https://www.freepik.com/free-vector/gradient-illustration-world-music-day-celebration_41688334.htm#query=musical%20istruments%20illustrations&position=4&from_view=search&track=ais&uuid=e2a36ea5-f2bb-4f98-81c8-d636e48a9f93">Freepik</a>
+
+<a href="https://www.freepik.com/free-vector/blue-aesthetic-background-musical-instrument-frame-retro-design-vector_20775707.htm#query=musical%20istruments%20illustrations&position=22&from_view=search&track=ais&uuid=e2a36ea5-f2bb-4f98-81c8-d636e48a9f93">Image by rawpixel.com</a> on Freepik
+
+<a href="https://www.freepik.com/free-vector/learning-concept-illustration_10117870.htm#query=study%20illustration&position=7&from_view=search&track=ais&uuid=00d8f974-a0a1-415b-8925-d958cd82220a#position=7&query=study%20illustration">Image by storyset</a> on Freepik
+
 # Default Images
 
 Sprint: Image by <a href="https://www.freepik.com/free-vector/flat-design-race-starting-line-illustration_28917548.htm#query=sprint%20illustration&position=48&from_view=search&track=ais">Freepik</a>
