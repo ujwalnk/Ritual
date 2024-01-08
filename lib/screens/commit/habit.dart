@@ -417,7 +417,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               r.duration = (stackTime
                                   ? double.tryParse(_textFieldControllerIV.text)
                                   : double.tryParse(
-                                      d.inMinutes.toString())) as double?;
+                                      d.inMinutes.toString()));
                             }
 
                             // Set the type

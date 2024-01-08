@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
-import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
