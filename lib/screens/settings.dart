@@ -126,8 +126,7 @@ class _SettingsState extends State<Settings> {
                             var resultingDuration = await showDurationPicker(
                               context: context,
                               initialTime: Duration(
-                                  minutes: SharedPreferencesManager().getBreakTime()),
-                              snapToMins: 5,
+                                  seconds: SharedPreferencesManager().getBreakTime()),
                               baseUnit: BaseUnit.second
                             );
                 

@@ -69,7 +69,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
                   });
                 },
                 tooltip: _isExpanded ? 'Collapse' : 'Expand',
-                backgroundColor: Color(SharedPreferencesManager().getAccentColor()),
+                // backgroundColor: Color(SharedPreferencesManager().getAccentColor()),
                 child: Icon(_isExpanded ? Icons.close : Icons.add),
               ),
             ],

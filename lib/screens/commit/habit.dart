@@ -5,6 +5,7 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/shared_prefs.dart';
@@ -28,30 +29,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
   final FocusNode _textFieldFocusNodeIV = FocusNode();
 
   bool stackTime = false;
-
-  // Define a list of priorities with associated colors.
-  final List<Map<String, dynamic>> priorities = [
-    {
-      'text': 'Priority 1',
-      'color': Colors.red,
-      'icon': const Icon(CustomIcons.circle1, size: 16, color: Colors.red)
-    },
-    {
-      'text': 'Priority 2',
-      'color': Colors.orange,
-      'icon': const Icon(CustomIcons.circle2, size: 16, color: Colors.orange)
-    },
-    {
-      'text': 'Priority 3',
-      'color': Colors.blue,
-      'icon': const Icon(CustomIcons.circle3, size: 16, color: Colors.blue)
-    },
-    {
-      'text': 'Priority 4',
-      'color': Colors.black,
-      'icon': const Icon(CustomIcons.circle4, size: 16, color: Colors.black)
-    },
-  ];
+  bool habitExists = false;
 
   // Define a list of habit types with associated icons.
   final List<Map<String, dynamic>> habitTypes = [
@@ -75,6 +53,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
   // Set defaults - Priority 4 and Regular Habit
   String selectedPriority = "Priority 4";
   String selectedType = Constants.typeRHabit;
+  String? errorMessage;
 
   bool initWidget = false;
 
@@ -82,6 +61,37 @@ class _Commit2HabitState extends State<Commit2Habit> {
 
   @override
   Widget build(BuildContext context) {
+
+      // Define a list of priorities with associated colors.
+  final List<Map<String, dynamic>> priorities = [
+    {
+      'text': 'Priority 1',
+      'color': Colors.red,
+      'icon': const Icon(CustomIcons.circle1, size: 16, color: Colors.red)
+    },
+    {
+      'text': 'Priority 2',
+      'color': Colors.orange,
+      'icon': const Icon(CustomIcons.circle2, size: 16, color: Colors.orange)
+    },
+    {
+      'text': 'Priority 3',
+      'color': Colors.blue,
+      'icon': const Icon(CustomIcons.circle3, size: 16, color: Colors.blue)
+    },
+    {
+      'text': 'Priority 4',
+      'color': Misc.isDark(context)
+              ? Colors.white
+              : Colors.black,
+      'icon': Icon(CustomIcons.circle4,
+          size: 16,
+          color: Misc.isDark(context)
+              ? Colors.white
+              : Colors.black)
+    },
+  ];
+
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     if (!initWidget) {
@@ -96,14 +106,18 @@ class _Commit2HabitState extends State<Commit2Habit> {
               data['ritual'].type.toString().length)
           : Constants.typeRHabit;
       d = data['mode'] == "edit"
-          ? Duration(minutes: data['ritual'].duration.toInt(), seconds: (data['ritual'].duration - data['ritual'].duration.truncate()).toInt())
+          ? Duration(
+              minutes: data['ritual'].duration.toInt(),
+              seconds:
+                  (data['ritual'].duration - data['ritual'].duration.truncate())
+                      .toInt())
           : const Duration(minutes: -1);
       // Focus on the text Field
       _textFieldFocusNode.requestFocus();
     }
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text(
             "Commit",
@@ -131,8 +145,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
               children: <Widget>[
                 const Text(
                   "Commit to",
-                  style:
-                      TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                  style: TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                 ),
                 const SizedBox(height: 30),
                 TextField(
@@ -140,10 +153,23 @@ class _Commit2HabitState extends State<Commit2Habit> {
                   controller: _textFieldController,
                   focusNode: _textFieldFocusNode,
                   onChanged: (text) {
-                    setState(() {});
+                    setState(() {
+                      habitExists = Boxes.getBox().values.any((habit) =>
+                          habit.url.endsWith("${data['uri']}/$text"));
+                      errorMessage = habitExists ? "Habit Already Exists" : "";
+                    });
                   },
                   decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
+                      errorText: errorMessage,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          // Red border if habit exists
+                          color: habitExists
+                              ? Colors.red
+                              : Color(
+                                  SharedPreferencesManager().getAccentColor()),
+                        ),
+                      ),
                       hintText: data['mode'] == "new"
                           ? "What's new in ${data['uri'].toString().replaceFirst("/", "")}"
                           : "Rename ${data['uri'].toString().replaceFirst("/", '').substring(data['uri'].toString().replaceFirst("/", '').indexOf('/')).replaceFirst('/', '')}"),
@@ -154,8 +180,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                   children: [
                     const Text(
                       "Choose Priority",
-                      style: TextStyle(
-                          fontSize: 20, fontFamily: "NotoSans-Light"),
+                      style:
+                          TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                     ),
                     DropdownButton<String>(
                       value: selectedPriority,
@@ -197,8 +223,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                   children: [
                     const Text(
                       "Choose Habit Type",
-                      style: TextStyle(
-                          fontSize: 20, fontFamily: "NotoSans-Light"),
+                      style:
+                          TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                     ),
                     DropdownButton<String>(
                       value: selectedType,
@@ -256,7 +282,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                       : 5),
                               snapToMins: 5,
                             );
-                
+
                             d = resultingDuration ??
                                 (d.isNegative ? Duration.zero : d);
                             setState(() {});
@@ -317,7 +343,8 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                     fontSize: 20,
                                     fontFamily: "NotoSans-Light")),
                             Checkbox(
-                              activeColor: Color(SharedPreferencesManager().getAccentColor()),
+                              activeColor: Color(
+                                  SharedPreferencesManager().getAccentColor()),
                               value: stackTime,
                               onChanged: (value) {
                                 stackTime = !stackTime;
@@ -335,15 +362,19 @@ class _Commit2HabitState extends State<Commit2Habit> {
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Visibility(
-                      visible: !_textFieldController.text.contains("/") &&
-                          ((data['mode'] == "edit") ||
-                              (_textFieldController.text.isNotEmpty &&
-                                  (d.inMinutes != -1 || (stackTime && _textFieldControllerIV.text.isNotEmpty)))),
+                      visible: (!_textFieldController.text.contains("/") &&
+                              ((data['mode'] == "edit") ||
+                                  (_textFieldController.text.isNotEmpty &&
+                                      (d.inMinutes != -1 ||
+                                          (stackTime &&
+                                              _textFieldControllerIV
+                                                  .text.isNotEmpty))))) &&
+                          (!habitExists),
                       child: FilledButton.tonal(
                         onPressed: () {
                           debugPrint(
                               "Priority: ${int.parse(selectedPriority.substring(selectedPriority.length - 1))}");
-                
+
                           if (data['mode'] == "new") {
                             final ritual = Ritual()
                               ..complete = 0
@@ -354,35 +385,39 @@ class _Commit2HabitState extends State<Commit2Habit> {
                               ..priority = int.parse(selectedPriority
                                   .substring(selectedPriority.length - 1))
                               ..createdOn = DateTime.now()
-                              ..duration = (stackTime ? double.tryParse(_textFieldControllerIV.text) : double.tryParse(d.inMinutes.toString()))
+                              ..duration = (stackTime
+                                  ? double.tryParse(_textFieldControllerIV.text)
+                                  : double.tryParse(d.inMinutes.toString()))
                               ..initValue =
                                   int.tryParse(_textFieldControllerIV.text)
                               ..stackTime = stackTime;
-                
+
                             final box = Boxes.getBox();
                             box.add(ritual);
                           } else {
-                            Ritual r =
-                                Boxes.getBox().get(data['ritual'].key)!;
-                
+                            Ritual r = Boxes.getBox().get(data['ritual'].key)!;
+
                             // Change the name
                             if (_textFieldController.text.isNotEmpty) {
                               r.url = r.url.substring(
                                       0, r.url.lastIndexOf("/") + 1) +
                                   _textFieldController.text;
                             }
-                
+
                             // Set the priority
                             r.priority = int.parse(selectedPriority
                                 .substring(selectedPriority.length - 1));
-                
+
                             if (_textFieldControllerIV.text.isNotEmpty) {
                               r.initValue =
                                   int.tryParse(_textFieldControllerIV.text);
                             }
-                
-                            if(!d.isNegative){
-                              r.duration = (stackTime ? double.tryParse(_textFieldControllerIV.text) : double.tryParse(d.inMinutes.toString())) as double?;
+
+                            if (!d.isNegative) {
+                              r.duration = (stackTime
+                                  ? double.tryParse(_textFieldControllerIV.text)
+                                  : double.tryParse(
+                                      d.inMinutes.toString())) as double?;
                             }
 
                             // Set the type

@@ -23,12 +23,20 @@ class Rituals extends StatefulWidget {
 }
 
 class _RitualsState extends State<Rituals> {
+  // Total number of habits
   int habitCount = 0;
+
+  Ritual breakHabit = (Ritual()
+    ..url = "/break"
+    ..duration = (SharedPreferencesManager().getBreakTime().toDouble())/ 60);
 
   @override
   Widget build(BuildContext context) {
     // Data from caller page
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
+
+    // List of incomplete Habits
+    List<Ritual> incompleteHabits = [];
 
     return Scaffold(
       // Status bar transparent with body
@@ -105,6 +113,17 @@ class _RitualsState extends State<Rituals> {
                 if ((ritual.type?.contains("habit") ?? false) &&
                     ritual.url.contains(data['ritual'].url)) {
                   rituals.add(ritual);
+
+                  // Add incomplete rHabit / timer sHabit
+                  if (ritual.complete == 0.0 &&
+                      (ritual.type!.contains(Constants.typeRHabit) ||
+                          (ritual.type!.contains(Constants.typeSHabit) &&
+                              ritual.duration != 0))) {
+                    incompleteHabits.add(ritual);
+
+                    // Add break after each habit
+                    incompleteHabits.add(breakHabit);
+                  }
                 }
               }
 
@@ -114,16 +133,17 @@ class _RitualsState extends State<Rituals> {
               return buildContent(rituals);
             },
           ),
-        ], 
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-
-        },
-        child: const Icon(Icons.fast_forward_rounded)
-      ),
+          onPressed: () {
+            Navigator.pushNamed(context, "/timer", arguments: {
+              "rituals": incompleteHabits,
+            });
+          },
+          child: const Icon(Icons.fast_forward_rounded)),
     );
-  } 
+  }
 
   /// Build the list of cards
   Widget buildContent(List<Ritual> content) {
@@ -179,7 +199,10 @@ class _RitualsState extends State<Rituals> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Trying to uncheck?'),
+                title: GestureDetector(
+                  onDoubleTap: (){ritual.complete = 0;},
+                  child: const Text('Trying to uncheck?')
+                ),
                 content: const Text(
                     'Commitments fullfilled; Why unmark accomplishments?'),
                 actions: [
@@ -371,7 +394,7 @@ class _RitualsState extends State<Rituals> {
                               ritual.save();
                             }
                             Navigator.pushNamed(context, "/timer", arguments: {
-                              "ritual": ritual,
+                              "rituals": [ritual],
                             });
                             debugPrint("After navigator: ${ritual.duration}");
                           }),
