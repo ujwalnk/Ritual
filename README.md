@@ -44,28 +44,6 @@ flutter pub get
 flutter run
 ```
 
-## Contributing
-
-We welcome contributions from the community. To contribute to this project, follow these steps:
-
-Fork the repository to your GitHub account.
-Clone the forked repository to your local machine.
-Create a new branch for your feature or bug fix: git checkout -b feature/my-feature.
-Make your changes and commit them: git commit -m "Added a new feature".
-Push your changes to your GitHub repository: git push origin feature/my-feature.
-Create a pull request from your repository to the main project repository.
-Please ensure that your code adheres to the coding style and conventions of the project. Be clear and descriptive in your commit messages.
-
-## Commit message must follow the below pattern
-
-| Category | Symbol |
-| -------- | :----: |
-| Bug fix  |  #     |
-| New Feature | + |
-| Removed Feature | - |
-| Modified Feature | ~ |
-| Known bug | ! |
-
 ## Acknowledgments
 
 - Images from Freepik - check out the attributions @ attributions.md
