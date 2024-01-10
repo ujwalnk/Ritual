@@ -40,13 +40,17 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   // Enable spotlight
   bool spotlightActivate = false;
 
+  // Check for duplicate Highlight
+  bool isDuplicateHighlight = false;
+  String? errorMessage;
+
   @override
   Widget build(BuildContext context) {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     // Focus the textField
-    if(SharedPreferencesManager().getAppInit() <= 1){
+    if (SharedPreferencesManager().getAppInit() <= 1) {
       _textFieldFocusNode.requestFocus();
       spotlightActivate = true;
       SharedPreferencesManager().setAppInit(2);
@@ -110,10 +114,26 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                     controller: _textFieldController,
                     focusNode: _textFieldFocusNode,
                     onChanged: (text) {
-                      setState(() {});
+                      setState(() {
+                        isDuplicateHighlight = Boxes.getBox()
+                            .values
+                            .any((habit) => habit.url.endsWith(text));
+                        // TODO: Check for highlighs spanning multiple days and change the error message: Use Sprints for Highlights spanning multiple days
+                        errorMessage =
+                            isDuplicateHighlight ? "Duplicate Highlight" : "";
+                      });
                     },
                     decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
+                        errorText: errorMessage,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            // Red border if Highlight exists
+                            color: isDuplicateHighlight
+                                ? Colors.red
+                                : Color(SharedPreferencesManager()
+                                    .getAccentColor()),
+                          ),
+                        ),
                         hintText: data['mode'] == "edit"
                             ? "Rename your Highlight ${data['uri'].replaceFirst('/', '')} to"
                             : "What's your latest Highlight"),
@@ -194,12 +214,13 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                               fontSize: 20, fontFamily: "NotoSans-Light")),
                       SpotlightAnt(
                         enable: spotlightActivate,
-                        content: spotlightText("Planning the highlight for tomorrow?"),
+                        content: spotlightText(
+                            "Planning the highlight for tomorrow?"),
                         child: Checkbox(
                           activeColor: accentColor,
                           value: highlight4Today,
                           onChanged: (value) async {
-                            highlight4Today = !value!;
+                            highlight4Today = value!;
                             setState(() {});
                           },
                         ),
@@ -211,9 +232,10 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Visibility(
-                      visible: (_textFieldController.text.isNotEmpty ||
-                              data["mode"] == "edit") &&
-                          !(_textFieldController.text.contains("/")),
+                      visible: ((_textFieldController.text.isNotEmpty ||
+                                  data["mode"] == "edit") &&
+                              !(_textFieldController.text.contains("/"))) &&
+                          !isDuplicateHighlight,
                       child: FilledButton.tonal(
                         onPressed: () {
                           if (data['mode'] == "new") {
@@ -225,7 +247,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                               ..type = Constants.typeHLight
                               // Highlight expires the next day
                               ..expiry = DateTime(
-                                  now.year, now.month, now.day, 0, 0, 0, 0).add(Duration(days:highlight4Today ?  1 : 2));
+                                      now.year, now.month, now.day, 0, 0, 0, 0)
+                                  .add(Duration(days: highlight4Today ? 1 : 2));
 
                             final box = Boxes.getBox();
                             box.add(ritual);

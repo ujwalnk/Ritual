@@ -34,6 +34,10 @@ class _Commit2SprintState extends State<Commit2Sprint> {
   // Illustrations
   Map cardIllustrations = {};
 
+  // Error Message & duplicate sprint check
+  String? errorMessage;
+  bool isDuplicateSprint = false;
+
   @override
   Widget build(BuildContext context) {
     // Get data from parent screen
@@ -95,10 +99,24 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
                 onChanged: (text) {
-                  setState(() {});
+                  setState(() {
+                    isDuplicateSprint = Boxes.getBox()
+                        .values
+                        .any((habit) => habit.url.endsWith(text));
+                    errorMessage = isDuplicateSprint ? "Duplicate Sprint" : "";
+                  });
                 },
                 decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        // Red border if sprint exists
+                        color: isDuplicateSprint
+                            ? Colors.red
+                            : Color(
+                                SharedPreferencesManager().getAccentColor()),
+                      ),
+                    ),
+                    errorText: errorMessage,
                     hintText: data['mode'] == "edit"
                         ? "Rename your Sprint ${data['uri'].replaceFirst('/', '')} to"
                         : "What's your latest Sprint"),
@@ -172,10 +190,11 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: (!_textFieldController.text.contains("/")) &&
-                        ((data["mode"] == "edit") ||
-                            (_textFieldController.text.isNotEmpty &&
-                                (selectedDate != null))),
+                    visible: ((!_textFieldController.text.contains("/")) &&
+                            ((data["mode"] == "edit") ||
+                                (_textFieldController.text.isNotEmpty &&
+                                    (selectedDate != null)))) &&
+                        !isDuplicateSprint,
                     child: FilledButton.tonal(
                       onPressed: () {
                         if (data["mode"] == "new") {
