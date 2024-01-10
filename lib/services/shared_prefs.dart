@@ -55,7 +55,7 @@ class SharedPreferencesManager {
 
   /// Two Day Rule
   bool getTwoDayRule() {
-    return _prefs.getBool(twoDayRule) ?? false;
+    return _prefs.getBool(twoDayRule) ?? true;
   }
 
   Future<void> setTwoDayRule(bool value) async {
@@ -71,9 +71,9 @@ class SharedPreferencesManager {
     await _prefs.setInt(fileSequence, value);
   }
 
-  /// File Numbering for stored files
+  /// App Light(0) / Dark(1) / System(2) Theme
   int getAppMode() {
-    return _prefs.getInt(appMode) ?? 0;
+    return _prefs.getInt(appMode) ?? 2;
   }
 
   Future<void> setAppMode(int value) async {
@@ -117,12 +117,12 @@ class SharedPreferencesManager {
   }
 
   /// Screen Timeout on Timer Screen
-  bool getAppInit() {
-    return _prefs.getBool(appInit) ?? false;
+  int getAppInit() {
+    return _prefs.getInt(appInit) ?? 0;
   }
 
-  Future<void> setAppInit(bool b) async {
-    await _prefs.setBool(appInit, b);
+  Future<void> setAppInit(int b) async {
+    await _prefs.setInt(appInit, b);
   }
 
   /// Break Time between Habits

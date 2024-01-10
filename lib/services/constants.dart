@@ -21,11 +21,19 @@ class Constants{
   static const int modeDark = 1;
   static const int modeAuto = 2;
 
-  // Application Colors
-  
+  // Application Spotlight Order
+  static const int gettingStartedScreen = 1;
+  static const int homeScreen2Highlight = 2;
+  static const int highlightHelp = 3;
+  static const int homeScreen2Sprints = 4;
+  static const int sprintsHelp = 5;
+  static const int homeScreen2Rituals = 6;
+  static const int ritualsHelp = 7;
+  static const int homeSceenTour = 8;
+  static const int ritualScreenTour = 9;
+
   // Background Colors
   static const Color primaryColor = Color.fromARGB(255, 255, 255, 255);
-  // static const Color accentColor = Color.fromARGB(255, 0, 90, 146);
   static const Color backgroundColor = Color.fromARGB(255, 255, 255, 255);
   
   // Text Color

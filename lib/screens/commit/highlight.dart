@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 // Hive database packages
 import 'package:ritual/model/ritual.dart';
@@ -24,11 +25,20 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
+  // Accent color
   final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
 
+  // Card Background illustration path
   String cardBackgroundPath = Constants.noBackground;
 
+  // Check for highlight plans for the next day
+  bool highlight4Today = true;
+
+  // Map of asset Illustrations
   Map cardIllustrations = {};
+
+  // Enable spotlight
+  bool spotlightActivate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +46,11 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     // Focus the textField
-    _textFieldFocusNode.requestFocus();
+    if(SharedPreferencesManager().getAppInit() <= 1){
+      _textFieldFocusNode.requestFocus();
+      spotlightActivate = true;
+      SharedPreferencesManager().setAppInit(2);
+    }
 
     // Precache card illustrations
     for (var image in Constants.illustrations) {
@@ -51,153 +65,199 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
       precacheImage(cardIllustrations[image].image, context);
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Commit",
-            style: TextStyle(fontFamily: "NotoSans-Light"),
-          ),
-          actions: data['mode'] == "edit"
-              ? <Widget>[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                    onPressed: () async {
-                      debugPrint("@Ritual: Deleting Ritual");
-
-                      // Delete the user image
-                      if (data['ritual'].background != Constants.noBackground) {
-                        await File(data['ritual'].background).delete();
-                      }
-
-                      deleteHighlight(data['ritual']);
-                    },
-                  )
-                ]
-              : [],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            children: <Widget>[
-              const Text(
-                "Commit to",
-                style: TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-              ),
-              const SizedBox(height: 30),
-              TextField(
-                controller: _textFieldController,
-                focusNode: _textFieldFocusNode,
-                onChanged: (text) {
-                  setState(() {});
-                },
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    hintText: data['mode'] == "edit"
-                        ? "Rename your Highlight ${data['uri'].replaceFirst('/', '')} to"
-                        : "What's your latest Highlight"),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "A Background",
-                    style:
-                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-                  ),
-                  Row(children: [
+    return SpotlightShow(
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "Commit",
+              style: TextStyle(fontFamily: "NotoSans-Light"),
+            ),
+            actions: data['mode'] == "edit"
+                ? <Widget>[
                     IconButton(
-                      icon: Icon(
-                        Icons.image,
-                        color: accentColor,
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
                       ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CustomImagePicker(
-                              onImageSelected: (String selectedImage) {
-                                cardBackgroundPath = selectedImage;
-                                debugPrint(
-                                    "@ritual: Image selected: $selectedImage");
-                              },
-                              cardIllustrations: cardIllustrations,
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.image_search,
-                        color: accentColor,
-                      ),
-                      onPressed: () => _getImage(data),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.broken_image,
-                        color: accentColor,
-                      ),
-                      onPressed: () =>
-                          cardBackgroundPath = Constants.noBackground,
-                    ),
-                  ])
-                ],
-              ),
-              const SizedBox(height: 30),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Visibility(
-                    visible: _textFieldController.text.isNotEmpty &&
-                        !(_textFieldController.text.contains("/")),
-                    child: FilledButton.tonal(
-                      onPressed: () {
-                        if (data['mode'] == "new") {
-                          DateTime now = DateTime.now();
-                          final ritual = Ritual()
-                            ..complete = 0
-                            ..url = "/${_textFieldController.text}"
-                            ..background = cardBackgroundPath
-                            ..type = Constants.typeHLight
-                            // Highlight expires the next day
-                            ..expiry = DateTime(
-                                now.year, now.month, now.day + 1, 0, 0, 0, 0);
+                      onPressed: () async {
+                        debugPrint("@Ritual: Deleting Ritual");
 
-                          final box = Boxes.getBox();
-                          box.add(ritual);
-                        } else {
-                          Ritual r = data['ritual'];
-
-                          if (_textFieldController.text.isNotEmpty) {
-                            r.url = "/${_textFieldController.text}";
-                          }
-
-                          if ((cardBackgroundPath != r.background) &&
-                              (cardBackgroundPath.isNotEmpty)) {
-                            r.background = cardBackgroundPath;
-                          }
-
-                          r.save();
+                        // Delete the user image
+                        if (data['ritual'].background !=
+                            Constants.noBackground) {
+                          await File(data['ritual'].background).delete();
                         }
 
-                        // Pop the screen
-                        Navigator.pop(context);
+                        deleteHighlight(data['ritual']);
                       },
-                      child: const Text("Commit",
+                    )
+                  ]
+                : [],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              children: <Widget>[
+                const Text(
+                  "Commit to",
+                  style: TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                ),
+                const SizedBox(height: 30),
+                SpotlightAnt(
+                  enable: spotlightActivate,
+                  content: spotlightText("Enter your highlight for the Day"),
+                  child: TextField(
+                    controller: _textFieldController,
+                    focusNode: _textFieldFocusNode,
+                    onChanged: (text) {
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: data['mode'] == "edit"
+                            ? "Rename your Highlight ${data['uri'].replaceFirst('/', '')} to"
+                            : "What's your latest Highlight"),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "A Background",
+                      style:
+                          TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                    ),
+                    Row(children: [
+                      SpotlightAnt(
+                        enable: spotlightActivate,
+                        content:
+                            spotlightText("Choose from the best illustrations"),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.image,
+                            color: accentColor,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CustomImagePicker(
+                                  onImageSelected: (String selectedImage) {
+                                    cardBackgroundPath = selectedImage;
+                                    debugPrint(
+                                        "@ritual: Image selected: $selectedImage");
+                                  },
+                                  cardIllustrations: cardIllustrations,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      SpotlightAnt(
+                        enable: spotlightActivate,
+                        content: spotlightText("Pick your favourite image"),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.image_search,
+                            color: accentColor,
+                          ),
+                          onPressed: () => _getImage(data),
+                        ),
+                      ),
+                      SpotlightAnt(
+                        enable: spotlightActivate,
+                        content: spotlightText(
+                            "Let go with the default illustration"),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.broken_image,
+                            color: accentColor,
+                          ),
+                          onPressed: () =>
+                              cardBackgroundPath = Constants.noBackground,
+                        ),
+                      ),
+                    ])
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const Text("Tomorrow's Highlight",
                           style: TextStyle(
-                              fontFamily: "NotoSans-Light", fontSize: 20)),
+                              fontSize: 20, fontFamily: "NotoSans-Light")),
+                      SpotlightAnt(
+                        enable: spotlightActivate,
+                        content: spotlightText("Planning the highlight for tomorrow?"),
+                        child: Checkbox(
+                          activeColor: accentColor,
+                          value: highlight4Today,
+                          onChanged: (value) async {
+                            highlight4Today = !value!;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Visibility(
+                      visible: (_textFieldController.text.isNotEmpty ||
+                              data["mode"] == "edit") &&
+                          !(_textFieldController.text.contains("/")),
+                      child: FilledButton.tonal(
+                        onPressed: () {
+                          if (data['mode'] == "new") {
+                            DateTime now = DateTime.now();
+                            final ritual = Ritual()
+                              ..complete = 0
+                              ..url = "/${_textFieldController.text}"
+                              ..background = cardBackgroundPath
+                              ..type = Constants.typeHLight
+                              // Highlight expires the next day
+                              ..expiry = DateTime(
+                                  now.year, now.month, now.day, 0, 0, 0, 0).add(Duration(days:highlight4Today ?  1 : 2));
+
+                            final box = Boxes.getBox();
+                            box.add(ritual);
+                          } else {
+                            Ritual r = data['ritual'];
+
+                            if (_textFieldController.text.isNotEmpty) {
+                              r.url = "/${_textFieldController.text}";
+                            }
+
+                            if ((cardBackgroundPath != r.background) &&
+                                (cardBackgroundPath.isNotEmpty)) {
+                              r.background = cardBackgroundPath;
+                            }
+
+                            r.save();
+                          }
+
+                          // Pop the screen
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Commit",
+                            style: TextStyle(
+                                fontFamily: "NotoSans-Light", fontSize: 20)),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ));
+              ],
+            ),
+          )),
+    );
   }
 
   void deleteHighlight(Ritual r) {
@@ -269,5 +329,11 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
       // Set it to default value to show white background
       cardBackgroundPath = Constants.noBackground;
     }
+  }
+
+  Widget spotlightText(String text) {
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 30),
+        child: Align(alignment: Alignment.bottomCenter, child: Text(text)));
   }
 }

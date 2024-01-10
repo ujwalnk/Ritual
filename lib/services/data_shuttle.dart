@@ -10,7 +10,7 @@ Future<void> backupHiveBox<T>(String backupPath) async {
   final boxPath = box.path;
 
   try {
-    File(boxPath!).copy(
+    File(boxPath!).copySync(
         "$backupPath/ritual.hive");
   } catch (_) {
     debugPrint("@data_shuttle: Export Exception Caught: $_");

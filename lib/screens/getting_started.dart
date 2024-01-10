@@ -152,7 +152,7 @@ class _GettingStartedState extends State<GettingStarted> {
               getHeadingwithIcon("Sprints", const Icon(CustomIcons.directionsRun)),
               paddingBox,
               const Text(
-                  "While Rituals are done day after day, and highlight focuses on one day, forming the ends of a spectrum, Sprints fall right in between. \n\nThink of a sprint as a goal you work on for a stretch of time, whether it's a few days, weeks, or months. It's a task that needs consistency to see results. \n\nWhile you can do it any time during the day, doing it at the same time daily helps achieve better outcomes."),
+                  "Think of a sprint as a goal you work on for a stretch of time, whether it's a few days, weeks, or months. \n\nWhile Rituals are done day after day, and highlight focuses on one day, forming the ends of a spectrum, Sprints fall right in between. \n\nIt's a task that needs consistency to see results. While you can do it any time during the day, doing it at the same time daily helps achieve better outcomes."),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Row(
@@ -258,9 +258,9 @@ class _GettingStartedState extends State<GettingStarted> {
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
                       activeColor: accentColor,
-                      value: SharedPreferencesManager().getTwoDayRule(),
+                      value: SharedPreferencesManager().getSaturateCard(),
                       onChanged: (value) async {
-                        await SharedPreferencesManager().setTwoDayRule(value!);
+                        await SharedPreferencesManager().setSaturateCard(value!);
                         setState(() {});
                       },
                     ),
@@ -454,17 +454,6 @@ class _GettingStartedState extends State<GettingStarted> {
                   ),
                 ],
               ))),
-
-      // "Getting Started":
-      Scaffold(
-          appBar: makeAppBar("Getting Started"),
-          body: const Padding(
-              padding: EdgeInsets.all(24.0),
-              child: Column(
-                children: <Widget>[
-                  Text("Click on the + icon in the next screen to get started"),
-                ],
-              ))) // Include accent color & dark mode
     ];
 
     return guideScreenContent[guideIndex];
@@ -517,7 +506,7 @@ class _GettingStartedState extends State<GettingStarted> {
               guideIndex++;
               if (guideIndex == (guideScreenContent.length)) {
                 // Set init as complete
-                SharedPreferencesManager().setAppInit(true);
+                SharedPreferencesManager().setAppInit(1);
 
                 // Navigate to the home page if appInit otherwise to GettingStarted
                 Navigator.of(context).pushReplacement(MaterialPageRoute(

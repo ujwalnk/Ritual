@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 // Services
 import 'package:ritual/services/ritual_icons.dart';
-import 'package:ritual/services/shared_prefs.dart';
 
 class ExpandableFab extends StatefulWidget {
   final bool sprint;
@@ -69,7 +68,6 @@ class _ExpandableFabState extends State<ExpandableFab> {
                   });
                 },
                 tooltip: _isExpanded ? 'Collapse' : 'Expand',
-                // backgroundColor: Color(SharedPreferencesManager().getAccentColor()),
                 child: Icon(_isExpanded ? Icons.close : Icons.add),
               ),
             ],
@@ -90,7 +88,6 @@ class _ExpandableFabState extends State<ExpandableFab> {
           onPressed: onPressed,
           heroTag: null,
           tooltip: tooltip,
-          backgroundColor: Color(SharedPreferencesManager().getAccentColor()),
           child: icon,
         ),
         const SizedBox(height: 8),
