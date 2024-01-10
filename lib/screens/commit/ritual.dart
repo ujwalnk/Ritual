@@ -25,14 +25,23 @@ class Commit2Ritual extends StatefulWidget {
 class _Commit2RitualState extends State<Commit2Ritual> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
-  Map cardIllustrations = {};
 
-  TimeOfDay selectedTime = TimeOfDay.now();
   bool _init = false;
 
+  // Map of Card asset Illustrations
+  Map cardIllustrations = {};
+
+  // Ritual TimeofDay - when the Ritual should be done
+  TimeOfDay selectedTime = TimeOfDay.now();
+
+  // Card Background Illustration path
   String cardBackgroundPath = Constants.noBackground;
 
   final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
+
+  // Duplicate Ritual check & Error Message
+  bool isDuplicateRitual = false;
+  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +49,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     // Get the background used for the card
-    cardBackgroundPath = data["ritual"] == null ? Constants.noBackground : data["ritual"].background;
+    cardBackgroundPath = data["ritual"] == null
+        ? Constants.noBackground
+        : data["ritual"].background;
 
     // Focus the text Field
     _textFieldFocusNode.requestFocus();
@@ -111,11 +122,25 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 controller: _textFieldController,
                 focusNode: _textFieldFocusNode,
                 decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+                    errorText: errorMessage,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        // Red border if habit exists
+                        color: isDuplicateRitual
+                            ? Colors.red
+                            : Color(
+                                SharedPreferencesManager().getAccentColor()),
+                      ),
+                    ),
                     hintText: data['mode'] == "new"
                         ? "What would you like to call your amazing Ritual"
                         : "Rename your Ritual ${data['uri'].replaceFirst('/', '')} to"),
-                onChanged: (value) => setState(() {}),
+                onChanged: (text) => setState(() {
+                  isDuplicateRitual = Boxes.getBox()
+                      .values
+                      .any((habit) => habit.url.endsWith("/$text"));
+                  errorMessage = isDuplicateRitual ? "Duplicate Ritual" : "";
+                }),
               ),
               const SizedBox(height: 30),
               Row(
@@ -175,7 +200,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         Icons.broken_image,
                         color: accentColor,
                       ),
-                      onPressed: () => cardBackgroundPath = Constants.noBackground,
+                      onPressed: () =>
+                          cardBackgroundPath = Constants.noBackground,
                     ),
                   ])
                 ],
@@ -184,9 +210,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Visibility(
-                    visible: (_textFieldController.text.isNotEmpty ||
+                    visible: ((_textFieldController.text.isNotEmpty ||
                             (data['mode'] == "edit")) &&
-                        !_textFieldController.text.contains("/"),
+                        !_textFieldController.text.contains("/")) && !isDuplicateRitual,
                     child: FilledButton.tonal(
                       onPressed: () {
                         // Get boxes
