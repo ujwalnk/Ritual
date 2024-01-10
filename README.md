@@ -7,8 +7,8 @@
 <p align="center"><b>A Comprehensive Habit Tracker</b>, <i>"The Free &amp; Open Source Habit Tracker"</i>. <br/> 
 designed to help users track their daily routines, habits, highlights, and sprints.</p>
 
-
 ## Key Features
+
 The Comprehensive Habit Tracker app offers a range of powerful features to help you achieve your personal and professional goals. Here's a closer look at what you can do with the app:
 
 1. Stack Habits: Achieve continuous self-improvement by creating habits that grow by 1% every day. Track your progress and build a positive daily routine.
@@ -74,11 +74,11 @@ Please ensure that your code adheres to the coding style and conventions of the 
 ## Renaming images using python
 
 ```bash
-cd <> # Navigate to the root dierctory
+cd <> # Navigate to the root directory
 python3 ./tools/name_assets.py
 ```
 
-Copy the output array into the constants.dart file 
+Copy the output array into the constants.dart file.
 
 ```dart
 static const List<String> illustrations = <copy the array here>

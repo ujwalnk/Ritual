@@ -1,0 +1,17 @@
+# How to contribute to Ritual
+
+## Did you find a bug
+
+- Ensure the bug was not already reported by searching on GitHub under Issues
+- If you are unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, and as much relevant information on recreating the bug for testing purposes to demonstrate the expected behavior that is not occurring.
+
+## Did you write a path that fixes a bug?
+
+- Open a new GitHub pull request with the path
+- Ensure the PR Description clearly describes the problem and solution.
+
+## Do you intend to add a new feature or change an existing one?
+
+- Suggest your change by creating a new issue tagged `Enhancement`.
+- Once you have collected positive feedback about the change, start coding.
+- Create a PR with clear description about the feature / change.
