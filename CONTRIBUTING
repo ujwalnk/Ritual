@@ -1,4 +1,4 @@
-# How to contribute to Ritual
+# Contributing to Ritual
 
 ## Did you find a bug
 
@@ -15,3 +15,13 @@
 - Suggest your change by creating a new issue tagged `Enhancement`.
 - Once you have collected positive feedback about the change, start coding.
 - Create a PR with clear description about the feature / change.
+
+## Commit Message pattern
+
+| Category | Symbol |
+| -------- | :----: |
+| Bug fix  |  #     |
+| New Feature | + |
+| Removed Feature | - |
+| Modified Feature | ~ |
+| Known bug | ! |
