@@ -156,7 +156,7 @@ class _Commit2HabitState extends State<Commit2Habit> {
                     setState(() {
                       habitExists = Boxes.getBox().values.any((habit) =>
                           habit.url.endsWith("${data['uri']}/$text"));
-                      errorMessage = habitExists ? "Habit Already Exists" : "";
+                      errorMessage = habitExists ? "Duplicate Habit" : "";
                     });
                   },
                   decoration: InputDecoration(
