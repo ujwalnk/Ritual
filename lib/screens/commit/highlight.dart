@@ -9,8 +9,9 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
-import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/shared_prefs.dart';
+import 'package:ritual/services/widgets/image_picker.dart';
 
 class Commit2Highlight extends StatefulWidget {
   const Commit2Highlight({super.key});
@@ -23,7 +24,11 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
+  final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
+
   String cardBackgroundPath = Constants.noBackground;
+
+  Map cardIllustrations = {};
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,19 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
 
     // Focus the textField
     _textFieldFocusNode.requestFocus();
+
+    // Precache card illustrations
+    for (var image in Constants.illustrations) {
+      cardIllustrations.addAll({
+        image: Image.asset(
+          image,
+          fit: BoxFit.cover,
+          // width: double.infinity,
+          height: 200,
+        )
+      });
+      precacheImage(cardIllustrations[image].image, context);
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -48,9 +66,9 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                     ),
                     onPressed: () async {
                       debugPrint("@Ritual: Deleting Ritual");
-                      
+
                       // Delete the user image
-                      if(data['ritual'].background != Constants.noBackground){
+                      if (data['ritual'].background != Constants.noBackground) {
                         await File(data['ritual'].background).delete();
                       }
 
@@ -90,13 +108,44 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                     style:
                         TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                   ),
-                  TextButton.icon(
-                    icon: const Icon(Icons.image),
-                    label: const Text("Pick an Image",
-                        style: TextStyle(
-                            fontSize: 20, fontFamily: "NotoSans-Light")),
-                    onPressed: () => _getImage(data),
-                  ),
+                  Row(children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.image,
+                        color: accentColor,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomImagePicker(
+                              onImageSelected: (String selectedImage) {
+                                cardBackgroundPath = selectedImage;
+                                debugPrint(
+                                    "@ritual: Image selected: $selectedImage");
+                              },
+                              cardIllustrations: cardIllustrations,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.image_search,
+                        color: accentColor,
+                      ),
+                      onPressed: () => _getImage(data),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.broken_image,
+                        color: accentColor,
+                      ),
+                      onPressed: () =>
+                          cardBackgroundPath = Constants.noBackground,
+                    ),
+                  ])
                 ],
               ),
               const SizedBox(height: 30),
