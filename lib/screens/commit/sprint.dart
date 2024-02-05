@@ -9,10 +9,12 @@ import 'package:ritual/model/ritual.dart';
 
 // Services
 import 'package:ritual/services/boxes.dart';
+import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/widgets/date_picker.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/widgets/image_picker.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 class Commit2Sprint extends StatefulWidget {
   const Commit2Sprint({super.key});
@@ -29,6 +31,7 @@ class _Commit2SprintState extends State<Commit2Sprint> {
 
   DateTime? selectedDate;
 
+  // Map of asset Illustrations
   String cardBackgroundPath = Constants.noBackground;
 
   // Illustrations
@@ -43,8 +46,16 @@ class _Commit2SprintState extends State<Commit2Sprint> {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
-    // Focus the textField
-    _textFieldFocusNode.requestFocus();
+      // A copy of appSetupTrackerSprintCommit
+    final appSetupTrackerSprintCommit = !SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerSprintCommit);
+
+    // Set the Highlight Commit Demo to complete
+    SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerSprintCommit);
+
+    // Focus the textField / Enable SpotlightAnt
+    if (!appSetupTrackerSprintCommit) {
+      _textFieldFocusNode.requestFocus();
+    }
 
     // Precache card illustrations
     for (var image in Constants.illustrations) {
@@ -59,190 +70,214 @@ class _Commit2SprintState extends State<Commit2Sprint> {
       precacheImage(cardIllustrations[image].image, context);
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Commit",
-            style: TextStyle(fontFamily: "NotoSans-Light"),
-          ),
-          actions: data['mode'] == "edit"
-              ? <Widget>[
-                  IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                    onPressed: () async {
-                      debugPrint("@Ritual: Deleting Ritual");
-
-                      // Delete the user image
-                      if (data['ritual'].background != Constants.noBackground) {
-                        await File(data['ritual'].background).delete();
-                      }
-
-                      deleteSprint(data['ritual']);
-                    },
-                  )
-                ]
-              : [],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            children: <Widget>[
-              const Text(
-                "Commit to",
-                style: TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-              ),
-              const SizedBox(height: 30),
-              TextField(
-                controller: _textFieldController,
-                focusNode: _textFieldFocusNode,
-                onChanged: (text) {
-                  setState(() {
-                    isDuplicateSprint = Boxes.getBox()
-                        .values
-                        .any((habit) => habit.url.endsWith(text));
-                    errorMessage = isDuplicateSprint ? "Duplicate Sprint" : "";
-                  });
-                },
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        // Red border if sprint exists
-                        color: isDuplicateSprint
-                            ? Colors.red
-                            : Color(
-                                SharedPreferencesManager().getAccentColor()),
-                      ),
-                    ),
-                    errorText: errorMessage,
-                    hintText: data['mode'] == "edit"
-                        ? "Rename your Sprint ${data['uri'].replaceFirst('/', '')} to"
-                        : "What's your latest Sprint"),
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Sprint Until",
-                    style:
-                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-                  ),
-                  CustomDatePicker(
-                    restorationId: "datepicker",
-                    onDateSelected: handleDateSelected,
-                    preSelectedDate: data['expiry'],
-                  )
-                ],
-              ),
-              const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "A Background",
-                    style:
-                        TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
-                  ),
-                  Row(children: [
+    return SpotlightShow(
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "Commit",
+              style: TextStyle(fontFamily: "NotoSans-Light"),
+            ),
+            actions: data['mode'] == "edit"
+                ? <Widget>[
                     IconButton(
-                      icon: Icon(
-                        Icons.image,
-                        color: accentColor,
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
                       ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return CustomImagePicker(
-                              onImageSelected: (String selectedImage) {
-                                cardBackgroundPath = selectedImage;
-                                debugPrint(
-                                    "@ritual: Image selected: $selectedImage");
+                      onPressed: () async {
+                        debugPrint("@Ritual: Deleting Ritual");
+    
+                        // Delete the user image
+                        if (data['ritual'].background != Constants.noBackground) {
+                          await File(data['ritual'].background).delete();
+                        }
+    
+                        deleteSprint(data['ritual']);
+                      },
+                    )
+                  ]
+                : [],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              children: <Widget>[
+                const Text(
+                  "Commit to",
+                  style: TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                ),
+                const SizedBox(height: 30),
+                SpotlightAnt(
+                  content: Misc.spotlightText("Enter your Sprint"),
+                  enable: appSetupTrackerSprintCommit,
+                  spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
+                  child: TextField(
+                    controller: _textFieldController,
+                    focusNode: _textFieldFocusNode,
+                    onChanged: (text) {
+                      setState(() {
+                        isDuplicateSprint = Boxes.getBox()
+                            .values
+                            .any((habit) => (habit.url.endsWith(text) && habit.type == Constants.typeSprint));
+                        errorMessage = isDuplicateSprint ? "Duplicate Sprint" : "";
+                      });
+                    },
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            // Red border if sprint exists
+                            color: isDuplicateSprint
+                                ? Colors.red
+                                : Color(
+                                    SharedPreferencesManager().getAccentColor()),
+                          ),
+                        ),
+                        errorText: errorMessage,
+                        hintText: data['mode'] == "edit"
+                            ? "Rename your Sprint ${data['uri'].replaceFirst('/', '')} to"
+                            : "What's your latest Sprint"),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Sprint Until",
+                      style:
+                          TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                    ),
+                    SpotlightAnt(
+                      content: Misc.spotlightText("Choose the duration of the Sprint"),
+                      spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
+                      enable: appSetupTrackerSprintCommit,
+                      child: CustomDatePicker(
+                        restorationId: "datepicker",
+                        onDateSelected: handleDateSelected,
+                        preSelectedDate: data['expiry'],
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "A Background",
+                      style:
+                          TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
+                    ),
+                    Row(children: [
+                      SpotlightAnt(
+                        enable: appSetupTrackerSprintCommit,
+                        content: Misc.spotlightText("Choose form the best illustrations"),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.image,
+                            color: accentColor,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CustomImagePicker(
+                                  onImageSelected: (String selectedImage) {
+                                    cardBackgroundPath = selectedImage;
+                                    debugPrint(
+                                        "@ritual: Image selected: $selectedImage");
+                                  },
+                                  cardIllustrations: cardIllustrations,
+                                );
                               },
-                              cardIllustrations: cardIllustrations,
                             );
                           },
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.image_search,
-                        color: accentColor,
+                        ),
                       ),
-                      onPressed: () => _getImage(data),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.broken_image,
-                        color: accentColor,
+                      SpotlightAnt(
+                        enable: appSetupTrackerSprintCommit,
+                        content: Misc.spotlightText("Pick your favourite image"),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.image_search,
+                            color: accentColor,
+                          ),
+                          onPressed: () => _getImage(data),
+                        ),
                       ),
-                      onPressed: () =>
-                          cardBackgroundPath = Constants.noBackground,
-                    ),
-                  ])
-                ],
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Visibility(
-                    visible: ((!_textFieldController.text.contains("/")) &&
-                            ((data["mode"] == "edit") ||
-                                (_textFieldController.text.isNotEmpty &&
-                                    (selectedDate != null)))) &&
-                        !isDuplicateSprint,
-                    child: FilledButton.tonal(
-                      onPressed: () {
-                        if (data["mode"] == "new") {
-                          final ritual = Ritual()
-                            ..complete = 0
-                            ..url = "/${_textFieldController.text}"
-                            ..background = cardBackgroundPath
-                            ..type = Constants.typeSprint
-                            ..expiry = selectedDate;
-
-                          final box = Boxes.getBox();
-                          box.add(ritual);
-                        } else {
-                          // update the sprint name and expiry date in the database
-                          Ritual r = data['ritual'];
-
-                          if (_textFieldController.text.isNotEmpty) {
-                            r.url = "/${_textFieldController.text}";
+                      SpotlightAnt(
+                        enable: appSetupTrackerSprintCommit,
+                        content: Misc.spotlightText("Use default illustration"),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.broken_image,
+                            color: accentColor,
+                          ),
+                          onPressed: () =>
+                              cardBackgroundPath = Constants.noBackground,
+                        ),
+                      ),
+                    ])
+                  ],
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Visibility(
+                      visible: ((!_textFieldController.text.contains("/")) &&
+                              ((data["mode"] == "edit") ||
+                                  (_textFieldController.text.isNotEmpty &&
+                                      (selectedDate != null)))) &&
+                          !isDuplicateSprint,
+                      child: FilledButton.tonal(
+                        onPressed: () {
+                          if (data["mode"] == "new") {
+                            final ritual = Ritual()
+                              ..complete = 0
+                              ..url = "/${_textFieldController.text}"
+                              ..background = cardBackgroundPath
+                              ..type = Constants.typeSprint
+                              ..expiry = selectedDate;
+    
+                            final box = Boxes.getBox();
+                            box.add(ritual);
+                          } else {
+                            // update the sprint name and expiry date in the database
+                            Ritual r = data['ritual'];
+    
+                            if (_textFieldController.text.isNotEmpty) {
+                              r.url = "/${_textFieldController.text}";
+                            }
+    
+                            debugPrint(
+                                "Change in cardBackgroundPath? $cardBackgroundPath");
+                            if ((cardBackgroundPath != r.background) &&
+                                (cardBackgroundPath.isNotEmpty)) {
+                              r.background = cardBackgroundPath;
+                            }
+    
+                            if ((selectedDate != r.expiry) &&
+                                (selectedDate != null)) {
+                              r.expiry = selectedDate;
+                            }
+    
+                            r.save();
                           }
-
-                          debugPrint(
-                              "Change in cardBackgroundPath? $cardBackgroundPath");
-                          if ((cardBackgroundPath != r.background) &&
-                              (cardBackgroundPath.isNotEmpty)) {
-                            r.background = cardBackgroundPath;
-                          }
-
-                          if ((selectedDate != r.expiry) &&
-                              (selectedDate != null)) {
-                            r.expiry = selectedDate;
-                          }
-
-                          r.save();
-                        }
-
-                        // Pop the screen
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Commit",
-                          style: TextStyle(
-                              fontFamily: "NotoSans-Light", fontSize: 20)),
+    
+                          // Pop the screen
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Commit",
+                            style: TextStyle(
+                                fontFamily: "NotoSans-Light", fontSize: 20)),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ));
+              ],
+            ),
+          )),
+    );
   }
 
   // Callback function to receive the selected date

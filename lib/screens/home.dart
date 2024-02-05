@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:ritual/services/misc.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 
 // Hive database packages
 import 'package:hive_flutter/hive_flutter.dart';
@@ -23,11 +25,25 @@ class Home extends StatefulWidget {
 Map cardIllustrations = {};
 
 class _HomeState extends State<Home> {
+  // Hide Sprints & Highlights
   bool hideSprints = true;
   bool hideHighlights = true;
 
+  // First car of type
+  bool isFirstHlight = true;
+  bool isFirstSprint = true;
+  bool isFirstRitual = true;
+
+  // Application Accent Color
   Color accentColor = Color(SharedPreferencesManager().getAccentColor());
 
+  // A copy of appSetupTracker for HighlightCard, SprintCard & RitualCard
+  bool appSetupTrackerHighlightCard = true;
+  bool appSetupTrackerSprintCard = true;
+  bool appSetupTrackerRitualCard = true;
+
+  // TODO: Move to Misc.dart
+  // Compute TextColor from Background Color
   Color getFontColorForBackground(Color background) {
     return (background.computeLuminance() > 0.179)
         ? Colors.black
@@ -36,218 +52,244 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // A Copy of appSetupTrackerHomeScreen
+    final appSetupTrackerHomeScreen = !SharedPreferencesManager()
+        .getAppSetupTracker(Constants.appSetupTrackerHomeScreen);
 
+    // Set the Home Screen Demo to complete
+    SharedPreferencesManager()
+        .setAppSetupTracker(Constants.appSetupTrackerHomeScreen);
+
+    // Expandable FAB
     ExpandableFab fab = ExpandableFab(
         sprint: SharedPreferencesManager().getShowSprints(),
         highlight: SharedPreferencesManager().getShowHighlight());
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          (SharedPreferencesManager().getShowHighlight() ||
-                  SharedPreferencesManager().getShowSprints())
-              ? "Home"
-              : "Rituals",
-          style: TextStyle(
-            color: getFontColorForBackground(accentColor),
-            fontFamily: "NotoSans-Light",
-          ),
-        ),
-        backgroundColor: accentColor,
-        shadowColor: Colors.black,
-        elevation: 2,
-        actions: <Widget>[
-          GestureDetector(
-            child: IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: getFontColorForBackground(accentColor),
+    return SpotlightShow(
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              (SharedPreferencesManager().getShowHighlight() ||
+                      SharedPreferencesManager().getShowSprints())
+                  ? "Home"
+                  : "Rituals",
+              style: const TextStyle(
+                fontFamily: "NotoSans-Light",
               ),
-              onPressed: () async {
-                await Navigator.pushNamed(context, '/settings');
-                // SetState for changes to reflect
-                setState(() {});
-              },
             ),
-            onLongPress: () {},
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Visibility(
-              visible: SharedPreferencesManager().getShowHighlight(),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  hideHighlights = !hideHighlights;
-                  setState(() {});
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                  child: Stack(
-                    children: [
-                      Text(
-                        "Highlights",
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontFamily: "NotoSans-Light",
-                            decoration: hideHighlights
-                                ? TextDecoration.none
-                                : TextDecoration.lineThrough),
+            // backgroundColor: accentColor,
+            shadowColor: Colors.black,
+            elevation: 2,
+            actions: <Widget>[
+              GestureDetector(
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.settings,
+                  ),
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, '/settings');
+                    // SetState for changes to reflect
+                    setState(() {});
+                  },
+                ),
+                onLongPress: () {},
+              )
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Visibility(
+                  visible: SharedPreferencesManager().getShowHighlight(),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      hideHighlights = !hideHighlights;
+                      setState(() {});
+                    },
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(17.0, 16.0, 17.0, 16.0),
+                      child: SpotlightAnt(
+                        enable: appSetupTrackerHomeScreen,
+                        // index: 2,
+                        spotlight: const SpotlightConfig(
+                            builder: SpotlightRectBuilder(borderRadius: 10)),
+                        content: Misc.spotlightText("Tap to hide Highlights"),
+                        child: Stack(
+                          children: [
+                            Text(
+                              "Highlights",
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontFamily: "NotoSans-Light",
+                                  decoration: hideHighlights
+                                      ? TextDecoration.none
+                                      : TextDecoration.lineThrough),
+                            ),
+                            // Don't hide the icon, make it transparent, otherwise GestureDetector won't work
+                            Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: Icon(CustomIcons.lightbulbOutline,
+                                      color: hideHighlights
+                                          ? accentColor.withAlpha(2000)
+                                          : accentColor.withAlpha(0)),
+                                ))
+                          ],
+                        ),
                       ),
-                      // Don't hide the icon, make it transparent, otherwise GestureDetector won't work
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: SharedPreferencesManager().getShowHighlight() &&
+                      hideHighlights,
+                  child: ValueListenableBuilder<Box<Ritual>>(
+                    valueListenable: Boxes.getBox().listenable(),
+                    builder: (context, box, _) {
+                      final contents = box.values.toList().cast<Ritual>();
+                      var rituals = <Ritual>[];
+                      for (var ritual in contents) {
+                        if (ritual.type == Constants.typeHLight) {
+                          rituals.add(ritual);
+                        }
+                      }
+                      // Sort alphabetically
+                      rituals.sort((a, b) => a.url.compareTo(b.url));
+
+                      return buildContent(rituals, type: Constants.typeHLight);
+                    },
+                  ),
+                ),
+                Visibility(
+                  visible: SharedPreferencesManager().getShowSprints(),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      hideSprints = !hideSprints;
+                      setState(() {});
+                    },
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(17.0, 16.0, 17.0, 16.0),
+                      child: SpotlightAnt(
+                        enable: appSetupTrackerHomeScreen,
+                        // index: 3,
+                        spotlight: const SpotlightConfig(
+                            builder: SpotlightRectBuilder(borderRadius: 10)),
+                        content: Misc.spotlightText("Tap to hide Sprints"),
+                        child: Stack(children: [
+                          Text(
+                            "Sprints",
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontFamily: "NotoSans-Light",
+                                decoration: hideSprints
+                                    ? TextDecoration.none
+                                    : TextDecoration.lineThrough),
+                          ),
+                          // Don't hide the icon, make it transparent, otherwise GestureDetector won't work
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: Icon(CustomIcons.directionsRun,
+                                      color: hideSprints
+                                          ? accentColor.withAlpha(200)
+                                          : accentColor.withAlpha(0))))
+                        ]),
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: SharedPreferencesManager().getShowSprints() &&
+                      hideSprints,
+                  child: ValueListenableBuilder<Box<Ritual>>(
+                    valueListenable: Boxes.getBox().listenable(),
+                    builder: (context, box, _) {
+                      final contents = box.values.toList().cast<Ritual>();
+                      var rituals = <Ritual>[];
+                      for (var ritual in contents) {
+                        if (ritual.type == Constants.typeSprint) {
+                          rituals.add(ritual);
+                        }
+                      }
+                      // Sort by expiry
+                      rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
+
+                      return buildContent(rituals, type: Constants.typeSprint);
+                    },
+                  ),
+                ),
+                Visibility(
+                  visible: SharedPreferencesManager().getShowHighlight() ||
+                      SharedPreferencesManager().getShowSprints(),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(17.0, 16.0, 17.0, 16.0),
+                    child: Stack(children: [
+                      const Text(
+                        "Rituals",
+                        style: TextStyle(
+                            fontSize: 22, fontFamily: "NotoSans-Light"),
+                      ),
                       Align(
                           alignment: Alignment.centerRight,
                           child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
-                            child: Icon(CustomIcons.lightbulbOutline,
-                                color: hideHighlights
-                                    ? accentColor.withAlpha(2000)
-                                    : accentColor.withAlpha(0)),
+                            child: Icon(CustomIcons.fire,
+                                color: accentColor.withAlpha(200)),
                           ))
-                    ],
+                    ]),
                   ),
                 ),
-              ),
-            ),
-            Visibility(
-              visible: SharedPreferencesManager().getShowHighlight() &&
-                  hideHighlights,
-              child: ValueListenableBuilder<Box<Ritual>>(
-                valueListenable: Boxes.getBox().listenable(),
-                builder: (context, box, _) {
-                  final contents = box.values.toList().cast<Ritual>();
-                  var rituals = <Ritual>[];
-                  for (var ritual in contents) {
-                    if (ritual.type == Constants.typeHLight) {
-                      rituals.add(ritual);
-                    }
-                  }
-                  // Sort alphabetically
-                  rituals.sort((a, b) => a.url.compareTo(b.url));
-
-                  return buildContent(rituals, type: Constants.typeHLight);
-                },
-              ),
-            ),
-            Visibility(
-              visible: SharedPreferencesManager().getShowSprints(),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  hideSprints = !hideSprints;
-                  setState(() {});
-                },
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                  child: Stack(children: [
-                    Text(
-                      "Sprints",
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontFamily: "NotoSans-Light",
-                          decoration: hideSprints
-                              ? TextDecoration.none
-                              : TextDecoration.lineThrough),
-                    ),
-                    // Don't hide the icon, make it transparent, otherwise GestureDetector won't work
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: Icon(CustomIcons.directionsRun,
-                                color: hideSprints
-                                    ? accentColor.withAlpha(200)
-                                    : accentColor.withAlpha(0))))
-                  ]),
-                ),
-              ),
-            ),
-            Visibility(
-              visible:
-                  SharedPreferencesManager().getShowSprints() && hideSprints,
-              child: ValueListenableBuilder<Box<Ritual>>(
-                valueListenable: Boxes.getBox().listenable(),
-                builder: (context, box, _) {
-                  final contents = box.values.toList().cast<Ritual>();
-                  var rituals = <Ritual>[];
-                  for (var ritual in contents) {
-                    if (ritual.type == Constants.typeSprint) {
-                      rituals.add(ritual);
-                    }
-                  }
-                  // Sort by expiry
-                  rituals.sort((a, b) => a.expiry!.compareTo(b.expiry!));
-
-                  return buildContent(rituals, type: Constants.typeSprint);
-                },
-              ),
-            ),
-            Visibility(
-              visible: SharedPreferencesManager().getShowHighlight() ||
-                  SharedPreferencesManager().getShowSprints(),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(17.0, 16.0, 0, 16.0),
-                child: Stack(children: [
-                  const Text(
-                    "Rituals",
-                    style:
-                        TextStyle(fontSize: 22, fontFamily: "NotoSans-Light"),
-                  ),
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Icon(CustomIcons.fire,
-                            color: accentColor.withAlpha(200)),
-                      ))
-                ]),
-              ),
-            ),
-            Visibility(
-              visible:
-                  ((SharedPreferencesManager().getShowHighlight() == false) &&
+                Visibility(
+                  visible: ((SharedPreferencesManager().getShowHighlight() ==
+                          false) &&
                       (SharedPreferencesManager().getShowSprints() == false)),
-              child: const SizedBox(height: 20),
-            ),
-            ValueListenableBuilder<Box<Ritual>>(
-              valueListenable: Boxes.getBox().listenable(),
-              builder: (context, box, _) {
-                final contents = box.values.toList().cast<Ritual>();
-                var rituals = <Ritual>[];
-                for (var ritual in contents) {
-                  if (ritual.type == Constants.typeRitual) {
-                    rituals.add(ritual);
-                  }
-                }
+                  child: const SizedBox(height: 20),
+                ),
+                ValueListenableBuilder<Box<Ritual>>(
+                  valueListenable: Boxes.getBox().listenable(),
+                  builder: (context, box, _) {
+                    final contents = box.values.toList().cast<Ritual>();
+                    var rituals = <Ritual>[];
 
-                // Sort by time
-                rituals.sort((a, b) {
-                  if (a.time["hour"] != b.time["hour"]) {
-                    return a.time["hour"] - b.time["hour"];
-                  } else {
-                    return a.time["minute"] - b.time["minute"];
-                  }
-                });
+                    // Get the list of Rituals
+                    for (var ritual in contents) {
+                      if (ritual.type == Constants.typeRitual) {
+                        rituals.add(ritual);
+                      }
+                    }
 
-                return buildContent(rituals);
-              },
+                    // Sort by time
+                    rituals.sort((a, b) {
+                      if (a.time["hour"] != b.time["hour"]) {
+                        return a.time["hour"] - b.time["hour"];
+                      } else {
+                        return a.time["minute"] - b.time["minute"];
+                      }
+                    });
+
+                    // On first to type add SpotlightAnt
+                    return buildContent(rituals);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: fab,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButton: fab),
     );
   }
 
   Widget buildContent(List<Ritual> rituals,
       {String type = Constants.typeRitual}) {
     if (rituals.isEmpty) {
-      // Return a message or an empty state widget when there are no rituals.
+      // Return an empty widget on no cards.
       return const SizedBox(height: 0, width: 0);
     } else {
       return Column(
@@ -261,6 +303,27 @@ class _HomeState extends State<Home> {
 
   Widget buildCard(BuildContext context, Ritual ritual,
       {String type = Constants.typeRitual}) {
+
+    // Mark the appSetupTracker as done for type
+    if (type == Constants.typeRitual) {
+      appSetupTrackerRitualCard = !SharedPreferencesManager()
+          .getAppSetupTracker(Constants.appSetupTrackerRitualCard);
+      SharedPreferencesManager()
+          .setAppSetupTracker(Constants.appSetupTrackerRitualCard);
+    } else if (type == Constants.typeSprint) {
+      appSetupTrackerSprintCard = !SharedPreferencesManager()
+          .getAppSetupTracker(Constants.appSetupTrackerSprintCard);
+
+      SharedPreferencesManager()
+          .setAppSetupTracker(Constants.appSetupTrackerSprintCard);
+    } else if (type == Constants.typeHLight) {
+      appSetupTrackerHighlightCard = !SharedPreferencesManager()
+          .getAppSetupTracker(Constants.appSetupTrackerHighlightCard);
+
+      SharedPreferencesManager()
+          .setAppSetupTracker(Constants.appSetupTrackerHighlightCard);
+    }
+
     // Calculate the percentage complete of ritual
     if (type == Constants.typeRitual) {
       final rituals = Boxes.getBox().values.toList().cast<Ritual>();
@@ -350,19 +413,55 @@ class _HomeState extends State<Home> {
             "ritual": ritual
           });
         },
-        child: SizedBox(
-          height: 100,
-          child: Card(
-            color: Colors.transparent,
-            elevation: 10,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: Stack(
-                // Use a Stack to overlay the image and text.
-                children: [
-                  // Background
-                  if (ritual.background != Constants.noBackground)
-                    ColorFiltered(
+        child: SpotlightAnt(
+          spotlight: const SpotlightConfig(
+              builder: SpotlightRectBuilder(borderRadius: 10)),
+          enable: ((type == Constants.typeHLight)
+              ? appSetupTrackerHighlightCard
+              : (type == Constants.typeSprint
+                  ? appSetupTrackerSprintCard
+                  : appSetupTrackerRitualCard)),
+          content: ((type == Constants.typeHLight)
+              ? Misc.spotlightText(
+                  "Tap this card to mark the highlight complete")
+              : (type == Constants.typeSprint
+                  ? Misc.spotlightText(
+                      "Tap this card to mark the sprint complete")
+                  : Misc.spotlightText(
+                      "Tap this card to open the Ritual page"))),
+          child: SizedBox(
+            height: 100,
+            child: Card(
+              color: Colors.transparent,
+              elevation: 10,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Stack(
+                  // Use a Stack to overlay the image and text.
+                  children: [
+                    // Background
+                    if (ritual.background != Constants.noBackground)
+                      ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            // Set greyscale intensity if Saturate Cards Enabled
+                            SharedPreferencesManager().getSaturateCard() == true
+                                ? Colors.grey.withOpacity((1 - ritual.complete))
+                                : Colors.white.withOpacity(0),
+                            // Use the saturation blend mode to create greyscale effect
+                            BlendMode.saturation,
+                          ),
+                          child: (ritual.background!
+                                  .contains("assets/illustrations")
+                              ? Image.asset(ritual.background!,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: 200)
+                              : Image.file(File(ritual.background!),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: 200)))
+                    else
+                      ColorFiltered(
                         colorFilter: ColorFilter.mode(
                           // Set greyscale intensity if Saturate Cards Enabled
                           SharedPreferencesManager().getSaturateCard() == true
@@ -371,73 +470,23 @@ class _HomeState extends State<Home> {
                           // Use the saturation blend mode to create greyscale effect
                           BlendMode.saturation,
                         ),
-                        child:
-                            (ritual.background!.contains("assets/illustrations")
-                                ? Image.asset(ritual.background!,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: 200)
-                                : Image.file(File(ritual.background!),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: 200)))
-                  else
-                    ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        // Set greyscale intensity if Saturate Cards Enabled
-                        SharedPreferencesManager().getSaturateCard() == true
-                            ? Colors.grey.withOpacity((1 - ritual.complete))
-                            : Colors.white.withOpacity(0),
-                        // Use the saturation blend mode to create greyscale effect
-                        BlendMode.saturation,
+                        child: Image.asset(
+                          "assets/illustrations/$type.jpg",
+                          fit: BoxFit.cover,
+                          alignment: Alignment.centerRight,
+                          width: double.infinity,
+                          height: 200,
+                        ),
                       ),
-                      child: Image.asset(
-                        "assets/illustrations/$type.jpg",
-                        fit: BoxFit.cover,
-                        alignment: Alignment.centerRight,
-                        width: double.infinity,
-                        height: 200,
-                      ),
-                    ),
 
-                  // Text on top of the image.
-                  Positioned(
-                    left: 24,
-                    top: 8,
-                    right: 24,
-                    bottom: 8,
-                    child: Text(
-                      ritual.url.replaceAll("/", ""),
-                      maxLines: 2,
-                      style: const TextStyle(
-                          fontSize: 23,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0.2, 0.2),
-                              blurRadius: 3.0,
-                              color: Color.fromARGB(15, 0, 0, 0),
-                            ),
-                            Shadow(
-                              offset: Offset(0.2, 0.2),
-                              blurRadius: 8.0,
-                              color: Colors.black,
-                            ),
-                          ],
-                          fontFamily: "NotoSans-SemiBold"),
-                    ),
-                  ),
-
-                  // Text to the bottom of the image.
-                  Visibility(
-                    visible: type == Constants.typeRitual,
-                    child: Positioned(
+                    // Text on top of the image.
+                    Positioned(
                       left: 24,
-                      top: 48,
+                      top: 8,
                       right: 24,
                       bottom: 8,
                       child: Text(
-                        "${ritual.time['hour'] > 12 ? ritual.time['hour'] - 12 : ritual.time['hour']}:${ritual.time['minute'] < 10 ? '0${ritual.time['minute']}' : ritual.time['minute']} ${ritual.time['hour'] >= 12 ? "PM" : "AM"}",
+                        ritual.url.replaceAll("/", ""),
                         maxLines: 2,
                         style: const TextStyle(
                             fontSize: 23,
@@ -454,11 +503,42 @@ class _HomeState extends State<Home> {
                                 color: Colors.black,
                               ),
                             ],
-                            fontFamily: "NotoSans-Light"),
+                            fontFamily: "NotoSans-SemiBold"),
                       ),
                     ),
-                  ),
-                ],
+
+                    // Text to the bottom of the image.
+                    Visibility(
+                      visible: type == Constants.typeRitual,
+                      child: Positioned(
+                        left: 24,
+                        top: 48,
+                        right: 24,
+                        bottom: 8,
+                        child: Text(
+                          "${ritual.time['hour'] > 12 ? ritual.time['hour'] - 12 : ritual.time['hour']}:${ritual.time['minute'] < 10 ? '0${ritual.time['minute']}' : ritual.time['minute']} ${ritual.time['hour'] >= 12 ? "PM" : "AM"}",
+                          maxLines: 2,
+                          style: const TextStyle(
+                              fontSize: 23,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(0.2, 0.2),
+                                  blurRadius: 3.0,
+                                  color: Color.fromARGB(15, 0, 0, 0),
+                                ),
+                                Shadow(
+                                  offset: Offset(0.2, 0.2),
+                                  blurRadius: 8.0,
+                                  color: Colors.black,
+                                ),
+                              ],
+                              fontFamily: "NotoSans-Light"),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

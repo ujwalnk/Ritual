@@ -86,12 +86,10 @@ class _SplashState extends State<Splash> {
 
     debugPrint("Date today: ${DateTime.now().day}");
 
-    int shouldnavigateHome = SharedPreferencesManager().getAppInit();
-
     // Navigate to the home page if appInit otherwise to GettingStarted 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (context) => shouldnavigateHome >= Constants.gettingStartedScreen ? const Home() : const GettingStarted(),
-      settings: RouteSettings(name: shouldnavigateHome >= Constants.gettingStartedScreen ? "Home" : "Getting Started"),
+      builder: (context) => SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerGettingStartedScreen) ? const Home() : const GettingStarted(),
+      settings: RouteSettings(name: SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerGettingStartedScreen) ? "Home" : "Getting Started"),
     ));
   }
 

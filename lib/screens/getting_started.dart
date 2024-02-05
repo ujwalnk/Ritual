@@ -9,6 +9,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ritual/screens/home.dart';
 
 // Services
+import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
@@ -34,6 +35,9 @@ class _GettingStartedState extends State<GettingStarted> {
   @override
   Widget build(BuildContext context) {
     Color accentColor = Color(SharedPreferencesManager().getAccentColor());
+
+    // Set the Getting Started Demo to complete
+    SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerGettingStartedScreen);
 
     guideScreenContent = [
       // Ritual
@@ -68,111 +72,115 @@ class _GettingStartedState extends State<GettingStarted> {
               getHeadingwithIcon("Rituals", const Icon(CustomIcons.fire)),
               paddingBox,
               const Text(
-                  "Rituals in are sequences of habits to be completed in an order at predetermined times. \n\nEach ritual can consist of multiple types of habits, creating a routine to follow."),
+                  "Rituals are sequences of habits to be completed in an order at predetermined times. \n\nEach ritual can consist of multiple types of habits, creating a routine to follow."),
             ]),
           )),
 
       // Rituals
       Scaffold(
           appBar: makeAppBar("RH"),
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(children: <Widget>[
-              getHeadingwithIcon("Rituals", const Icon(CustomIcons.fire)),
-              paddingBox,
-              const Text(
-                  "Rituals in are sequences of habits to be completed in an order at predetermined times. \n\nEach ritual can consist of multiple types of habits, creating a routine to follow."),
-              paddingBox,
-              paddingBox,
-              getHeadingwithIcon("Highlights", const Icon(CustomIcons.lightbulbOutline)),
-              paddingBox,
-              const Text(
-                  "Highlights are your daily goals, pinpointing one task for intense focus. \n\nThey're like the EAT YOUR FROG tasks—best done, ideally, first thing in the morning to kickstart your day with a sense of accomplishment."),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const Text("Enable Highlights",
-                        style: TextStyle(fontFamily: "NotoSans-Light")),
-                    Checkbox(
-                      activeColor: accentColor,
-                      value: SharedPreferencesManager().getShowHighlight(),
-                      onChanged: (value) async {
-                        await SharedPreferencesManager()
-                            .setShowHighlight(value!);
-                        setState(() {});
-                      },
-                    ),
-                  ],
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(children: <Widget>[
+                getHeadingwithIcon("Rituals", const Icon(CustomIcons.fire)),
+                paddingBox,
+                const Text(
+                    "Rituals are sequences of habits to be completed in an order at predetermined times. \n\nEach ritual can consist of multiple types of habits, creating a routine to follow."),
+                paddingBox,
+                paddingBox,
+                getHeadingwithIcon("Highlights", const Icon(CustomIcons.lightbulbOutline)),
+                paddingBox,
+                const Text(
+                    "Highlights are your daily goals, pinpointing one task for intense focus. \n\nThey're like the EAT YOUR FROG tasks—best done, ideally, first thing in the morning to kickstart your day with a sense of accomplishment."),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const Text("Enable Highlights",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
+                      Checkbox(
+                        activeColor: accentColor,
+                        value: SharedPreferencesManager().getShowHighlight(),
+                        onChanged: (value) async {
+                          await SharedPreferencesManager()
+                              .setShowHighlight(value!);
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
           )),
 
       // Sprints
       Scaffold(
           appBar: makeAppBar("RHS"),
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(children: <Widget>[
-              getHeadingwithIcon("Rituals", const Icon(CustomIcons.fire)),
-              paddingBox,
-              const Text(
-                  "Rituals in are sequences of habits to be completed in an order at predetermined times. \n\nEach ritual can consist of multiple types of habits, creating a routine to follow."),
-              paddingBox,
-              paddingBox,
-              getHeadingwithIcon("Highlights", const Icon(CustomIcons.lightbulbOutline)),
-              paddingBox,
-              const Text(
-                  "Highlights are your daily goals, pinpointing one task for intense focus. \n\nThey're like the EAT YOUR FROG tasks—best done, ideally, first thing in the morning to kickstart your day with a sense of accomplishment."),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const Text("Enable Highlights",
-                        style: TextStyle(fontFamily: "NotoSans-Light")),
-                    Checkbox(
-                      activeColor: accentColor,
-                      value: SharedPreferencesManager().getShowHighlight(),
-                      onChanged: (value) async {
-                        await SharedPreferencesManager()
-                            .setShowHighlight(value!);
-                        setState(() {});
-                      },
-                    ),
-                  ],
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(children: <Widget>[
+                getHeadingwithIcon("Rituals", const Icon(CustomIcons.fire)),
+                paddingBox,
+                const Text(
+                    "Rituals are sequences of habits to be completed in an order at predetermined times. \n\nEach ritual can consist of multiple types of habits, creating a routine to follow."),
+                paddingBox,
+                paddingBox,
+                getHeadingwithIcon("Highlights", const Icon(CustomIcons.lightbulbOutline)),
+                paddingBox,
+                const Text(
+                    "Highlights are your daily goals, pinpointing one task for intense focus. \n\nThey're like the EAT YOUR FROG tasks—best done, ideally, first thing in the morning to kickstart your day with a sense of accomplishment."),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const Text("Enable Highlights",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
+                      Checkbox(
+                        activeColor: accentColor,
+                        value: SharedPreferencesManager().getShowHighlight(),
+                        onChanged: (value) async {
+                          await SharedPreferencesManager()
+                              .setShowHighlight(value!);
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              paddingBox,
-              paddingBox,
-              getHeadingwithIcon("Sprints", const Icon(CustomIcons.directionsRun)),
-              paddingBox,
-              const Text(
-                  "Think of a sprint as a goal you work on for a stretch of time, whether it's a few days, weeks, or months. \n\nWhile Rituals are done day after day, and highlight focuses on one day, forming the ends of a spectrum, Sprints fall right in between. \n\nIt's a task that needs consistency to see results. While you can do it any time during the day, doing it at the same time daily helps achieve better outcomes."),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    const Text("Enable Sprints",
-                        style: TextStyle(fontFamily: "NotoSans-Light")),
-                    Checkbox(
-                      activeColor: accentColor,
-                      value: SharedPreferencesManager().getShowSprints(),
-                      onChanged: (value) async {
-                        await SharedPreferencesManager().setShowSprints(value!);
-                        setState(() {});
-                      },
-                    ),
-                  ],
+                paddingBox,
+                paddingBox,
+                getHeadingwithIcon("Sprints", const Icon(CustomIcons.directionsRun)),
+                paddingBox,
+                const Text(
+                    "Think of a sprint as a goal you work on for a stretch of time, whether it's a few days, weeks, or months. \n\nWhile Rituals are done day after day, and highlight focuses on one day, forming the ends of a spectrum, Sprints fall right in between. \n\nIt's a task that needs consistency to see results. While you can do it any time during the day, doing it at the same time daily helps achieve better outcomes."),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const Text("Enable Sprints",
+                          style: TextStyle(fontFamily: "NotoSans-Light")),
+                      Checkbox(
+                        activeColor: accentColor,
+                        value: SharedPreferencesManager().getShowSprints(),
+                        onChanged: (value) async {
+                          await SharedPreferencesManager().setShowSprints(value!);
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
           )),
 
       // Two Day Rule & Saturate Cards
@@ -279,7 +287,7 @@ class _GettingStartedState extends State<GettingStarted> {
               padding: const EdgeInsets.all(24.0),
               child: SingleChildScrollView(
                 child: Column(children: <Widget>[
-                  getHeading("Regular"),
+                  getHeading("Regular Habits"),
                   paddingBox,
                   const Text(
                       "These are your daily tasks that you tick off as you complete them. \n\nThey have a set duration, and you can use the built-in timer to track your progress and mark them as done. It's a great way to stay on top of your daily routine effortlessly."),
@@ -307,7 +315,7 @@ class _GettingStartedState extends State<GettingStarted> {
                       "https://ujwalnk.github.io/Ritual/network-img/dhabit-cropped.png"),
                   paddingBox,
                   paddingBox,
-                  getHeading("Regular"),
+                  getHeading("Regular Habits"),
                   paddingBox,
                   const Text(
                       "These are your daily tasks that you tick off as you complete them. \n\nThey have a set duration, and you can use the built-in timer to track your progress and mark them as done. It's a great way to stay on top of your daily routine effortlessly."),
@@ -350,7 +358,7 @@ class _GettingStartedState extends State<GettingStarted> {
                       "https://ujwalnk.github.io/Ritual/network-img/dhabit-cropped.png"),
                   paddingBox,
                   paddingBox,
-                  getHeading("Regular"),
+                  getHeading("Regular Habits"),
                   paddingBox,
                   const Text(
                       "These are your daily tasks that you tick off as you complete them. \n\nThey have a set duration, and you can use the built-in timer to track your progress and mark them as done. It's a great way to stay on top of your daily routine effortlessly."),

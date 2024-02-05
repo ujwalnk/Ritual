@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
@@ -24,6 +25,7 @@ class SharedPreferencesManager {
   static const String screenTimeout = 'i';
   static const String appInit = 'j';
   static const String breakTime = 'k';
+  static const String setupTracker = 'l';
 
   // Initialize SharedPreferences asynchronously
   Future<void> init() async {
@@ -132,5 +134,35 @@ class SharedPreferencesManager {
 
   Future<void> setBreakTime(int value) async {
     await _prefs.setInt(breakTime, value);
+  }
+
+  /// Setup Tracker - Refer to the Constants.dart file for the index of each setup
+  bool getAppSetupTracker(int index) {
+    // Get the index bit of the integer value using bitwise operator
+
+    debugPrint(
+        "getting Tracker full: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: ${index}, OUTPUT: ${((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index)}");
+    return ((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index);
+  }
+
+  Future<void> setAppSetupTracker(int index) async {
+    // Clear the index bit of the value using bitwise operator
+    await _prefs.setInt(
+        setupTracker, ((_prefs.getInt(setupTracker) ?? 0) | (1 << index)));
+    debugPrint(
+        "Setting Tracker after: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: ${index}");
+  }
+
+  // Developer function - Clear AppSetupTracker TODO: Remove
+  Future<void> clearAppSetupTracker(int index) async {
+    await _prefs.setInt(
+        setupTracker, ((_prefs.getInt(setupTracker) ?? 0) & (0 << index)));
+  }
+
+  Future<void> clearAllAppSetupTracker() async {
+    for (int x = 0; x < 14; x++) {
+      await _prefs.setInt(
+          setupTracker, ((_prefs.getInt(setupTracker) ?? 0) & (0 << x)));
+    }
   }
 }

@@ -11,6 +11,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/image_picker.dart';
 
@@ -31,14 +32,11 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   // Card Background illustration path
   String cardBackgroundPath = Constants.noBackground;
 
-  // Check for highlight plans for the next day
-  bool highlight4Today = true;
+  // Check to Schedule the highlight for the next day
+  bool isHighlightPlanned = false;
 
   // Map of asset Illustrations
   Map cardIllustrations = {};
-
-  // Enable spotlight
-  bool spotlightActivate = false;
 
   // Check for duplicate Highlight
   bool isDuplicateHighlight = false;
@@ -49,11 +47,15 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
+    // A copy of appSetupTrackerHighlightCommit
+    final appSetupTrackerHighlightCommit = !SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerHighlightCommit);
+
+    // Set the Highlight Commit Demo to complete
+    SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerHighlightCommit);
+
     // Focus the textField
-    if (SharedPreferencesManager().getAppInit() <= 1) {
+    if (!appSetupTrackerHighlightCommit) {
       _textFieldFocusNode.requestFocus();
-      spotlightActivate = true;
-      SharedPreferencesManager().setAppInit(2);
     }
 
     // Precache card illustrations
@@ -108,8 +110,9 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                 ),
                 const SizedBox(height: 30),
                 SpotlightAnt(
-                  enable: spotlightActivate,
-                  content: spotlightText("Enter your highlight for the Day"),
+                  enable: appSetupTrackerHighlightCommit,
+                  content: Misc.spotlightText("Enter your highlight for the Day"),
+                  spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
                   child: TextField(
                     controller: _textFieldController,
                     focusNode: _textFieldFocusNode,
@@ -117,7 +120,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                       setState(() {
                         isDuplicateHighlight = Boxes.getBox()
                             .values
-                            .any((habit) => habit.url.endsWith(text));
+                            .any((habit) => (habit.url.endsWith(text) && habit.type == Constants.typeHLight));
                         // TODO: Check for highlighs spanning multiple days and change the error message: Use Sprints for Highlights spanning multiple days
                         errorMessage =
                             isDuplicateHighlight ? "Duplicate Highlight" : "";
@@ -150,9 +153,9 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                     ),
                     Row(children: [
                       SpotlightAnt(
-                        enable: spotlightActivate,
+                        enable: appSetupTrackerHighlightCommit,
                         content:
-                            spotlightText("Choose from the best illustrations"),
+                            Misc.spotlightText("Choose from the best illustrations"),
                         child: IconButton(
                           icon: Icon(
                             Icons.image,
@@ -176,8 +179,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         ),
                       ),
                       SpotlightAnt(
-                        enable: spotlightActivate,
-                        content: spotlightText("Pick your favourite image"),
+                        enable: appSetupTrackerHighlightCommit,
+                        content: Misc.spotlightText("Pick your favorite image"),
                         child: IconButton(
                           icon: Icon(
                             Icons.image_search,
@@ -187,9 +190,9 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         ),
                       ),
                       SpotlightAnt(
-                        enable: spotlightActivate,
-                        content: spotlightText(
-                            "Let go with the default illustration"),
+                        enable: appSetupTrackerHighlightCommit,
+                        content: Misc.spotlightText(
+                            "Use default illustration"),
                         child: IconButton(
                           icon: Icon(
                             Icons.broken_image,
@@ -213,14 +216,14 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                           style: TextStyle(
                               fontSize: 20, fontFamily: "NotoSans-Light")),
                       SpotlightAnt(
-                        enable: spotlightActivate,
-                        content: spotlightText(
+                        enable: appSetupTrackerHighlightCommit,
+                        content: Misc.spotlightText(
                             "Planning the highlight for tomorrow?"),
                         child: Checkbox(
                           activeColor: accentColor,
-                          value: highlight4Today,
+                          value: isHighlightPlanned,
                           onChanged: (value) async {
-                            highlight4Today = value!;
+                            isHighlightPlanned = value!;
                             setState(() {});
                           },
                         ),
@@ -242,13 +245,16 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                             DateTime now = DateTime.now();
                             final ritual = Ritual()
                               ..complete = 0
+                              
+                              // Set the URL, Background and Type for the new Ritual
                               ..url = "/${_textFieldController.text}"
                               ..background = cardBackgroundPath
                               ..type = Constants.typeHLight
-                              // Highlight expires the next day
+
+                              // Highlight expires the next day or the day after
                               ..expiry = DateTime(
                                       now.year, now.month, now.day, 0, 0, 0, 0)
-                                  .add(Duration(days: highlight4Today ? 1 : 2));
+                                  .add(Duration(days: isHighlightPlanned ? 2 : 1));
 
                             final box = Boxes.getBox();
                             box.add(ritual);
@@ -352,11 +358,5 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
       // Set it to default value to show white background
       cardBackgroundPath = Constants.noBackground;
     }
-  }
-
-  Widget spotlightText(String text) {
-    return Padding(
-        padding: const EdgeInsets.only(bottom: 30),
-        child: Align(alignment: Alignment.bottomCenter, child: Text(text)));
   }
 }

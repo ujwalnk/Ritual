@@ -3,6 +3,7 @@
 /// Miscellaneous Services
 
 import 'package:flutter/material.dart';
+
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
@@ -24,5 +25,18 @@ class Misc {
         duration: const Duration(seconds: 1),
       ),
     );
+  }
+
+  static Widget spotlightText(String t) {
+    return Padding(
+        padding: const EdgeInsets.only(bottom: 30, right: 30),
+        child: Align(
+            alignment: Alignment.bottomRight,
+            child: Text(t,
+                style: const TextStyle(
+                    fontFamily: "NotoSans-Light", 
+                    fontSize: 20,
+                    color: Colors.white,
+                  ))));
   }
 }

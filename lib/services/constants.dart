@@ -21,16 +21,20 @@ class Constants{
   static const int modeDark = 1;
   static const int modeAuto = 2;
 
-  // Application Spotlight Order
-  static const int gettingStartedScreen = 1;
-  static const int homeScreen2Highlight = 2;
-  static const int highlightHelp = 3;
-  static const int homeScreen2Sprints = 4;
-  static const int sprintsHelp = 5;
-  static const int homeScreen2Rituals = 6;
-  static const int ritualsHelp = 7;
-  static const int homeSceenTour = 8;
-  static const int ritualScreenTour = 9;
+  // Application Setup Order
+  static const int appSetupTrackerGettingStartedScreen = 1;
+  static const int appSetupTrackerHomeScreen = 2;
+  static const int appSetupTrackerFab = 3;
+  static const int appSetupTrackerHighlightCard = 4;
+  static const int appSetupTrackerHighlightCommit = 5;
+  static const int appSetupTrackerSprintCard = 6;
+  static const int appSetupTrackerSprintCommit = 7;
+  static const int appSetupTrackerRitualCard = 8;
+  static const int appSetupTrackerRitualCommit = 9;
+  static const int appSetupTrackerRitualScreen = 10;
+  static const int appSetupTrackerHabitCommit = 11;
+  static const int appSetupTrackerHabitCard = 12;
+  static const int appSetupTrackerTimerScreen = 13;
 
   // Background Colors
   static const Color primaryColor = Color.fromARGB(255, 255, 255, 255);
