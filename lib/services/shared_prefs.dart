@@ -21,7 +21,6 @@ class SharedPreferencesManager {
   static const String appMode = 'e';
   static const String colorizeHabitText = 'f';
   static const String saturateCards = 'g';
-  static const String accentColor = 'h';
   static const String screenTimeout = 'i';
   static const String appInit = 'j';
   static const String breakTime = 'k';
@@ -100,15 +99,6 @@ class SharedPreferencesManager {
     await _prefs.setBool(saturateCards, value);
   }
 
-  /// App Accent Color
-  int getAccentColor() {
-    return _prefs.getInt(accentColor) ?? 0xFFFFEB3B;
-  }
-
-  Future<void> setAccentColor(int value) async {
-    await _prefs.setInt(accentColor, value);
-  }
-
   /// Screen Timeout on Timer Screen
   bool getScreenTimeout() {
     return _prefs.getBool(screenTimeout) ?? true;
@@ -141,7 +131,7 @@ class SharedPreferencesManager {
     // Get the index bit of the integer value using bitwise operator
 
     debugPrint(
-        "getting Tracker full: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: ${index}, OUTPUT: ${((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index)}");
+        "getting Tracker full: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: $index, OUTPUT: ${((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index)}");
     return ((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index);
   }
 
@@ -150,15 +140,16 @@ class SharedPreferencesManager {
     await _prefs.setInt(
         setupTracker, ((_prefs.getInt(setupTracker) ?? 0) | (1 << index)));
     debugPrint(
-        "Setting Tracker after: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: ${index}");
+        "Setting Tracker after: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: $index");
   }
 
-  // Developer function - Clear AppSetupTracker TODO: Remove
+  // Developer function - Clear AppSetupTracker
   Future<void> clearAppSetupTracker(int index) async {
     await _prefs.setInt(
         setupTracker, ((_prefs.getInt(setupTracker) ?? 0) & (0 << index)));
   }
 
+  // Developer function - Clear Full Setup
   Future<void> clearAllAppSetupTracker() async {
     for (int x = 0; x < 14; x++) {
       await _prefs.setInt(

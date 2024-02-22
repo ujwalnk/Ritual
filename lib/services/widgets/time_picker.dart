@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ritual/services/shared_prefs.dart';
 
 class TimePicker extends StatefulWidget {
   const TimePicker(
@@ -16,8 +15,6 @@ class _TimePickerState extends State<TimePicker> {
 
   bool init = false;
 
-  final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
-
   @override
   Widget build(BuildContext context) {
     if (!init) {
@@ -29,16 +26,14 @@ class _TimePickerState extends State<TimePicker> {
       onPressed: () {
         _selectTime();
       },
-      icon: Icon(
+      icon: const Icon(
         Icons.timer,
-        color: accentColor
       ),
       label: Text(
         _time.format(context),
-        style: TextStyle(
+        style: const TextStyle(
           fontFamily: "NotoSans-Light",
           fontSize: 20,
-          color: accentColor
         ),
       ),
     );

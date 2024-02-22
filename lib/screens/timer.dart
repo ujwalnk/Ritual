@@ -93,8 +93,9 @@ class _TimerState extends State<Timer> {
                     width: MediaQuery.of(context).size.width / 1.2,
                     height: MediaQuery.of(context).size.height / 1.2,
                     ringColor: Colors.grey[300]!,
+                    // TODO: Get Color from palette
                     fillColor:
-                        Color(SharedPreferencesManager().getAccentColor()),
+                        const Color(123345),
                     strokeWidth: 10.0,
                     isTimerTextShown: true,
                     isReverse: true,

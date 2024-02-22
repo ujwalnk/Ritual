@@ -3,7 +3,6 @@
 /// Getting Started Screen
 
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 // Screens
 import 'package:ritual/screens/home.dart';
@@ -34,8 +33,6 @@ class _GettingStartedState extends State<GettingStarted> {
 
   @override
   Widget build(BuildContext context) {
-    Color accentColor = Color(SharedPreferencesManager().getAccentColor());
-
     // Set the Getting Started Demo to complete
     SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerGettingStartedScreen);
 
@@ -102,7 +99,6 @@ class _GettingStartedState extends State<GettingStarted> {
                       const Text("Enable Highlights",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
                       Checkbox(
-                        activeColor: accentColor,
                         value: SharedPreferencesManager().getShowHighlight(),
                         onChanged: (value) async {
                           await SharedPreferencesManager()
@@ -143,7 +139,6 @@ class _GettingStartedState extends State<GettingStarted> {
                       const Text("Enable Highlights",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
                       Checkbox(
-                        activeColor: accentColor,
                         value: SharedPreferencesManager().getShowHighlight(),
                         onChanged: (value) async {
                           await SharedPreferencesManager()
@@ -169,7 +164,6 @@ class _GettingStartedState extends State<GettingStarted> {
                       const Text("Enable Sprints",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
                       Checkbox(
-                        activeColor: accentColor,
                         value: SharedPreferencesManager().getShowSprints(),
                         onChanged: (value) async {
                           await SharedPreferencesManager().setShowSprints(value!);
@@ -203,7 +197,6 @@ class _GettingStartedState extends State<GettingStarted> {
                     const Text("Enable Two Day Rule",
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      activeColor: accentColor,
                       value: SharedPreferencesManager().getTwoDayRule(),
                       onChanged: (value) async {
                         await SharedPreferencesManager().setTwoDayRule(value!);
@@ -240,7 +233,6 @@ class _GettingStartedState extends State<GettingStarted> {
                     const Text("Enable Two Day Rule",
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      activeColor: accentColor,
                       value: SharedPreferencesManager().getTwoDayRule(),
                       onChanged: (value) async {
                         await SharedPreferencesManager().setTwoDayRule(value!);
@@ -265,7 +257,6 @@ class _GettingStartedState extends State<GettingStarted> {
                     const Text("Make my tracking vibrant",
                         style: TextStyle(fontFamily: "NotoSans-Light")),
                     Checkbox(
-                      activeColor: accentColor,
                       value: SharedPreferencesManager().getSaturateCard(),
                       onChanged: (value) async {
                         await SharedPreferencesManager().setSaturateCard(value!);
@@ -399,64 +390,6 @@ class _GettingStartedState extends State<GettingStarted> {
                             },
                             icon: appModeIcon[
                                 SharedPreferencesManager().getAppMode()])
-                      ],
-                    ),
-                  ),
-
-                  // App theme color
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        const Text("Accent Color",
-                            style: TextStyle(fontFamily: "NotoSans-Light")),
-                        IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    titlePadding: const EdgeInsets.all(0),
-                                    contentPadding: const EdgeInsets.all(0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          MediaQuery.of(context).orientation ==
-                                                  Orientation.portrait
-                                              ? const BorderRadius.vertical(
-                                                  top: Radius.circular(500),
-                                                  bottom: Radius.circular(100),
-                                                )
-                                              : const BorderRadius.horizontal(
-                                                  right: Radius.circular(500)),
-                                    ),
-                                    content: SingleChildScrollView(
-                                      child: HueRingPicker(
-                                        pickerColor: Color(
-                                            SharedPreferencesManager()
-                                                .getAccentColor()),
-                                        onColorChanged: (Color c) {
-                                          SharedPreferencesManager()
-                                              .setAccentColor(c.value);
-                                          accentColor = c;
-
-                                          // Update the colors
-                                          setState(() {});
-                                        },
-                                        enableAlpha: true,
-                                        displayThumbColor: true,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                              // _restartAlert();
-                            },
-                            icon: Icon(
-                              Icons.palette,
-                              color: accentColor,
-                            ))
                       ],
                     ),
                   ),

@@ -39,8 +39,6 @@ class _Commit2RitualState extends State<Commit2Ritual> {
   // Card Background Illustration path
   String cardBackgroundPath = Constants.noBackground;
 
-  final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
-
   // Duplicate Ritual check & Error Message
   bool isDuplicateRitual = false;
   String? errorMessage;
@@ -138,13 +136,9 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     focusNode: _textFieldFocusNode,
                     decoration: InputDecoration(
                         errorText: errorMessage,
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            // Red border if habit exists
-                            color: isDuplicateRitual
-                                ? Colors.red
-                                : Color(
-                                    SharedPreferencesManager().getAccentColor()),
+                            // TODO: Red border on duplicate habit
                           ),
                         ),
                         hintText: data['mode'] == "new"
@@ -192,9 +186,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         enable: appSetupTrackerRitualCommit,
                         content: Misc.spotlightText("Choose from the best illustrations"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.image,
-                            color: accentColor,
                           ),
                           onPressed: () {
                             showDialog(
@@ -217,9 +210,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         enable: appSetupTrackerRitualCommit,
                         content: Misc.spotlightText("Pick your favorite image"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.image_search,
-                            color: accentColor,
                           ),
                           onPressed: () => _getImage(data),
                         ),
@@ -228,9 +220,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         enable: appSetupTrackerRitualCommit,
                         content: Misc.spotlightText("Use default illustration"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.broken_image,
-                            color: accentColor,
                           ),
                           onPressed: () =>
                               cardBackgroundPath = Constants.noBackground,

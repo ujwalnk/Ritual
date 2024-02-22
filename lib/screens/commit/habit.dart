@@ -178,13 +178,9 @@ class _Commit2HabitState extends State<Commit2Habit> {
                       },
                       decoration: InputDecoration(
                           errorText: errorMessage,
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                             borderSide: BorderSide(
-                              // Red border if habit exists
-                              color: isDuplicateHabit
-                                  ? Colors.red
-                                  : Color(SharedPreferencesManager()
-                                      .getAccentColor()),
+                              // TODO: Red border on duplicate habit
                             ),
                           ),
                           hintText: data['mode'] == "new"
@@ -392,8 +388,6 @@ class _Commit2HabitState extends State<Commit2Habit> {
                                           fontSize: 20,
                                           fontFamily: "NotoSans-Light")),
                                   Checkbox(
-                                    activeColor: Color(SharedPreferencesManager()
-                                        .getAccentColor()),
                                     value: stackTime,
                                     onChanged: (value) {
                                       stackTime = !stackTime;

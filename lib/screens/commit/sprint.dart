@@ -27,8 +27,6 @@ class _Commit2SprintState extends State<Commit2Sprint> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
-  final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
-
   DateTime? selectedDate;
 
   // Map of asset Illustrations
@@ -123,13 +121,9 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                       });
                     },
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            // Red border if sprint exists
-                            color: isDuplicateSprint
-                                ? Colors.red
-                                : Color(
-                                    SharedPreferencesManager().getAccentColor()),
+                            // TODO: Red border on duplicate sprint
                           ),
                         ),
                         errorText: errorMessage,
@@ -173,9 +167,8 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                         enable: appSetupTrackerSprintCommit,
                         content: Misc.spotlightText("Choose form the best illustrations"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.image,
-                            color: accentColor,
                           ),
                           onPressed: () {
                             showDialog(
@@ -198,9 +191,8 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                         enable: appSetupTrackerSprintCommit,
                         content: Misc.spotlightText("Pick your favourite image"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.image_search,
-                            color: accentColor,
                           ),
                           onPressed: () => _getImage(data),
                         ),
@@ -209,9 +201,8 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                         enable: appSetupTrackerSprintCommit,
                         content: Misc.spotlightText("Use default illustration"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.broken_image,
-                            color: accentColor,
                           ),
                           onPressed: () =>
                               cardBackgroundPath = Constants.noBackground,

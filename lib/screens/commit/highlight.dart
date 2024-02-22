@@ -26,9 +26,6 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
-  // Accent color
-  final Color accentColor = Color(SharedPreferencesManager().getAccentColor());
-
   // Card Background illustration path
   String cardBackgroundPath = Constants.noBackground;
 
@@ -128,13 +125,9 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                     },
                     decoration: InputDecoration(
                         errorText: errorMessage,
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            // Red border if Highlight exists
-                            color: isDuplicateHighlight
-                                ? Colors.red
-                                : Color(SharedPreferencesManager()
-                                    .getAccentColor()),
+                            // TODO: Red border on duplicate Highlight
                           ),
                         ),
                         hintText: data['mode'] == "edit"
@@ -157,9 +150,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         content:
                             Misc.spotlightText("Choose from the best illustrations"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.image,
-                            color: accentColor,
                           ),
                           onPressed: () {
                             showDialog(
@@ -182,9 +174,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         enable: appSetupTrackerHighlightCommit,
                         content: Misc.spotlightText("Pick your favorite image"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.image_search,
-                            color: accentColor,
                           ),
                           onPressed: () => _getImage(data),
                         ),
@@ -194,9 +185,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         content: Misc.spotlightText(
                             "Use default illustration"),
                         child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.broken_image,
-                            color: accentColor,
                           ),
                           onPressed: () =>
                               cardBackgroundPath = Constants.noBackground,
@@ -220,7 +210,6 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         content: Misc.spotlightText(
                             "Planning the highlight for tomorrow?"),
                         child: Checkbox(
-                          activeColor: accentColor,
                           value: isHighlightPlanned,
                           onChanged: (value) async {
                             isHighlightPlanned = value!;

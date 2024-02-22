@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ritual/color_schemes.g.dart';
 
 // Screens
 import 'package:ritual/screens/getting_started.dart';
@@ -46,9 +47,13 @@ void main() async {
     },
 
     theme: ThemeData(
-      primaryColor: Color(SharedPreferencesManager().getAccentColor()),
+      useMaterial3: true,
+      colorScheme: lightColorScheme
     ),
-    darkTheme: ThemeData.dark(),
+    darkTheme: ThemeData(
+      useMaterial3: true,
+      colorScheme:  darkColorScheme
+    ),
     themeMode: (SharedPreferencesManager().getAppMode() == Constants.modeAuto
         ? ThemeMode.system
         : (SharedPreferencesManager().getAppMode() == Constants.modeDark

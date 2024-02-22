@@ -35,7 +35,8 @@ class _HomeState extends State<Home> {
   bool isFirstRitual = true;
 
   // Application Accent Color
-  Color accentColor = Color(SharedPreferencesManager().getAccentColor());
+  // TODO: Get Color from palette
+  Color iconColor = const Color.fromARGB(0, 65, 146, 67);
 
   // A copy of appSetupTracker for HighlightCard, SprintCard & RitualCard
   bool appSetupTrackerHighlightCard = true;
@@ -135,8 +136,8 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: Icon(CustomIcons.lightbulbOutline,
                                       color: hideHighlights
-                                          ? accentColor.withAlpha(2000)
-                                          : accentColor.withAlpha(0)),
+                                          ? iconColor.withAlpha(2000)
+                                          : iconColor.withAlpha(0)),
                                 ))
                           ],
                         ),
@@ -198,8 +199,8 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.only(right: 10.0),
                                   child: Icon(CustomIcons.directionsRun,
                                       color: hideSprints
-                                          ? accentColor.withAlpha(200)
-                                          : accentColor.withAlpha(0))))
+                                          ? iconColor.withAlpha(200)
+                                          : iconColor.withAlpha(0))))
                         ]),
                       ),
                     ),
@@ -241,7 +242,7 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Icon(CustomIcons.fire,
-                                color: accentColor.withAlpha(200)),
+                                color: iconColor.withAlpha(200)),
                           ))
                     ]),
                   ),
