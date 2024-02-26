@@ -35,24 +35,20 @@ class _HomeState extends State<Home> {
   bool isFirstRitual = true;
 
   // Application Accent Color
-  // TODO: Get Color from palette
-  Color iconColor = const Color.fromARGB(0, 65, 146, 67);
+  Color iconColor = const ColorScheme.dark().primary;
 
   // A copy of appSetupTracker for HighlightCard, SprintCard & RitualCard
   bool appSetupTrackerHighlightCard = true;
   bool appSetupTrackerSprintCard = true;
   bool appSetupTrackerRitualCard = true;
 
-  // TODO: Move to Misc.dart
-  // Compute TextColor from Background Color
-  Color getFontColorForBackground(Color background) {
-    return (background.computeLuminance() > 0.179)
-        ? Colors.black
-        : Colors.white;
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Set iconColor
+    MediaQuery.of(context).platformBrightness == Brightness.dark
+        ? const ColorScheme.dark().primary
+        : const ColorScheme.light().primary;
+
     // A Copy of appSetupTrackerHomeScreen
     final appSetupTrackerHomeScreen = !SharedPreferencesManager()
         .getAppSetupTracker(Constants.appSetupTrackerHomeScreen);
@@ -124,7 +120,7 @@ class _HomeState extends State<Home> {
                               "Highlights",
                               style: TextStyle(
                                   fontSize: 22,
-                                  fontFamily: "NotoSans-Light",
+                                  fontFamily: "NotoSans",
                                   decoration: hideHighlights
                                       ? TextDecoration.none
                                       : TextDecoration.lineThrough),
@@ -187,7 +183,7 @@ class _HomeState extends State<Home> {
                             "Sprints",
                             style: TextStyle(
                                 fontSize: 22,
-                                fontFamily: "NotoSans-Light",
+                                fontFamily: "NotoSans",
                                 decoration: hideSprints
                                     ? TextDecoration.none
                                     : TextDecoration.lineThrough),
@@ -235,7 +231,7 @@ class _HomeState extends State<Home> {
                       const Text(
                         "Rituals",
                         style: TextStyle(
-                            fontSize: 22, fontFamily: "NotoSans-Light"),
+                            fontSize: 22, fontFamily: "NotoSans"),
                       ),
                       Align(
                           alignment: Alignment.centerRight,
@@ -304,7 +300,6 @@ class _HomeState extends State<Home> {
 
   Widget buildCard(BuildContext context, Ritual ritual,
       {String type = Constants.typeRitual}) {
-
     // Mark the appSetupTracker as done for type
     if (type == Constants.typeRitual) {
       appSetupTrackerRitualCard = !SharedPreferencesManager()

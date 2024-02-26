@@ -1,6 +1,7 @@
 /// Author: Ujwal N K
 /// Created on: 2023, Jan 02
 /// Getting Started Screen
+library;
 
 import 'package:flutter/material.dart';
 

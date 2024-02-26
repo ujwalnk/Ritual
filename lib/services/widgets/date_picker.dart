@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 class CustomDatePicker extends StatefulWidget {
   const CustomDatePicker(
-      {super.key, this.restorationId, this.startDate, this.endDate, required this.onDateSelected, this.preSelectedDate});
+      {super.key,
+      this.restorationId,
+      this.startDate,
+      this.endDate,
+      required this.onDateSelected,
+      this.preSelectedDate});
 
   final String? restorationId;
   final DateTime? startDate;
@@ -23,7 +28,20 @@ class _CustomDatePickerState extends State<CustomDatePicker>
   String selectedDate = "Open Date Picker";
 
   final RestorableDateTime _selectedDate = RestorableDateTime(DateTime.now());
-  final List<String> monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  final List<String> monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
 
   late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
       RestorableRouteFuture<DateTime?>(
@@ -63,7 +81,7 @@ class _CustomDatePickerState extends State<CustomDatePicker>
     );
   }
 
-    @override
+  @override
   void initState() {
     super.initState();
 
@@ -86,7 +104,8 @@ class _CustomDatePickerState extends State<CustomDatePicker>
     if (newSelectedDate != null) {
       setState(() {
         _selectedDate.value = newSelectedDate;
-        selectedDate = "${monthNames[newSelectedDate.month - 1]} ${newSelectedDate.day.toString()}, ${newSelectedDate.year.toString()}";
+        selectedDate =
+            "${monthNames[newSelectedDate.month - 1]} ${newSelectedDate.day.toString()}, ${newSelectedDate.year.toString()}";
       });
 
       // Call the callback function with the selected date
@@ -96,17 +115,19 @@ class _CustomDatePickerState extends State<CustomDatePicker>
 
   @override
   Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: () {
-        _restorableDatePickerRouteFuture.present();
-      },
-      icon: const Icon(Icons.calendar_month_outlined),
-      label: Text(
+    return Row(children: [
+      Text(
         selectedDate,
         style: const TextStyle(
           fontFamily: "NotoSans-Light",
         ),
       ),
-    );
+      IconButton(
+        onPressed: () {
+          _restorableDatePickerRouteFuture.present();
+        },
+        icon: const Icon(Icons.calendar_month_outlined),
+      )
+    ]);
   }
 }

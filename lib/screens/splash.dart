@@ -17,7 +17,7 @@ import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/shared_prefs.dart';
 
 class Splash extends StatefulWidget {
-  const Splash({Key? key}) : super(key: key);
+  const Splash({super.key});
 
   @override
   _SplashState createState() => _SplashState();
@@ -99,8 +99,18 @@ class _SplashState extends State<Splash> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Image.asset(
-              "assets/icons/icon.png"),
+          child: Column(
+            children: [
+              const Text(
+                "Ritual",
+                style: TextStyle(
+                  fontFamily: "NotoSans-Light",
+                )
+              ),
+              Image.asset(
+                  "assets/icons/icon.png"),
+            ],
+          ),
         ),
       ),
     );

@@ -45,6 +45,7 @@ class _TimerState extends State<Timer> {
       },
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           // Add an IconButton at the top right corner
           actions: <Widget>[
             IconButton(
@@ -95,7 +96,7 @@ class _TimerState extends State<Timer> {
                     ringColor: Colors.grey[300]!,
                     // TODO: Get Color from palette
                     fillColor:
-                        const Color(123345),
+                        const Color(0x0001e1d1),
                     strokeWidth: 10.0,
                     isTimerTextShown: true,
                     isReverse: true,

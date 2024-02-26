@@ -75,7 +75,8 @@ class _SettingsState extends State<Settings> {
                       Checkbox(
                         value: SharedPreferencesManager().getTwoDayRule(),
                         onChanged: (value) async {
-                          await SharedPreferencesManager().setTwoDayRule(value!);
+                          await SharedPreferencesManager()
+                              .setTwoDayRule(value!);
                           setState(() {});
                         },
                       ),
@@ -128,10 +129,10 @@ class _SettingsState extends State<Settings> {
                                       seconds: SharedPreferencesManager()
                                           .getBreakTime()),
                                   baseUnit: BaseUnit.second);
-          
+
                               debugPrint(
                                   "@Settings - Resulting Duration: ${resultingDuration?.inSeconds}");
-          
+
                               SharedPreferencesManager().setBreakTime(
                                   resultingDuration?.inSeconds ?? 0);
                               setState(() {});
@@ -173,7 +174,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 const SizedBox(height: elementSpacing),
-          
+
                 // Check box for Sprint
                 Align(
                   alignment: Alignment.centerLeft,
@@ -186,7 +187,8 @@ class _SettingsState extends State<Settings> {
                       Checkbox(
                         value: SharedPreferencesManager().getShowSprints(),
                         onChanged: (value) async {
-                          await SharedPreferencesManager().setShowSprints(value!);
+                          await SharedPreferencesManager()
+                              .setShowSprints(value!);
                           setState(() {});
                         },
                       ),
@@ -194,7 +196,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 const SizedBox(height: elementSpacing),
-          
+
                 // Check box for Colorize habit text
                 Align(
                   alignment: Alignment.centerLeft,
@@ -205,7 +207,8 @@ class _SettingsState extends State<Settings> {
                       const Text("Colorize Habit Text",
                           style: TextStyle(fontFamily: "NotoSans-Light")),
                       Checkbox(
-                        value: SharedPreferencesManager().getColorizeHabitText(),
+                        value:
+                            SharedPreferencesManager().getColorizeHabitText(),
                         onChanged: (value) async {
                           await SharedPreferencesManager()
                               .setColorizeHabitText(value!);
@@ -216,7 +219,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 const SizedBox(height: elementSpacing),
-          
+
                 // App Theme Toggle
                 Align(
                   alignment: Alignment.centerLeft,
@@ -241,7 +244,7 @@ class _SettingsState extends State<Settings> {
                                     SharedPreferencesManager().getAppMode() + 1;
                                 currentAppMode =
                                     currentAppMode >= 3 ? 0 : currentAppMode;
-          
+
                                 SharedPreferencesManager()
                                     .setAppMode(currentAppMode);
                                 setState(() {});
@@ -254,7 +257,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 const SizedBox(height: elementSpacing),
-          
+
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text("Data",
@@ -271,7 +274,8 @@ class _SettingsState extends State<Settings> {
                   onPressed: () async {
                     debugPrint("Exporting");
                     try {
-                      final result = await FilePicker.platform.getDirectoryPath();
+                      final result =
+                          await FilePicker.platform.getDirectoryPath();
                       if (result != null) {
                         // Use the selected path (result) to save your file
                         debugPrint("Selected path: $result");
@@ -305,11 +309,11 @@ class _SettingsState extends State<Settings> {
                       debugPrint("Importing");
                       try {
                         final result = await FilePicker.platform.pickFiles();
-          
+
                         if (result != null && result.files.isNotEmpty) {
                           final file = result.files.first;
                           restoreHiveBox(file.path!);
-          
+
                           // Show a confirmation dialog to )restart the app
                           _restartAlert();
                         } else {
@@ -319,7 +323,7 @@ class _SettingsState extends State<Settings> {
                         }
                       } catch (e) {
                         debugPrint("Error picking a file: $e");
-          
+
                         // Show a failure snackbar
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -481,5 +485,23 @@ class _SettingsState extends State<Settings> {
     sharedPrefMan.setFileSequence(0);
     sharedPrefMan.setShowHighlight(true);
     sharedPrefMan.setShowSprints(true);
+  }
+
+  Widget checkItem(String text, void Function(bool?)? onChanged, bool value) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(text,
+              style: const TextStyle(fontFamily: "NotoSans-Light")),
+          Checkbox(
+            value: value,
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    );
   }
 }

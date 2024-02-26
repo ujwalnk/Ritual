@@ -1,6 +1,7 @@
 /// Author: Ujwal N K
 /// Created On: 2023 Dec, 28
 /// Miscellaneous Services
+library;
 
 import 'package:flutter/material.dart';
 

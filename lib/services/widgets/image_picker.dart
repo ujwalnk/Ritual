@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ritual/services/constants.dart';
 
 class CustomImagePicker extends StatelessWidget {
-  const CustomImagePicker({Key? key, required this.onImageSelected, required this.cardIllustrations})
-      : super(key: key);
+  const CustomImagePicker({super.key, required this.onImageSelected, required this.cardIllustrations});
 
   final Function(String) onImageSelected; // Callback function
   final Map cardIllustrations;

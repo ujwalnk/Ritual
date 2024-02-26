@@ -22,20 +22,24 @@ class _TimePickerState extends State<TimePicker> {
       init = true;
     }
 
-    return TextButton.icon(
-      onPressed: () {
-        _selectTime();
-      },
-      icon: const Icon(
-        Icons.timer,
-      ),
-      label: Text(
-        _time.format(context),
-        style: const TextStyle(
-          fontFamily: "NotoSans-Light",
-          fontSize: 20,
+    return Row(
+      children: [
+        Text(
+          _time.format(context),
+          style: const TextStyle(
+            fontFamily: "NotoSans-Light",
+            fontSize: 20,
+          ),
         ),
-      ),
+        IconButton(
+          onPressed: () {
+            _selectTime();
+          },
+          icon: const Icon(
+            Icons.timer,
+          ),
+        ),
+      ],
     );
   }
 

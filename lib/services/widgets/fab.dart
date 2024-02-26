@@ -11,8 +11,7 @@ class ExpandableFab extends StatefulWidget {
   final bool sprint;
   final bool highlight;
 
-  const ExpandableFab({Key? key, required this.sprint, required this.highlight})
-      : super(key: key);
+  const ExpandableFab({super.key, required this.sprint, required this.highlight});
 
   @override
   _ExpandableFabState createState() => _ExpandableFabState();
