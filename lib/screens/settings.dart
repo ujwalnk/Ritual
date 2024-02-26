@@ -64,84 +64,67 @@ class _SettingsState extends State<Settings> {
                 ),
                 const SizedBox(height: elementSpacing),
                 // Check box for Highlight
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Two Day Rule",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        value: SharedPreferencesManager().getTwoDayRule(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setTwoDayRule(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
+                checkItem(
+                  "Two Day Rule",
+                  SharedPreferencesManager().getTwoDayRule(),
+                  (value) async {
+                    await SharedPreferencesManager().setTwoDayRule(value!);
+                    setState(() {});
+                  },
                 ),
+
                 const SizedBox(height: elementSpacing),
                 // Check box for Ritual Saturization
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Saturate Ritual Cards",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        value: SharedPreferencesManager().getSaturateCard(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setSaturateCard(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
+                checkItem(
+                  "Saturate Ritual Cards",
+                  SharedPreferencesManager().getSaturateCard(),
+                  (value) async {
+                    await SharedPreferencesManager().setSaturateCard(value!);
+                    setState(() {});
+                  },
                 ),
+
                 const SizedBox(height: elementSpacing),
                 // Clock for Break Time between habits for runRitual
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Break Time",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Row(
-                        children: [
-                          Text(SharedPreferencesManager()
-                                  .getBreakTime()
-                                  .isNegative
-                              ? "Pick Duration"
-                              : "${SharedPreferencesManager().getBreakTime()} Sec"),
-                          IconButton(
-                            onPressed: () async {
-                              var resultingDuration = await showDurationPicker(
-                                  context: context,
-                                  initialTime: Duration(
-                                      seconds: SharedPreferencesManager()
-                                          .getBreakTime()),
-                                  baseUnit: BaseUnit.second);
-
-                              debugPrint(
-                                  "@Settings - Resulting Duration: ${resultingDuration?.inSeconds}");
-
-                              SharedPreferencesManager().setBreakTime(
-                                  resultingDuration?.inSeconds ?? 0);
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.timelapse),
-                          )
-                        ],
-                      )
-                    ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const Text("Break Time",
+                            style: TextStyle(fontFamily: "NotoSans-Light")),
+                        Row(
+                          children: [
+                            Text(SharedPreferencesManager()
+                                    .getBreakTime()
+                                    .isNegative
+                                ? "Pick Duration"
+                                : "${SharedPreferencesManager().getBreakTime()} Sec"),
+                            IconButton(
+                              onPressed: () async {
+                                var resultingDuration = await showDurationPicker(
+                                    context: context,
+                                    initialTime: Duration(
+                                        seconds: SharedPreferencesManager()
+                                            .getBreakTime()),
+                                    baseUnit: BaseUnit.second);
+                  
+                                debugPrint(
+                                    "@Settings - Resulting Duration: ${resultingDuration?.inSeconds}");
+                  
+                                SharedPreferencesManager().setBreakTime(
+                                    resultingDuration?.inSeconds ?? 0);
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.timelapse),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: fieldSpacing),
@@ -154,109 +137,80 @@ class _SettingsState extends State<Settings> {
                 ),
                 const SizedBox(height: elementSpacing),
                 // Check box for Highlight
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Show Highlights",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        value: SharedPreferencesManager().getShowHighlight(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setShowHighlight(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
+                checkItem(
+                  "Show Highlights",
+                  SharedPreferencesManager().getShowHighlight(),
+                  (value) async {
+                    await SharedPreferencesManager().setShowHighlight(value!);
+                    setState(() {});
+                  },
                 ),
+
                 const SizedBox(height: elementSpacing),
 
                 // Check box for Sprint
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Show Sprints",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        value: SharedPreferencesManager().getShowSprints(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setShowSprints(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
+                checkItem(
+                  "Show Sprints",
+                  SharedPreferencesManager().getShowSprints(),
+                  (value) async {
+                    await SharedPreferencesManager().setShowSprints(value!);
+                    setState(() {});
+                  },
                 ),
                 const SizedBox(height: elementSpacing),
 
                 // Check box for Colorize habit text
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Colorize Habit Text",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Checkbox(
-                        value:
-                            SharedPreferencesManager().getColorizeHabitText(),
-                        onChanged: (value) async {
-                          await SharedPreferencesManager()
-                              .setColorizeHabitText(value!);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
+                checkItem(
+                  "Colorize Habit Text",
+                  SharedPreferencesManager().getColorizeHabitText(),
+                  (value) async {
+                    await SharedPreferencesManager()
+                        .setColorizeHabitText(value!);
+                    setState(() {});
+                  },
                 ),
                 const SizedBox(height: elementSpacing),
 
                 // App Theme Toggle
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("App Theme",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Row(
-                        children: [
-                          Text(SharedPreferencesManager().getAppMode() ==
-                                  Constants.modeLight
-                              ? "Light"
-                              : (SharedPreferencesManager().getAppMode() ==
-                                      Constants.modeDark
-                                  ? "Dark"
-                                  : "Auto")),
-                          IconButton(
-                              onPressed: () {
-                                int currentAppMode =
-                                    SharedPreferencesManager().getAppMode() + 1;
-                                currentAppMode =
-                                    currentAppMode >= 3 ? 0 : currentAppMode;
-
-                                SharedPreferencesManager()
-                                    .setAppMode(currentAppMode);
-                                setState(() {});
-                              },
-                              icon: appModeIcon[
-                                  SharedPreferencesManager().getAppMode()]),
-                        ],
-                      )
-                    ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0,0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const Text("App Theme",
+                            style: TextStyle(fontFamily: "NotoSans-Light")),
+                        Row(
+                          children: [
+                            Text(SharedPreferencesManager().getAppMode() ==
+                                    Constants.modeLight
+                                ? "Light"
+                                : (SharedPreferencesManager().getAppMode() ==
+                                        Constants.modeDark
+                                    ? "Dark"
+                                    : "Auto")),
+                            IconButton(
+                                onPressed: () {
+                                  int currentAppMode =
+                                      SharedPreferencesManager().getAppMode() + 1;
+                                  currentAppMode =
+                                      currentAppMode >= 3 ? 0 : currentAppMode;
+                  
+                                  SharedPreferencesManager()
+                                      .setAppMode(currentAppMode);
+                                  setState(() {});
+                                },
+                                icon: appModeIcon[
+                                    SharedPreferencesManager().getAppMode()]),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: elementSpacing),
+                const SizedBox(height: fieldSpacing),
 
                 const Align(
                   alignment: Alignment.centerLeft,
@@ -266,101 +220,112 @@ class _SettingsState extends State<Settings> {
                           fontFamily: "NotoSans-Light")),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: elementSpacing,
                 ),
                 // SizedBox(
                 // width: double.infinity,
-                /*child:*/ TextButton(
-                  onPressed: () async {
-                    debugPrint("Exporting");
-                    try {
-                      final result =
-                          await FilePicker.platform.getDirectoryPath();
-                      if (result != null) {
-                        // Use the selected path (result) to save your file
-                        debugPrint("Selected path: $result");
-                        backupHiveBox(result);
-                        _snackBar("Backup successful",
-                            backgroundColor: Colors.lightGreen);
-                      } else {
+                /*child:*/ Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: TextButton(
+                    onPressed: () async {
+                      debugPrint("Exporting");
+                      try {
+                        final result =
+                            await FilePicker.platform.getDirectoryPath();
+                        if (result != null) {
+                          // Use the selected path (result) to save your file
+                          debugPrint("Selected path: $result");
+                          backupHiveBox(result);
+                          _snackBar("Backup successful",
+                              backgroundColor: Colors.lightGreen);
+                        } else {
+                          // Show a failure snackbar
+                          _snackBar("Backup failed", backgroundColor: Colors.red);
+                        }
+                      } catch (e) {
+                        debugPrint("Error picking a directory: $e");
                         // Show a failure snackbar
                         _snackBar("Backup failed", backgroundColor: Colors.red);
                       }
-                    } catch (e) {
-                      debugPrint("Error picking a directory: $e");
-                      // Show a failure snackbar
-                      _snackBar("Backup failed", backgroundColor: Colors.red);
-                    }
-                  },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Export",
-                          style: TextStyle(fontFamily: "NotoSans-Light")),
-                      Icon(Icons.upload_file_rounded),
-                    ],
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Export",
+                            style: TextStyle(
+                              fontFamily: "NotoSans-Light"),
+                            ),
+                        Icon(Icons.upload_file_rounded),
+                      ],
+                    ),
                   ),
                 ),
                 // ),
                 SizedBox(
                   width: double.infinity,
-                  child: TextButton(
-                    onPressed: () async {
-                      debugPrint("Importing");
-                      try {
-                        final result = await FilePicker.platform.pickFiles();
-
-                        if (result != null && result.files.isNotEmpty) {
-                          final file = result.files.first;
-                          restoreHiveBox(file.path!);
-
-                          // Show a confirmation dialog to )restart the app
-                          _restartAlert();
-                        } else {
-                          // No file selected
-                          _snackBar("No file selected",
-                              backgroundColor: Colors.red);
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: TextButton(
+                      onPressed: () async {
+                        debugPrint("Importing");
+                        try {
+                          final result = await FilePicker.platform.pickFiles();
+                    
+                          if (result != null && result.files.isNotEmpty) {
+                            final file = result.files.first;
+                            restoreHiveBox(file.path!);
+                    
+                            // Show a confirmation dialog to )restart the app
+                            _restartAlert();
+                          } else {
+                            // No file selected
+                            _snackBar("No file selected",
+                                backgroundColor: Colors.red);
+                          }
+                        } catch (e) {
+                          debugPrint("Error picking a file: $e");
+                    
+                          // Show a failure snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Restoration failed"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                         }
-                      } catch (e) {
-                        debugPrint("Error picking a file: $e");
-
-                        // Show a failure snackbar
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Restoration failed"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Import",
-                            style: TextStyle(fontFamily: "NotoSans-Light")),
-                        Icon(Icons.download_rounded),
-                      ],
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Import",
+                              style: TextStyle(fontFamily: "NotoSans-Light")),
+                          Icon(Icons.download_rounded),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(
                   width: double.infinity,
-                  child: TextButton(
-                    onPressed: () async {
-                      debugPrint("Deleting Hive Database");
-                      // Show a confirmation dialog to restart the app
-                      _deleteForever();
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Delete",
-                            style: TextStyle(fontFamily: "NotoSans-Light")),
-                        Icon(
-                          Icons.delete_forever,
-                          color: Colors.red,
-                        ),
-                      ],
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: TextButton(
+                      onPressed: () async {
+                        debugPrint("Deleting Hive Database");
+                        // Show a confirmation dialog to restart the app
+                        _deleteForever();
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Delete",
+                              style: TextStyle(fontFamily: "NotoSans-Light")),
+                          Icon(
+                            Icons.delete_forever,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -487,20 +452,22 @@ class _SettingsState extends State<Settings> {
     sharedPrefMan.setShowSprints(true);
   }
 
-  Widget checkItem(String text, void Function(bool?)? onChanged, bool value) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(text,
-              style: const TextStyle(fontFamily: "NotoSans-Light")),
-          Checkbox(
-            value: value,
-            onChanged: onChanged,
-          ),
-        ],
+  Widget checkItem(String text, bool value, void Function(bool?)? onChanged) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(text, style: const TextStyle(fontFamily: "NotoSans-Light")),
+            Checkbox(
+              value: value,
+              onChanged: onChanged,
+            ),
+          ],
+        ),
       ),
     );
   }
