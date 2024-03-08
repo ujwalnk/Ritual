@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spotlight_ant/spotlight_ant.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Hive database packages
@@ -12,10 +13,10 @@ import 'package:ritual/model/ritual.dart';
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/misc.dart';
+import 'package:ritual/services/notification_service.dart';
 import 'package:ritual/services/widgets/image_picker.dart';
 import 'package:ritual/services/widgets/time_picker.dart';
 import 'package:ritual/services/shared_prefs.dart';
-import 'package:spotlight_ant/spotlight_ant.dart';
 
 class Commit2Ritual extends StatefulWidget {
   const Commit2Ritual({super.key});
@@ -49,10 +50,12 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     // A copy of appSetupTrackerRitualCommit
-    final appSetupTrackerRitualCommit = !SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerRitualCommit);
+    final appSetupTrackerRitualCommit = !SharedPreferencesManager()
+        .getAppSetupTracker(Constants.appSetupTrackerRitualCommit);
 
     // Set the Ritual Commit Demo to complete
-    SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerRitualCommit);
+    SharedPreferencesManager()
+        .setAppSetupTracker(Constants.appSetupTrackerRitualCommit);
 
     // Get the background used for the card
     cardBackgroundPath = data["ritual"] == null
@@ -101,7 +104,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                       ),
                       onPressed: () async {
                         debugPrint("@Ritual: Deleting Ritual");
-    
+
                         // Delete the image file
                         if ((data['ritual'].background !=
                                 Constants.noBackground) &&
@@ -111,7 +114,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                                 .contains("assets/illustrations"))) {
                           await File(data['ritual'].background).delete();
                         }
-    
+
                         deleteRitual(data['uri']);
                       },
                     )
@@ -130,7 +133,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                 SpotlightAnt(
                   content: Misc.spotlightText("Enter a name for your Ritual"),
                   enable: appSetupTrackerRitualCommit,
-                  spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
+                  spotlight: const SpotlightConfig(
+                      builder: SpotlightRectBuilder(borderRadius: 10)),
                   child: TextField(
                     controller: _textFieldController,
                     focusNode: _textFieldFocusNode,
@@ -138,8 +142,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                         errorText: errorMessage,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            // TODO: Red border on duplicate habit
-                          ),
+                              // TODO: Red border on duplicate habit
+                              ),
                         ),
                         hintText: data['mode'] == "new"
                             ? "What would you like to call your amazing Ritual"
@@ -148,7 +152,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                       isDuplicateRitual = Boxes.getBox()
                           .values
                           .any((habit) => habit.url.endsWith("/$text/"));
-                      errorMessage = isDuplicateRitual ? "Duplicate Ritual" : "";
+                      errorMessage =
+                          isDuplicateRitual ? "Duplicate Ritual" : "";
                     }),
                   ),
                 ),
@@ -162,8 +167,10 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                           TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                     ),
                     SpotlightAnt(
-                      spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
-                      content: Misc.spotlightText("Pick a time for your Ritual"),
+                      spotlight: const SpotlightConfig(
+                          builder: SpotlightRectBuilder(borderRadius: 10)),
+                      content:
+                          Misc.spotlightText("Pick a time for your Ritual"),
                       enable: appSetupTrackerRitualCommit,
                       child: TimePicker(
                           key: const Key("key_timepicker"),
@@ -184,7 +191,8 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     Row(children: [
                       SpotlightAnt(
                         enable: appSetupTrackerRitualCommit,
-                        content: Misc.spotlightText("Choose from the best illustrations"),
+                        content: Misc.spotlightText(
+                            "Choose from the best illustrations"),
                         child: IconButton(
                           icon: const Icon(
                             Icons.image,
@@ -235,13 +243,14 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                     alignment: Alignment.bottomCenter,
                     child: Visibility(
                       visible: ((_textFieldController.text.isNotEmpty ||
-                              (data['mode'] == "edit")) &&
-                          !_textFieldController.text.contains("/")) && !isDuplicateRitual,
+                                  (data['mode'] == "edit")) &&
+                              !_textFieldController.text.contains("/")) &&
+                          !isDuplicateRitual,
                       child: FilledButton.tonal(
-                        onPressed: () {
+                        onPressed: () async {
                           // Get boxes
                           final box = Boxes.getBox();
-    
+
                           if (data['mode'] == "new") {
                             // Adding new Ritual
                             final ritual = Ritual()
@@ -253,23 +262,39 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                                 "hour": selectedTime.hour,
                                 "minute": selectedTime.minute
                               };
-    
+
                             box.add(ritual);
+
+                            // Schedule Notification
+                            await scheduleNotification(
+                                "/${_textFieldController.text}".hashCode,
+                                _textFieldController.text,
+                                TimeOfDay(
+                                    hour: selectedTime.hour,
+                                    minute: selectedTime.minute),
+                                "Time for Ritual",
+                                true,
+                                null);
                           } else {
                             // Editing a pre-existing Ritual
-    
+
+                            // Cancel previous notification
+                            await cancelNotification(data["uri"].hashCode);
+
                             // Get all rituals
                             final contents = box.values.toList().cast<Ritual>();
-    
+
                             for (Ritual ritual in contents) {
                               // Edit time and name of ritual
                               if (ritual.url.contains(data['uri']) &&
-                                  (ritual.type!.contains(Constants.typeHabits) ||
+                                  (ritual.type!
+                                          .contains(Constants.typeHabits) ||
                                       ritual.type == Constants.typeRitual)) {
                                 debugPrint(
                                     "@ritual: Renaming ritual ${ritual.url} to /${_textFieldController.text}");
                                 if (_textFieldController.text.isNotEmpty) {
-                                  ritual.url = ritual.url.replaceAll(data['uri'],
+                                  ritual.url = ritual.url.replaceAll(
+                                      data['uri'],
                                       "/${_textFieldController.text}");
                                 }
                                 if (cardBackgroundPath.isNotEmpty) {
@@ -279,19 +304,25 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                                   "hour": selectedTime.hour,
                                   "minute": selectedTime.minute
                                 };
-    
+
                                 ritual.save();
-                                debugPrint("@ritual: Renamed to: ${ritual.url}");
+                                debugPrint(
+                                    "@ritual: Renamed to: ${ritual.url}");
                               }
                             }
                           }
-    
-                          // Set future Notifications
-                          // NotificationService().scheduleNotification(
-                          //     title: 'Scheduled Notification',
-                          //     body: '$scheduleTime',
-                          //     scheduledNotificationDateTime: scheduleTime);
-    
+
+                          // Schedule Notification
+                          await scheduleNotification(
+                              "/${_textFieldController.text}".hashCode,
+                              _textFieldController.text,
+                              TimeOfDay(
+                                  hour: selectedTime.hour,
+                                  minute: selectedTime.minute),
+                              "Time for Ritual",
+                              true,
+                              null);
+
                           // Pop the screen
                           Navigator.pop(context);
                         },

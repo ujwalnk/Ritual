@@ -129,9 +129,6 @@ class SharedPreferencesManager {
   /// Setup Tracker - Refer to the Constants.dart file for the index of each setup
   bool getAppSetupTracker(int index) {
     // Get the index bit of the integer value using bitwise operator
-
-    debugPrint(
-        "getting Tracker full: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: $index, OUTPUT: ${((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index)}");
     return ((_prefs.getInt(setupTracker) ?? 0) & (1 << index)) == (1 << index);
   }
 
@@ -139,8 +136,6 @@ class SharedPreferencesManager {
     // Clear the index bit of the value using bitwise operator
     await _prefs.setInt(
         setupTracker, ((_prefs.getInt(setupTracker) ?? 0) | (1 << index)));
-    debugPrint(
-        "Setting Tracker after: ${_prefs.getInt(setupTracker)?.toRadixString(2)}, bit: $index");
   }
 
   // Developer function - Clear AppSetupTracker

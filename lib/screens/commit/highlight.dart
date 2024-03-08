@@ -14,6 +14,7 @@ import 'package:ritual/services/constants.dart';
 import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/image_picker.dart';
+import 'package:ritual/services/notification_service.dart';
 
 class Commit2Highlight extends StatefulWidget {
   const Commit2Highlight({super.key});
@@ -90,6 +91,9 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                             Constants.noBackground) {
                           await File(data['ritual'].background).delete();
                         }
+
+                        // Cancel set notification
+                        cancelNotification(data["ritual"].url.hashCode);
 
                         deleteHighlight(data['ritual']);
                       },
@@ -229,7 +233,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                               !(_textFieldController.text.contains("/"))) &&
                           !isDuplicateHighlight,
                       child: FilledButton.tonal(
-                        onPressed: () {
+                        onPressed: () async {
                           if (data['mode'] == "new") {
                             DateTime now = DateTime.now();
                             final ritual = Ritual()
@@ -240,13 +244,17 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                               ..background = cardBackgroundPath
                               ..type = Constants.typeHLight
 
-                              // Highlight expires the next day or the day after
+                              // Highlight expires(gets deleted) the next day or the day after
                               ..expiry = DateTime(
                                       now.year, now.month, now.day, 0, 0, 0, 0)
                                   .add(Duration(days: isHighlightPlanned ? 2 : 1));
 
                             final box = Boxes.getBox();
                             box.add(ritual);
+
+                            // Setup Notification
+                            await scheduleNotification("/${_textFieldController.text}".hashCode, _textFieldController.text, null, "Your Highlight for the day", false, ritual.expiry!.subtract(const Duration(days: 1)));
+
                           } else {
                             Ritual r = data['ritual'];
 
