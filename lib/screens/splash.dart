@@ -61,7 +61,7 @@ class _SplashState extends State<Splash> {
           boxes.delete(key);
         }
       }
-      
+
       // Uncheck habits based on checkedOn field the next day
       else if ((boxes.get(key)?.checkedOn?.isBefore(DateTime(
                   DateTime.now().year,
@@ -86,7 +86,7 @@ class _SplashState extends State<Splash> {
 
     debugPrint("Date today: ${DateTime.now().day}");
 
-    // Navigate to the home page if appInit otherwise to GettingStarted 
+    // Navigate to the home page if appInit otherwise to GettingStarted
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerGettingStartedScreen) ? const Home() : const GettingStarted(),
       settings: RouteSettings(name: SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerGettingStartedScreen) ? "Home" : "Getting Started"),
@@ -100,15 +100,13 @@ class _SplashState extends State<Splash> {
       body: SafeArea(
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                "Ritual",
-                style: TextStyle(
-                  fontFamily: "NotoSans-Light",
-                )
-              ),
-              Image.asset(
-                  "assets/icons/icon.png"),
+              Image.asset("assets/icons/icon.png"),
+              const SizedBox(height: 30),
+              const Text("Ritual",
+                  style: TextStyle(fontFamily: "NotoSans-Light", fontSize: 50)),
             ],
           ),
         ),
