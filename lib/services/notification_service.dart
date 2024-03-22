@@ -30,6 +30,7 @@ Future scheduleNotification(int id, String title, TimeOfDay? t, String body,
 
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
+      // TODO: Dialog for notification permission
       // This is just a basic example. For real apps, you must show some
       // friendly dialog box before call the request method.
       // This is very important to not harm the user experience

@@ -27,6 +27,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
+  bool _init = false;
+
   // Card Background illustration path
   String cardBackgroundPath = Constants.noBackground;
 
@@ -46,14 +48,27 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
     // A copy of appSetupTrackerHighlightCommit
-    final appSetupTrackerHighlightCommit = !SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerHighlightCommit);
+    final appSetupTrackerHighlightCommit = !SharedPreferencesManager()
+        .getAppSetupTracker(Constants.appSetupTrackerHighlightCommit);
 
     // Set the Highlight Commit Demo to complete
-    SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerHighlightCommit);
+    SharedPreferencesManager()
+        .setAppSetupTracker(Constants.appSetupTrackerHighlightCommit);
 
     // Focus the textField
     if (!appSetupTrackerHighlightCommit) {
       _textFieldFocusNode.requestFocus();
+    }
+
+    if (!_init) {
+      _init = !_init;
+
+      // Get the background used for the card
+      if ((data['ritual'] == null)) {
+        cardBackgroundPath = Constants.noBackground;
+      } else if (data['ritual'] != null) {
+        cardBackgroundPath = data["ritual"].background;
+      }
     }
 
     // Precache card illustrations
@@ -87,8 +102,11 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         debugPrint("@Ritual: Deleting Ritual");
 
                         // Delete the user image
-                        if (data['ritual'].background !=
-                            Constants.noBackground) {
+                        if ((data['ritual'].background !=
+                                Constants.noBackground) &&
+                            (!data['ritual']
+                                .background
+                                .contains("assets/illustrations/"))) {
                           await File(data['ritual'].background).delete();
                         }
 
@@ -112,16 +130,18 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                 const SizedBox(height: 30),
                 SpotlightAnt(
                   enable: appSetupTrackerHighlightCommit,
-                  content: Misc.spotlightText("Enter your highlight for the Day"),
-                  spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
+                  content:
+                      Misc.spotlightText("Enter your highlight for the Day"),
+                  spotlight: const SpotlightConfig(
+                      builder: SpotlightRectBuilder(borderRadius: 10)),
                   child: TextField(
                     controller: _textFieldController,
                     focusNode: _textFieldFocusNode,
                     onChanged: (text) {
                       setState(() {
-                        isDuplicateHighlight = Boxes.getBox()
-                            .values
-                            .any((habit) => (habit.url.endsWith(text) && habit.type == Constants.typeHLight));
+                        isDuplicateHighlight = Boxes.getBox().values.any(
+                            (habit) => (habit.url.endsWith(text) &&
+                                habit.type == Constants.typeHLight));
                         // TODO: Check for highlighs spanning multiple days and change the error message: Use Sprints for Highlights spanning multiple days
                         errorMessage =
                             isDuplicateHighlight ? "Duplicate Highlight" : "";
@@ -131,8 +151,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                         errorText: errorMessage,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            // TODO: Red border on duplicate Highlight
-                          ),
+                              // TODO: Red border on duplicate Highlight
+                              ),
                         ),
                         hintText: data['mode'] == "edit"
                             ? "Rename your Highlight ${data['uri'].replaceFirst('/', '')} to"
@@ -151,8 +171,8 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                     Row(children: [
                       SpotlightAnt(
                         enable: appSetupTrackerHighlightCommit,
-                        content:
-                            Misc.spotlightText("Choose from the best illustrations"),
+                        content: Misc.spotlightText(
+                            "Choose from the best illustrations"),
                         child: IconButton(
                           icon: const Icon(
                             Icons.image,
@@ -186,8 +206,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                       ),
                       SpotlightAnt(
                         enable: appSetupTrackerHighlightCommit,
-                        content: Misc.spotlightText(
-                            "Use default illustration"),
+                        content: Misc.spotlightText("Use default illustration"),
                         child: IconButton(
                           icon: const Icon(
                             Icons.broken_image,
@@ -238,7 +257,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                             DateTime now = DateTime.now();
                             final ritual = Ritual()
                               ..complete = 0
-                              
+
                               // Set the URL, Background and Type for the new Ritual
                               ..url = "/${_textFieldController.text}"
                               ..background = cardBackgroundPath
@@ -247,14 +266,21 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                               // Highlight expires(gets deleted) the next day or the day after
                               ..expiry = DateTime(
                                       now.year, now.month, now.day, 0, 0, 0, 0)
-                                  .add(Duration(days: isHighlightPlanned ? 2 : 1));
+                                  .add(Duration(
+                                      days: isHighlightPlanned ? 2 : 1));
 
                             final box = Boxes.getBox();
                             box.add(ritual);
 
                             // Setup Notification
-                            await scheduleNotification("/${_textFieldController.text}".hashCode, _textFieldController.text, null, "Your Highlight for the day", false, ritual.expiry!.subtract(const Duration(days: 1)));
-
+                            await scheduleNotification(
+                                "/${_textFieldController.text}".hashCode,
+                                _textFieldController.text,
+                                null,
+                                "Your Highlight for the day",
+                                false,
+                                ritual.expiry!
+                                    .subtract(const Duration(days: 1)));
                           } else {
                             Ritual r = data['ritual'];
 

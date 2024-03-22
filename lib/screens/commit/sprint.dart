@@ -27,6 +27,8 @@ class _Commit2SprintState extends State<Commit2Sprint> {
   final TextEditingController _textFieldController = TextEditingController();
   final FocusNode _textFieldFocusNode = FocusNode();
 
+  bool _init = false;
+
   DateTime? selectedDate;
 
   // Map of asset Illustrations
@@ -44,15 +46,28 @@ class _Commit2SprintState extends State<Commit2Sprint> {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
 
-      // A copy of appSetupTrackerSprintCommit
-    final appSetupTrackerSprintCommit = !SharedPreferencesManager().getAppSetupTracker(Constants.appSetupTrackerSprintCommit);
+    // A copy of appSetupTrackerSprintCommit
+    final appSetupTrackerSprintCommit = !SharedPreferencesManager()
+        .getAppSetupTracker(Constants.appSetupTrackerSprintCommit);
 
     // Set the Highlight Commit Demo to complete
-    SharedPreferencesManager().setAppSetupTracker(Constants.appSetupTrackerSprintCommit);
+    SharedPreferencesManager()
+        .setAppSetupTracker(Constants.appSetupTrackerSprintCommit);
 
     // Focus the textField / Enable SpotlightAnt
     if (!appSetupTrackerSprintCommit) {
       _textFieldFocusNode.requestFocus();
+    }
+
+    if (!_init) {
+      _init = !_init;
+
+      // Get the background used for the card
+      if ((data['ritual'] == null)) {
+        cardBackgroundPath = Constants.noBackground;
+      } else if (data['ritual'] != null) {
+        cardBackgroundPath = data["ritual"].background;
+      }
     }
 
     // Precache card illustrations
@@ -84,12 +99,16 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                       ),
                       onPressed: () async {
                         debugPrint("@Ritual: Deleting Ritual");
-    
+
                         // Delete the user image
-                        if (data['ritual'].background != Constants.noBackground) {
+                        if ((data['ritual'].background !=
+                                Constants.noBackground) &&
+                            (!data['ritual']
+                                .background
+                                .contains("assets/illustrations/"))) {
                           await File(data['ritual'].background).delete();
                         }
-    
+
                         deleteSprint(data['ritual']);
                       },
                     )
@@ -108,23 +127,25 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                 SpotlightAnt(
                   content: Misc.spotlightText("Enter your Sprint"),
                   enable: appSetupTrackerSprintCommit,
-                  spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
+                  spotlight: const SpotlightConfig(
+                      builder: SpotlightRectBuilder(borderRadius: 10)),
                   child: TextField(
                     controller: _textFieldController,
                     focusNode: _textFieldFocusNode,
                     onChanged: (text) {
                       setState(() {
-                        isDuplicateSprint = Boxes.getBox()
-                            .values
-                            .any((habit) => (habit.url.endsWith(text) && habit.type == Constants.typeSprint));
-                        errorMessage = isDuplicateSprint ? "Duplicate Sprint" : "";
+                        isDuplicateSprint = Boxes.getBox().values.any((habit) =>
+                            (habit.url.endsWith(text) &&
+                                habit.type == Constants.typeSprint));
+                        errorMessage =
+                            isDuplicateSprint ? "Duplicate Sprint" : "";
                       });
                     },
                     decoration: InputDecoration(
                         border: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            // TODO: Red border on duplicate sprint
-                          ),
+                              // TODO: Red border on duplicate sprint
+                              ),
                         ),
                         errorText: errorMessage,
                         hintText: data['mode'] == "edit"
@@ -142,8 +163,10 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                           TextStyle(fontSize: 20, fontFamily: "NotoSans-Light"),
                     ),
                     SpotlightAnt(
-                      content: Misc.spotlightText("Choose the duration of the Sprint"),
-                      spotlight: const SpotlightConfig(builder: SpotlightRectBuilder(borderRadius: 10)),
+                      content: Misc.spotlightText(
+                          "Choose the duration of the Sprint"),
+                      spotlight: const SpotlightConfig(
+                          builder: SpotlightRectBuilder(borderRadius: 10)),
                       enable: appSetupTrackerSprintCommit,
                       child: CustomDatePicker(
                         restorationId: "datepicker",
@@ -165,7 +188,8 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                     Row(children: [
                       SpotlightAnt(
                         enable: appSetupTrackerSprintCommit,
-                        content: Misc.spotlightText("Choose form the best illustrations"),
+                        content: Misc.spotlightText(
+                            "Choose form the best illustrations"),
                         child: IconButton(
                           icon: const Icon(
                             Icons.image,
@@ -189,7 +213,8 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                       ),
                       SpotlightAnt(
                         enable: appSetupTrackerSprintCommit,
-                        content: Misc.spotlightText("Pick your favourite image"),
+                        content:
+                            Misc.spotlightText("Pick your favourite image"),
                         child: IconButton(
                           icon: const Icon(
                             Icons.image_search,
@@ -229,32 +254,32 @@ class _Commit2SprintState extends State<Commit2Sprint> {
                               ..background = cardBackgroundPath
                               ..type = Constants.typeSprint
                               ..expiry = selectedDate;
-    
+
                             final box = Boxes.getBox();
                             box.add(ritual);
                           } else {
                             // update the sprint name and expiry date in the database
                             Ritual r = data['ritual'];
-    
+
                             if (_textFieldController.text.isNotEmpty) {
                               r.url = "/${_textFieldController.text}";
                             }
-    
+
                             debugPrint(
                                 "Change in cardBackgroundPath? $cardBackgroundPath");
                             if ((cardBackgroundPath != r.background) &&
                                 (cardBackgroundPath.isNotEmpty)) {
                               r.background = cardBackgroundPath;
                             }
-    
+
                             if ((selectedDate != r.expiry) &&
                                 (selectedDate != null)) {
                               r.expiry = selectedDate;
                             }
-    
+
                             r.save();
                           }
-    
+
                           // Pop the screen
                           Navigator.pop(context);
                         },

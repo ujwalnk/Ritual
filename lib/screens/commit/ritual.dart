@@ -57,11 +57,6 @@ class _Commit2RitualState extends State<Commit2Ritual> {
     SharedPreferencesManager()
         .setAppSetupTracker(Constants.appSetupTrackerRitualCommit);
 
-    // Get the background used for the card
-    cardBackgroundPath = data["ritual"] == null
-        ? Constants.noBackground
-        : data["ritual"].background;
-
     // Focus the textField
     if (!appSetupTrackerRitualCommit) {
       _textFieldFocusNode.requestFocus();
@@ -73,6 +68,13 @@ class _Commit2RitualState extends State<Commit2Ritual> {
           : TimeOfDay(
               hour: data['time']['hour'], minute: data['time']['minute']);
       _init = !_init;
+
+      // Get the background used for the card
+      if ((data['ritual'] == null)) {
+        cardBackgroundPath = Constants.noBackground;
+      } else if (data['ritual'] != null) {
+        cardBackgroundPath = data["ritual"].background;
+      }
     }
 
     // Precache card illustrations
@@ -272,7 +274,7 @@ class _Commit2RitualState extends State<Commit2Ritual> {
                                 TimeOfDay(
                                     hour: selectedTime.hour,
                                     minute: selectedTime.minute),
-                                "Time for Ritual",
+                                "It's time for ${ritual.url.replaceAll("/", "")}",
                                 true,
                                 null);
                           } else {
