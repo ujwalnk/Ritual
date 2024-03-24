@@ -4,6 +4,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Screens
 import 'package:ritual/screens/home.dart';
@@ -31,6 +32,16 @@ class _GettingStartedState extends State<GettingStarted> {
   ];
 
   List<Widget> guideScreenContent = [];
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

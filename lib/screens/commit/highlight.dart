@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
@@ -41,6 +43,16 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
   // Check for duplicate Highlight
   bool isDuplicateHighlight = false;
   String? errorMessage;
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +246,7 @@ class _Commit2HighlightState extends State<Commit2Highlight> {
                             "Planning the highlight for tomorrow?"),
                         child: Checkbox(
                           value: isHighlightPlanned,
-                          onChanged: (value) async {
+                          onChanged: (value) {
                             isHighlightPlanned = value!;
                             setState(() {});
                           },

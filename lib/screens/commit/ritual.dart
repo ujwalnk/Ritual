@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 // Hive database packages
 import 'package:ritual/model/ritual.dart';
@@ -43,6 +44,16 @@ class _Commit2RitualState extends State<Commit2Ritual> {
   // Duplicate Ritual check & Error Message
   bool isDuplicateRitual = false;
   String? errorMessage;
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

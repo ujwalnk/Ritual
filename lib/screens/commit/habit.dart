@@ -1,5 +1,7 @@
-import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:duration_picker/duration_picker.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
 // Hive database packages
@@ -62,6 +64,16 @@ class _Commit2HabitState extends State<Commit2Habit> {
   bool initWidget = false;
 
   Duration d = const Duration(minutes: -1);
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

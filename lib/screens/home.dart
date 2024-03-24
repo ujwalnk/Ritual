@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ritual/services/misc.dart';
+import 'package:flutter/services.dart';
+
 import 'package:spotlight_ant/spotlight_ant.dart';
 
 // Hive database packages
@@ -11,6 +12,7 @@ import 'package:ritual/model/ritual.dart';
 // Services
 import 'package:ritual/services/boxes.dart';
 import 'package:ritual/services/constants.dart';
+import 'package:ritual/services/misc.dart';
 import 'package:ritual/services/ritual_icons.dart';
 import 'package:ritual/services/shared_prefs.dart';
 import 'package:ritual/services/widgets/fab.dart';
@@ -41,6 +43,16 @@ class _HomeState extends State<Home> {
   bool appSetupTrackerHighlightCard = true;
   bool appSetupTrackerSprintCard = true;
   bool appSetupTrackerRitualCard = true;
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +162,12 @@ class _HomeState extends State<Home> {
                       final contents = box.values.toList().cast<Ritual>();
                       var rituals = <Ritual>[];
                       for (var ritual in contents) {
-                        if (ritual.type == Constants.typeHLight) {
+                        DateTime now = DateTime.now();
+                        DateTime today =
+                            DateTime(now.year, now.month, now.day, 0, 0, 0, 0)
+                                .add(const Duration(days: 1));
+                        if ((ritual.type == Constants.typeHLight) &&
+                            (ritual.expiry == today)) {
                           rituals.add(ritual);
                         }
                       }
@@ -230,8 +247,7 @@ class _HomeState extends State<Home> {
                     child: Stack(children: [
                       const Text(
                         "Rituals",
-                        style: TextStyle(
-                            fontSize: 22, fontFamily: "NotoSans"),
+                        style: TextStyle(fontSize: 22, fontFamily: "NotoSans"),
                       ),
                       Align(
                           alignment: Alignment.centerRight,

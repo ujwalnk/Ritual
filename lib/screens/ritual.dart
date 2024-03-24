@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:spotlight_ant/spotlight_ant.dart';
 
@@ -30,6 +32,16 @@ class _RitualsState extends State<Rituals> {
   Ritual breakHabit = (Ritual()
     ..url = "/break"
     ..duration = (SharedPreferencesManager().getBreakTime().toDouble()) / 60);
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

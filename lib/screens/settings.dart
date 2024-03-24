@@ -1,7 +1,10 @@
 import 'dart:io';
 
-import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Other Packages
+import 'package:duration_picker/duration_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:restart_app/restart_app.dart';
@@ -38,6 +41,16 @@ class _SettingsState extends State<Settings> {
     Icon(Icons.dark_mode),
     Icon(Icons.auto_mode_rounded)
   ];
+
+  @override
+  void initState() {
+    // Allow only portrait mode
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
