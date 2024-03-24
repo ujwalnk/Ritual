@@ -49,3 +49,6 @@ tmp/
 
 # Keystore
 .upload-keystore.jks
+
+# Temp Release
+release/
