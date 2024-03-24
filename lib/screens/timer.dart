@@ -1,8 +1,10 @@
-
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:keep_screen_on/keep_screen_on.dart';
+import 'package:ritual/color_schemes.g.dart';
 
 // Hive Model
 import 'package:ritual/model/ritual.dart';
@@ -26,6 +28,12 @@ class _TimerState extends State<Timer> {
   int habitIndex = 0;
 
   @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Get data from parent screen
     Map data = ModalRoute.of(context)?.settings.arguments as Map;
@@ -37,11 +45,11 @@ class _TimerState extends State<Timer> {
       KeepScreenOn.turnOn();
     }
 
-    return WillPopScope(
-      // On Screen Exit, clear screenTimeout
-      onWillPop: () async {
+    return PopScope(
+      // On Screen Exit, clear screenTimeout & Show Status bar
+      onPopInvoked: (bool t) {
         KeepScreenOn.turnOff();
-        return true;
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
       },
       child: Scaffold(
         appBar: AppBar(
@@ -64,6 +72,16 @@ class _TimerState extends State<Timer> {
                     ? Icons.lock_clock
                     : Icons.access_time)),
           ],
+          title: Text(
+            data["rituals"][habitIndex].url.toString().substring(
+                data["rituals"][habitIndex].url.toString().lastIndexOf("/") +
+                    1),
+            style: const TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontFamily: "NotoSans-Light",
+                fontWeight: FontWeight.bold),
+          ),
         ),
         backgroundColor: Colors.black,
         body: Padding(
@@ -71,32 +89,20 @@ class _TimerState extends State<Timer> {
             child: Center(
               child: Column(
                 children: [
-                  Text(
-                    data["rituals"][habitIndex].url.toString().substring(
-                        data["rituals"][habitIndex]
-                                .url
-                                .toString()
-                                .lastIndexOf("/") +
-                            1),
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontFamily: "NotoSans-Light",
-                        fontWeight: FontWeight.bold),
-                  ),
                   CircularCountDownTimer(
                     duration: data["rituals"][habitIndex].duration.toInt() * 60,
                     textStyle: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width / 4,
+                        fontSize: (MediaQuery.of(context).size.width <
+                                MediaQuery.of(context).size.height)
+                            ? (MediaQuery.of(context).size.width / 4)
+                            : (MediaQuery.of(context).size.height / 4),
                         color: Colors.white,
                         fontFamily: "NotoSans-Light",
                         fontWeight: FontWeight.bold),
-                    width: MediaQuery.of(context).size.width / 1.2,
-                    height: MediaQuery.of(context).size.height / 1.2,
-                    ringColor: Colors.grey[300]!,
-                    // TODO: Get Color from palette
-                    fillColor:
-                        const Color(0x0001e1d1),
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    height: MediaQuery.of(context).size.height / 1.5,
+                    ringColor: darkColorScheme.primaryContainer,
+                    fillColor: darkColorScheme.primary,
                     strokeWidth: 10.0,
                     isTimerTextShown: true,
                     isReverse: true,
